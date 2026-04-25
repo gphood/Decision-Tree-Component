@@ -1,5 +1,24 @@
-.com-decisiontree-json textarea {
+.main-card {
+	padding: 1rem;
+}
+
+#jform_json_data {
+	background: #f4f7fa;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.com-decisiontree-editor-section {
+	margin-top: 1.5rem;
+}
+
+.com-decisiontree-editor-section + .com-decisiontree-editor-section {
+	border-top: 1px solid var(--border-color, #dfe3e7);
+	padding-top: 1.5rem;
+}
+
+.com-decisiontree-editor-section h2 {
+	font-size: 1.25rem;
+	margin: 0 0 .25rem;
 }
 
 .com-decisiontree-json-tools .alert {
@@ -17,9 +36,9 @@
 	padding: 1rem;
 }
 
-.com-decisiontree-question-editor h3 {
+.com-decisiontree-options-group h3 {
 	font-size: 1.1rem;
-	margin-top: 0;
+	margin: 0 0 .75rem;
 }
 
 .com-decisiontree-question-toolbar {
@@ -31,9 +50,11 @@
 }
 
 .com-decisiontree-question-actions {
+	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	gap: .5rem;
+	justify-content: flex-end;
 }
 
 .com-decisiontree-start-display {
@@ -52,12 +73,23 @@
 	padding: .1rem .4rem;
 }
 
+.com-decisiontree-selected-question-panel {
+	background: #f8fafc;
+	border: 1px solid var(--border-color, #dfe3e7);
+	border-radius: .25rem;
+	padding: 1rem;
+}
+
+.com-decisiontree-options-group {
+	margin-top: 1rem;
+}
+
 .com-decisiontree-option-editor {
 	align-items: end;
 	border-top: 1px solid var(--border-color, #dfe3e7);
 	display: grid;
 	gap: .75rem;
-	grid-template-columns: minmax(0, 1fr) minmax(7rem, 9rem) minmax(12rem, 1fr) auto;
+	grid-template-columns: minmax(0, 1fr) minmax(11rem, 13rem) minmax(9rem, .8fr) auto;
 	padding: 1rem 0;
 }
 
