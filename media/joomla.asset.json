@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "com_decisiontree",
+  "version": "0.1.0",
+  "description": "Decision Tree component assets",
+  "license": "GPL-2.0-or-later",
+  "assets": [
+    {
+      "name": "com_decisiontree.frontend.styles",
+      "type": "style",
+      "uri": "media/com_decisiontree/css/decisiontree.css"
+    },
+    {
+      "name": "com_decisiontree.frontend",
+      "type": "script",
+      "uri": "media/com_decisiontree/js/decisiontree.js",
+      "attributes": {
+        "defer": true
+      }
+    }
+  ]
+}

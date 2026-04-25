@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `#__decisiontree_trees` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `asset_id` int unsigned NOT NULL DEFAULT 0,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `alias` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+  `description` text,
+  `state` tinyint NOT NULL DEFAULT 0,
+  `json_data` mediumtext,
+  `created` datetime NOT NULL,
+  `created_by` int unsigned NOT NULL DEFAULT 0,
+  `modified` datetime,
+  `modified_by` int unsigned NOT NULL DEFAULT 0,
+  `ordering` int NOT NULL DEFAULT 0,
+  `checked_out` int unsigned,
+  `checked_out_time` datetime,
+  PRIMARY KEY (`id`),
+  KEY `idx_state` (`state`),
+  KEY `idx_alias` (`alias`),
+  KEY `idx_checked_out` (`checked_out`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;

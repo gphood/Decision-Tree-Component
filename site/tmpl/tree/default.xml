@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_DECISIONTREE_TREE_VIEW_DEFAULT_TITLE">
+		<help
+			key="JHELP_MENUS_MENU_ITEM_DECISIONTREE_TREE"
+		/>
+		<message>
+			<![CDATA[COM_DECISIONTREE_TREE_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<fields name="request">
+		<fieldset name="request">
+			<field
+				name="id"
+				type="sql"
+				label="COM_DECISIONTREE_FIELD_TREE_ID_LABEL"
+				required="true"
+				key_field="id"
+				value_field="title"
+				query="SELECT id, title FROM #__decisiontree_trees WHERE state = 1 ORDER BY title"
+			/>
+		</fieldset>
+	</fields>
+</metadata>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade">
+	<name>COM_DECISIONTREE</name>
+	<author>GrantDev</author>
+	<creationDate>2026-04-25</creationDate>
+	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<version>0.1.0</version>
+	<description>COM_DECISIONTREE_XML_DESCRIPTION</description>
+	<namespace path="src">GrantDev\Component\DecisionTree</namespace>
+
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+
+	<files folder="site">
+		<folder>src</folder>
+		<folder>tmpl</folder>
+	</files>
+
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.com_decisiontree.ini</language>
+	</languages>
+
+	<media destination="com_decisiontree" folder="media">
+		<filename>joomla.asset.json</filename>
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+
+	<administration>
+		<menu img="class:tree">COM_DECISIONTREE</menu>
+		<files folder="administrator">
+			<filename>access.xml</filename>
+			<folder>forms</folder>
+			<folder>language</folder>
+			<folder>services</folder>
+			<folder>sql</folder>
+			<folder>src</folder>
+			<folder>tmpl</folder>
+		</files>
+		<languages folder="administrator/language">
+			<language tag="en-GB">en-GB/en-GB.com_decisiontree.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_decisiontree.sys.ini</language>
+		</languages>
+	</administration>
+</extension>
