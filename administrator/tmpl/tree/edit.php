@@ -31,11 +31,11 @@ HTMLHelper::_('behavior.keepalive');
 						<button type="button" class="btn btn-secondary" id="decisiontree-add-question">
 							Add question
 						</button>
-						<button type="button" class="btn btn-secondary" id="decisiontree-set-start-question">
-							Set as start question
-						</button>
 						<button type="button" class="btn btn-outline-danger" id="decisiontree-delete-question">
 							Delete question
+						</button>
+						<button type="button" class="btn btn-secondary" id="decisiontree-set-start-question">
+							Set as start question
 						</button>
 					</div>
 				</div>

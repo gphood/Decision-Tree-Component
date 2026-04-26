@@ -181,7 +181,7 @@
 		ids.forEach((id) => {
 			const option = document.createElement('option');
 			option.value = id;
-			option.textContent = id === editorTree.start ? `${id} (Start)` : id;
+			option.textContent = id === editorTree.start ? `${id} (Start question)` : id;
 			questionSelect.appendChild(option);
 		});
 
@@ -192,14 +192,11 @@
 		questionSelect.value = selectedQuestionId;
 		startDisplay.innerHTML = '';
 
-		const selectedText = document.createElement('span');
-		selectedText.className = 'com-decisiontree-selected-question';
-		selectedText.textContent = selectedQuestionId ? `Selected: ${selectedQuestionId}` : 'Selected: none';
-
 		const startText = document.createElement('span');
-		startText.textContent = editorTree?.start ? `Start: ${editorTree.start}` : 'Start: not set';
+		startText.className = 'com-decisiontree-start-question';
+		startText.textContent = editorTree?.start ? `Start question: ${editorTree.start}` : 'Start question: not set';
 
-		startDisplay.append(selectedText, startText);
+		startDisplay.appendChild(startText);
 	};
 
 	const renderOptionEditor = (option, index, questionIds) => {
@@ -207,16 +204,27 @@
 			syncTextarea();
 		}
 
-		const row = document.createElement('div');
-		row.className = 'com-decisiontree-option-editor';
+			const card = document.createElement('div');
+			card.className = 'com-decisiontree-option-editor';
+
+			const header = document.createElement('div');
+			header.className = 'com-decisiontree-option-editor__header';
+
+			const heading = document.createElement('h4');
+			heading.textContent = `Option ${index + 1}`;
+
+			header.appendChild(heading);
+
+			const body = document.createElement('div');
+			body.className = 'com-decisiontree-option-editor__body';
 
 		const textWrap = document.createElement('div');
 		textWrap.className = 'com-decisiontree-option-editor__text';
 
-		const label = document.createElement('label');
-		label.className = 'form-label';
-		label.setAttribute('for', `decisiontree-option-${index}`);
-		label.textContent = `Option ${index + 1}`;
+			const label = document.createElement('label');
+			label.className = 'form-label';
+			label.setAttribute('for', `decisiontree-option-${index}`);
+			label.textContent = 'Option text';
 
 		const input = document.createElement('input');
 		input.type = 'text';
@@ -244,16 +252,7 @@
 		actionSelect.innerHTML = '<option value="result">Shows result</option><option value="next">Goes to question</option>';
 		actionSelect.value = hasNext(option) ? 'next' : 'result';
 
-		const actionBadge = document.createElement('div');
-		actionBadge.className = 'com-decisiontree-option-editor__badge';
-
-		const updateActionBadge = () => {
-			const isNext = actionSelect.value === 'next';
-			actionBadge.className = `com-decisiontree-option-editor__badge ${isNext ? 'is-next' : 'is-result'}`;
-			actionBadge.textContent = isNext ? 'Goes to question' : 'Shows result';
-		};
-
-		actionWrap.append(actionLabel, actionSelect, actionBadge);
+			actionWrap.append(actionLabel, actionSelect);
 
 		const detailWrap = document.createElement('div');
 		detailWrap.className = 'com-decisiontree-option-editor__detail';
@@ -316,19 +315,20 @@
 			}
 		};
 
-		actionSelect.addEventListener('change', () => {
-			updateActionBadge();
-			renderActionDetail(true);
-			syncTextarea();
-		});
+			actionSelect.addEventListener('change', () => {
+				renderActionDetail(true);
+				syncTextarea();
+			});
 
-		updateActionBadge();
-		renderActionDetail();
+			renderActionDetail();
 
-		const removeButton = document.createElement('button');
-		removeButton.type = 'button';
-		removeButton.className = 'btn btn-outline-danger';
-		removeButton.textContent = 'Remove option';
+			const removeWrap = document.createElement('div');
+			removeWrap.className = 'com-decisiontree-option-editor__remove';
+
+			const removeButton = document.createElement('button');
+			removeButton.type = 'button';
+			removeButton.className = 'btn btn-outline-danger';
+			removeButton.textContent = 'Remove option';
 		removeButton.addEventListener('click', () => {
 			const question = getSelectedQuestion();
 
@@ -337,14 +337,16 @@
 			}
 
 			question.options.splice(index, 1);
-			syncTextarea();
-			renderQuestionEditor();
-		});
+				syncTextarea();
+				renderQuestionEditor();
+			});
 
-		row.append(textWrap, actionWrap, detailWrap, removeButton);
+			removeWrap.appendChild(removeButton);
+			body.append(textWrap, actionWrap, detailWrap, removeWrap);
+			card.append(header, body);
 
-		return row;
-	};
+			return card;
+		};
 
 	const renderQuestionEditor = () => {
 		const {
