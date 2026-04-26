@@ -14,6 +14,7 @@ class TreeModel extends ItemModel
 
 	public function getItem($pk = null)
 	{
+		$pk = $pk ?: (int) $this->getState('tree.id');
 		$pk = $pk ?: (int) Factory::getApplication()->getInput()->getInt('id');
 
 		if ($this->_item === null) {

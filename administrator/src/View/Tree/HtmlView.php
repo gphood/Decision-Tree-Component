@@ -4,6 +4,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\View\Tree;
 
 \defined('_JEXEC') or die;
 
+use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
@@ -17,10 +18,13 @@ class HtmlView extends BaseHtmlView
 
 	public function display($tpl = null): void
 	{
+		DecisionTreeHelper::loadAdminLanguage();
+
 		$this->form = $this->get('Form');
 		$this->item = $this->get('Item');
 
 		$this->addToolbar();
+		$this->registerScriptText();
 
 		Factory::getApplication()->getDocument()->getWebAssetManager()
 			->registerAndUseStyle('com_decisiontree.admin', 'media/com_decisiontree/css/admin.css')
@@ -38,5 +42,40 @@ class HtmlView extends BaseHtmlView
 		ToolbarHelper::save('tree.save');
 		ToolbarHelper::save2new('tree.save2new');
 		ToolbarHelper::cancel('tree.cancel', $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE');
+	}
+
+	private function registerScriptText(): void
+	{
+		foreach ([
+			'COM_DECISIONTREE_JS_ACTION_LABEL',
+			'COM_DECISIONTREE_JS_ACTION_GOES_TO_QUESTION',
+			'COM_DECISIONTREE_JS_ACTION_SHOWS_RESULT',
+			'COM_DECISIONTREE_JS_DELETE_QUESTION_CONFIRM',
+			'COM_DECISIONTREE_JS_DELETE_QUESTION_REFERENCED_CONFIRM',
+			'COM_DECISIONTREE_JS_INVALID_JSON_FORMAT',
+			'COM_DECISIONTREE_JS_NEW_OPTION',
+			'COM_DECISIONTREE_JS_NEXT_QUESTION_LABEL',
+			'COM_DECISIONTREE_JS_OPTION_HEADING',
+			'COM_DECISIONTREE_JS_OPTION_TEXT_LABEL',
+			'COM_DECISIONTREE_JS_QUESTION_EDITOR_EMPTY',
+			'COM_DECISIONTREE_JS_QUESTION_EDITOR_INVALID_JSON',
+			'COM_DECISIONTREE_JS_QUESTION_EDITOR_MISSING_QUESTIONS',
+			'COM_DECISIONTREE_JS_REPLACE_JSON_CONFIRM',
+			'COM_DECISIONTREE_JS_RESULT_TEXT_LABEL',
+			'COM_DECISIONTREE_JS_SAMPLE_OPTION_ASK_ANOTHER',
+			'COM_DECISIONTREE_JS_SAMPLE_OPTION_FINISH',
+			'COM_DECISIONTREE_JS_SAMPLE_OPTION_SHOW_RESULT',
+			'COM_DECISIONTREE_JS_SAMPLE_QUESTION_ONE',
+			'COM_DECISIONTREE_JS_SAMPLE_QUESTION_TWO',
+			'COM_DECISIONTREE_JS_SAMPLE_RESULT_ONE',
+			'COM_DECISIONTREE_JS_SAMPLE_RESULT_TWO',
+			'COM_DECISIONTREE_JS_SELECT_QUESTION',
+			'COM_DECISIONTREE_JS_START_QUESTION_LABEL',
+			'COM_DECISIONTREE_JS_START_QUESTION_NOT_SET',
+			'COM_DECISIONTREE_JS_START_QUESTION_SUFFIX',
+			'COM_DECISIONTREE_JS_REMOVE_OPTION',
+		] as $key) {
+			Text::script($key);
+		}
 	}
 }

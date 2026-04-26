@@ -1,37 +1,46 @@
 (() => {
 	'use strict';
 
+	const text = (key) => (
+		window.Joomla && Joomla.Text ? Joomla.Text._(key, key) : key
+	);
+
+	const sprintf = (key, ...values) => values.reduce(
+		(output, value) => output.replace(/%s|%d/, value),
+		text(key),
+	);
+
 	const sampleJson = {
 		version: '1.0',
 		start: 'q1',
 		questions: {
 			q1: {
-				question_text: 'What do you need help with?',
+				question_text: text('COM_DECISIONTREE_JS_SAMPLE_QUESTION_ONE'),
 				options: [
 					{
-						text: 'Ask another question',
+						text: text('COM_DECISIONTREE_JS_SAMPLE_OPTION_ASK_ANOTHER'),
 						next: 'q2',
 					},
 					{
-						text: 'Show me the result',
+						text: text('COM_DECISIONTREE_JS_SAMPLE_OPTION_SHOW_RESULT'),
 						result: [
 							{
 								type: 'text',
-								content: 'This is the final result.',
+								content: text('COM_DECISIONTREE_JS_SAMPLE_RESULT_ONE'),
 							},
 						],
 					},
 				],
 			},
 			q2: {
-				question_text: 'Which path should this user follow?',
+				question_text: text('COM_DECISIONTREE_JS_SAMPLE_QUESTION_TWO'),
 				options: [
 					{
-						text: 'Finish here',
+						text: text('COM_DECISIONTREE_JS_SAMPLE_OPTION_FINISH'),
 						result: [
 							{
 								type: 'text',
-								content: 'This is another final result.',
+								content: text('COM_DECISIONTREE_JS_SAMPLE_RESULT_TWO'),
 							},
 						],
 					},
@@ -181,7 +190,9 @@
 		ids.forEach((id) => {
 			const option = document.createElement('option');
 			option.value = id;
-			option.textContent = id === editorTree.start ? `${id} (Start question)` : id;
+			option.textContent = id === editorTree.start
+				? `${id} (${text('COM_DECISIONTREE_JS_START_QUESTION_SUFFIX')})`
+				: id;
 			questionSelect.appendChild(option);
 		});
 
@@ -194,7 +205,9 @@
 
 		const startText = document.createElement('span');
 		startText.className = 'com-decisiontree-start-question';
-		startText.textContent = editorTree?.start ? `Start question: ${editorTree.start}` : 'Start question: not set';
+		startText.textContent = editorTree?.start
+			? sprintf('COM_DECISIONTREE_JS_START_QUESTION_LABEL', editorTree.start)
+			: text('COM_DECISIONTREE_JS_START_QUESTION_NOT_SET');
 
 		startDisplay.appendChild(startText);
 	};
@@ -211,7 +224,7 @@
 			header.className = 'com-decisiontree-option-editor__header';
 
 			const heading = document.createElement('h4');
-			heading.textContent = `Option ${index + 1}`;
+			heading.textContent = sprintf('COM_DECISIONTREE_JS_OPTION_HEADING', index + 1);
 
 			header.appendChild(heading);
 
@@ -224,7 +237,7 @@
 			const label = document.createElement('label');
 			label.className = 'form-label';
 			label.setAttribute('for', `decisiontree-option-${index}`);
-			label.textContent = 'Option text';
+			label.textContent = text('COM_DECISIONTREE_JS_OPTION_TEXT_LABEL');
 
 		const input = document.createElement('input');
 		input.type = 'text';
@@ -244,12 +257,12 @@
 		const actionLabel = document.createElement('label');
 		actionLabel.className = 'form-label';
 		actionLabel.setAttribute('for', `decisiontree-option-action-${index}`);
-		actionLabel.textContent = 'Action';
+		actionLabel.textContent = text('COM_DECISIONTREE_JS_ACTION_LABEL');
 
 		const actionSelect = document.createElement('select');
 		actionSelect.className = 'form-select';
 		actionSelect.id = `decisiontree-option-action-${index}`;
-		actionSelect.innerHTML = '<option value="result">Shows result</option><option value="next">Goes to question</option>';
+		actionSelect.innerHTML = `<option value="result">${text('COM_DECISIONTREE_JS_ACTION_SHOWS_RESULT')}</option><option value="next">${text('COM_DECISIONTREE_JS_ACTION_GOES_TO_QUESTION')}</option>`;
 		actionSelect.value = hasNext(option) ? 'next' : 'result';
 
 			actionWrap.append(actionLabel, actionSelect);
@@ -264,7 +277,7 @@
 				const nextLabel = document.createElement('label');
 				nextLabel.className = 'form-label';
 				nextLabel.setAttribute('for', `decisiontree-option-next-${index}`);
-				nextLabel.textContent = 'Next question';
+				nextLabel.textContent = text('COM_DECISIONTREE_JS_NEXT_QUESTION_LABEL');
 
 				const nextSelect = document.createElement('select');
 				nextSelect.className = 'form-select';
@@ -273,7 +286,9 @@
 				questionIds.forEach((id) => {
 					const optionElement = document.createElement('option');
 					optionElement.value = id;
-					optionElement.textContent = id === editorTree.start ? `${id} (start)` : id;
+					optionElement.textContent = id === editorTree.start
+						? `${id} (${text('COM_DECISIONTREE_JS_START_QUESTION_SUFFIX')})`
+						: id;
 					nextSelect.appendChild(optionElement);
 				});
 
@@ -294,7 +309,7 @@
 				const resultLabel = document.createElement('label');
 				resultLabel.className = 'form-label';
 				resultLabel.setAttribute('for', `decisiontree-option-result-${index}`);
-				resultLabel.textContent = 'Result text';
+				resultLabel.textContent = text('COM_DECISIONTREE_JS_RESULT_TEXT_LABEL');
 
 				const resultTextarea = document.createElement('textarea');
 				resultTextarea.className = 'form-control';
@@ -328,7 +343,7 @@
 			const removeButton = document.createElement('button');
 			removeButton.type = 'button';
 			removeButton.className = 'btn btn-outline-danger';
-			removeButton.textContent = 'Remove option';
+			removeButton.textContent = text('COM_DECISIONTREE_JS_REMOVE_OPTION');
 		removeButton.addEventListener('click', () => {
 			const question = getSelectedQuestion();
 
@@ -371,7 +386,7 @@
 
 		if (!hasQuestionsObject()) {
 			populateQuestionSelect();
-			setEditorMessage('Question editor is available when JSON contains a questions object.');
+			setEditorMessage(text('COM_DECISIONTREE_JS_QUESTION_EDITOR_MISSING_QUESTIONS'));
 
 			return;
 		}
@@ -380,7 +395,7 @@
 
 		if (questionIds.length === 0) {
 			populateQuestionSelect();
-			setEditorMessage('Question editor is available when questions contains at least one question.');
+			setEditorMessage(text('COM_DECISIONTREE_JS_QUESTION_EDITOR_EMPTY'));
 
 			return;
 		}
@@ -390,7 +405,7 @@
 		const question = getSelectedQuestion();
 
 		if (!question) {
-			setEditorMessage('Select a question to edit.');
+			setEditorMessage(text('COM_DECISIONTREE_JS_SELECT_QUESTION'));
 
 			return;
 		}
@@ -433,7 +448,7 @@
 			editorTree = null;
 			selectedQuestionId = '';
 			renderQuestionEditor();
-			setEditorMessage('Question editor is unavailable because the JSON is invalid.');
+			setEditorMessage(text('COM_DECISIONTREE_JS_QUESTION_EDITOR_INVALID_JSON'));
 		}
 	};
 
@@ -452,7 +467,7 @@
 				return;
 			}
 
-			if (textarea.value.trim() !== '' && !window.confirm('Replace the existing JSON data?')) {
+			if (textarea.value.trim() !== '' && !window.confirm(text('COM_DECISIONTREE_JS_REPLACE_JSON_CONFIRM'))) {
 				return;
 			}
 
@@ -474,7 +489,7 @@
 				textarea.focus();
 				loadEditorFromTextarea();
 			} catch (error) {
-				window.alert('The JSON data is not valid and could not be formatted.');
+				window.alert(text('COM_DECISIONTREE_JS_INVALID_JSON_FORMAT'));
 			}
 		});
 	};
@@ -552,8 +567,8 @@
 
 			const referenceCount = countNextReferences(selectedQuestionId);
 			const warning = referenceCount > 0
-				? `Delete question "${selectedQuestionId}"? ${referenceCount} option link(s) pointing to it will be cleared.`
-				: `Delete question "${selectedQuestionId}"?`;
+				? sprintf('COM_DECISIONTREE_JS_DELETE_QUESTION_REFERENCED_CONFIRM', selectedQuestionId, referenceCount)
+				: sprintf('COM_DECISIONTREE_JS_DELETE_QUESTION_CONFIRM', selectedQuestionId);
 
 			if (!window.confirm(warning)) {
 				return;
@@ -589,7 +604,7 @@
 			}
 
 			question.options.push({
-				text: 'New option',
+				text: text('COM_DECISIONTREE_JS_NEW_OPTION'),
 				result: [
 					{
 						type: 'text',

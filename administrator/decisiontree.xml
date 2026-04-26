@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" method="upgrade">
+	<name>COM_DECISIONTREE</name>
+	<author>GrantDev</author>
+	<creationDate>2026-04-25</creationDate>
+	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<version>1.0.0</version>
+	<description>COM_DECISIONTREE_XML_DESCRIPTION</description>
+	<namespace path="src">GrantDev\Component\DecisionTree</namespace>
+</extension>

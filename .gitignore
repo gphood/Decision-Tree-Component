@@ -5,6 +5,9 @@
 node_modules/
 playwright-report/
 test-results/
+.env.test.local
+dist/
+*.zip
 
 # Logs
 *.log

@@ -5,8 +5,9 @@
 	<creationDate>2026-04-25</creationDate>
 	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
 	<description>COM_DECISIONTREE_XML_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
 	<namespace path="src">GrantDev\Component\DecisionTree</namespace>
 
 	<install>
@@ -26,7 +27,7 @@
 		<folder>tmpl</folder>
 	</files>
 
-	<languages folder="language">
+	<languages folder="site/language">
 		<language tag="en-GB">en-GB/en-GB.com_decisiontree.ini</language>
 	</languages>
 

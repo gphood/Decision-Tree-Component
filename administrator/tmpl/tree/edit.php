@@ -3,6 +3,7 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 
 HTMLHelper::_('behavior.formvalidator');
@@ -15,65 +16,65 @@ HTMLHelper::_('behavior.keepalive');
 		<?php echo $this->form->renderField('description'); ?>
 		<?php echo $this->form->renderField('state'); ?>
 		<section class="com-decisiontree-editor-section">
-			<h2>Decision Tree Builder</h2>
+			<h2><?php echo Text::_('COM_DECISIONTREE_BUILDER_HEADING'); ?></h2>
 			<p class="text-muted">
-				Use this interface to manage questions and options.
+				<?php echo Text::_('COM_DECISIONTREE_BUILDER_HELP'); ?>
 			</p>
 			<div class="com-decisiontree-question-editor" id="decisiontree-question-editor">
 				<div class="alert alert-warning" id="decisiontree-editor-message" hidden></div>
 				<div class="com-decisiontree-question-toolbar">
 					<div>
-						<label class="form-label" for="decisiontree-question-select">Question</label>
+						<label class="form-label" for="decisiontree-question-select"><?php echo Text::_('COM_DECISIONTREE_FIELD_QUESTION_LABEL'); ?></label>
 						<select class="form-select" id="decisiontree-question-select"></select>
 					</div>
 					<div class="com-decisiontree-start-display" id="decisiontree-start-display"></div>
 					<div class="com-decisiontree-question-actions">
 						<button type="button" class="btn btn-secondary" id="decisiontree-add-question">
-							Add question
+							<?php echo Text::_('COM_DECISIONTREE_BUTTON_ADD_QUESTION'); ?>
 						</button>
 						<button type="button" class="btn btn-outline-danger" id="decisiontree-delete-question">
-							Delete question
+							<?php echo Text::_('COM_DECISIONTREE_BUTTON_DELETE_QUESTION'); ?>
 						</button>
 						<button type="button" class="btn btn-secondary" id="decisiontree-set-start-question">
-							Set as start question
+							<?php echo Text::_('COM_DECISIONTREE_BUTTON_SET_START_QUESTION'); ?>
 						</button>
 					</div>
 				</div>
 				<div class="com-decisiontree-selected-question-panel">
 					<div class="mb-3">
-						<label class="form-label" for="decisiontree-question-text">Question text</label>
+						<label class="form-label" for="decisiontree-question-text"><?php echo Text::_('COM_DECISIONTREE_FIELD_QUESTION_TEXT_LABEL'); ?></label>
 						<input type="text" class="form-control" id="decisiontree-question-text">
 					</div>
 					<div class="com-decisiontree-options-group">
-						<h3>Options</h3>
+						<h3><?php echo Text::_('COM_DECISIONTREE_OPTIONS_HEADING'); ?></h3>
 						<div class="com-decisiontree-options" id="decisiontree-options"></div>
 						<button type="button" class="btn btn-secondary" id="decisiontree-add-option">
-							Add option
+							<?php echo Text::_('COM_DECISIONTREE_BUTTON_ADD_OPTION'); ?>
 						</button>
 					</div>
 				</div>
 			</div>
 		</section>
 		<section class="com-decisiontree-editor-section com-decisiontree-raw-json-section">
-			<h2>Raw JSON</h2>
+			<h2><?php echo Text::_('COM_DECISIONTREE_RAW_JSON_HEADING'); ?></h2>
 			<p class="text-muted">
-				Advanced: edit the raw JSON structure directly.
+				<?php echo Text::_('COM_DECISIONTREE_RAW_JSON_HELP'); ?>
 			</p>
 			<div class="com-decisiontree-json-tools">
 				<div class="alert alert-info">
-					<p>The JSON defines the decision tree structure.</p>
+					<p><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_INTRO'); ?></p>
 					<ul>
-						<li><code>start</code> must match an ID in <code>questions</code>.</li>
-						<li>Each question should contain <code>question_text</code> and <code>options</code>.</li>
-						<li>Each option should usually contain either <code>next</code> or <code>result</code>.</li>
+						<li><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_START'); ?></li>
+						<li><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_QUESTION'); ?></li>
+						<li><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_OPTION'); ?></li>
 					</ul>
 				</div>
-				<div class="btn-toolbar mb-3" role="toolbar" aria-label="JSON tools">
+				<div class="btn-toolbar mb-3" role="toolbar" aria-label="<?php echo $this->escape(Text::_('COM_DECISIONTREE_JSON_TOOLS_LABEL')); ?>">
 					<button type="button" class="btn btn-secondary" id="decisiontree-insert-sample-json">
-						Insert Sample JSON
+						<?php echo Text::_('COM_DECISIONTREE_BUTTON_INSERT_SAMPLE_JSON'); ?>
 					</button>
 					<button type="button" class="btn btn-secondary" id="decisiontree-format-json">
-						Format JSON
+						<?php echo Text::_('COM_DECISIONTREE_BUTTON_FORMAT_JSON'); ?>
 					</button>
 				</div>
 			</div>
