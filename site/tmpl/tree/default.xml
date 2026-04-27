@@ -15,9 +15,11 @@
 				name="id"
 				type="sql"
 				label="COM_DECISIONTREE_FIELD_TREE_ID_LABEL"
+				description="COM_DECISIONTREE_FIELD_TREE_ID_DESC"
 				required="true"
 				key_field="id"
 				value_field="title"
+				header="COM_DECISIONTREE_FIELD_TREE_ID_SELECT"
 				query="SELECT id, title FROM #__decisiontree_trees WHERE state = 1 ORDER BY title"
 			/>
 		</fieldset>

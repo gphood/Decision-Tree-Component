@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="content" method="upgrade">
+	<name>plg_content_decisiontree</name>
+	<author>GrantDev</author>
+	<creationDate>2026-04</creationDate>
+	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<version>1.0.0</version>
+	<description>PLG_CONTENT_DECISIONTREE_XML_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<namespace path="src">GrantDev\Plugin\Content\DecisionTree</namespace>
+
+	<files>
+		<filename>script.php</filename>
+		<folder plugin="decisiontree">services</folder>
+		<folder>src</folder>
+	</files>
+
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_content_decisiontree.ini</language>
+		<language tag="en-GB">language/en-GB/plg_content_decisiontree.sys.ini</language>
+	</languages>
+</extension>

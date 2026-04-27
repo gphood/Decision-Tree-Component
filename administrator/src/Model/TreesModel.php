@@ -36,6 +36,9 @@ class TreesModel extends ListModel
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
 
+		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'string');
+		$this->setState('filter.state', $published);
+
 		parent::populateState($ordering, $direction);
 	}
 
@@ -58,6 +61,18 @@ class TreesModel extends ListModel
 				$query->where($db->quoteName('a.title') . ' LIKE :search')
 					->bind(':search', $search);
 			}
+		}
+
+		$published = $this->getState('filter.state');
+
+		if ($published === '*') {
+			// Show all states, including trashed records.
+		} elseif (is_numeric($published)) {
+			$published = (int) $published;
+			$query->where($db->quoteName('a.state') . ' = :state')
+				->bind(':state', $published, ParameterType::INTEGER);
+		} elseif ($published === '') {
+			$query->where($db->quoteName('a.state') . ' != -2');
 		}
 
 		$orderCol = $this->state->get('list.ordering', 'a.title');

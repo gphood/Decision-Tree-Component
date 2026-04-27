@@ -1,3 +1,176 @@
+.gd-decisiontree {
+	--gd-decisiontree-border: color-mix(in srgb, currentColor 18%, transparent);
+	--gd-decisiontree-muted: color-mix(in srgb, currentColor 62%, transparent);
+	--gd-decisiontree-panel: color-mix(in srgb, currentColor 4%, transparent);
+	--gd-decisiontree-panel-strong: color-mix(in srgb, currentColor 7%, transparent);
+	--gd-decisiontree-radius: .35rem;
+	--gd-decisiontree-space: 1rem;
+	margin-block: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.gd-decisiontree > :is(h1, h2, h3, h4, h5, h6):first-child {
+	margin-block: 0 .75rem;
+}
+
+.com-decisiontree__description {
+	margin-block-end: 1.25rem;
+}
+
 .com-decisiontree__container {
 	min-height: 1rem;
+	margin-block-start: 1.25rem;
+}
+
+.com-decisiontree__container:empty {
+	display: none;
+}
+
+.gd-decisiontree__content {
+	display: grid;
+	gap: 0;
+	margin-block-start: 0;
+}
+
+.gd-decisiontree__question {
+	background: var(--gd-decisiontree-panel);
+	border: 1px solid var(--gd-decisiontree-border);
+	border-radius: var(--gd-decisiontree-radius);
+	font-size: 1.2rem;
+	font-weight: 650;
+	line-height: 1.4;
+	padding: 1.1rem 1.15rem;
+}
+
+.gd-decisiontree__options {
+	display: grid;
+	gap: .75rem;
+	margin-block-start: 1.1rem;
+}
+
+.gd-decisiontree__option {
+	background: #fff;
+	border: 1px solid var(--gd-decisiontree-border);
+	border-radius: var(--gd-decisiontree-radius);
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	line-height: 1.4;
+	padding: .95rem 1.05rem;
+	text-align: left;
+	transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+	width: 100%;
+}
+
+.gd-decisiontree__option:hover {
+	background: var(--gd-decisiontree-panel);
+	border-color: color-mix(in srgb, currentColor 42%, transparent);
+	box-shadow: 0 .25rem .75rem color-mix(in srgb, currentColor 10%, transparent);
+	transform: translateY(-1px);
+}
+
+.gd-decisiontree__option:focus {
+	outline: none;
+}
+
+.gd-decisiontree__option:focus-visible {
+	background: var(--gd-decisiontree-panel);
+	border-color: currentColor;
+	box-shadow: 0 0 0 .18rem color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.gd-decisiontree__result,
+.gd-decisiontree__error {
+	border: 1px solid var(--gd-decisiontree-border);
+	border-radius: var(--gd-decisiontree-radius);
+	padding: 1rem;
+}
+
+.gd-decisiontree__result {
+	background: var(--gd-decisiontree-panel);
+}
+
+.gd-decisiontree__result > :last-child {
+	margin-block-end: 0;
+}
+
+.gd-decisiontree__error {
+	background: var(--gd-decisiontree-panel-strong);
+	font-weight: 600;
+}
+
+.gd-decisiontree__controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .65rem;
+	margin-block-start: 1.5rem;
+}
+
+.gd-decisiontree__back,
+.gd-decisiontree__reset {
+	background: transparent;
+	border: 1px solid var(--gd-decisiontree-border);
+	border-radius: var(--gd-decisiontree-radius);
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	line-height: 1.3;
+	padding: .55rem .85rem;
+}
+
+.gd-decisiontree__reset {
+	background: var(--gd-decisiontree-panel);
+	border-color: color-mix(in srgb, currentColor 32%, transparent);
+}
+
+.gd-decisiontree__back:hover,
+.gd-decisiontree__back:focus,
+.gd-decisiontree__reset:hover,
+.gd-decisiontree__reset:focus {
+	background: var(--gd-decisiontree-panel-strong);
+	outline: none;
+}
+
+.gd-decisiontree__back:focus-visible,
+.gd-decisiontree__reset:focus-visible {
+	box-shadow: 0 0 0 .16rem color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.gd-decisiontree__back:disabled,
+.gd-decisiontree__reset:disabled {
+	background: transparent;
+	border-color: var(--gd-decisiontree-border);
+	color: var(--gd-decisiontree-muted);
+	cursor: not-allowed;
+	opacity: .7;
+}
+
+@media (min-width: 768px) {
+	.gd-decisiontree__options {
+		gap: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		margin-block-start: 1.25rem;
+	}
+
+	.gd-decisiontree__option {
+		padding: 1rem 1.15rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.gd-decisiontree__question,
+	.gd-decisiontree__result,
+	.gd-decisiontree__error {
+		padding: .85rem;
+	}
+
+	.gd-decisiontree__controls {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: .6rem;
+	}
+
+	.gd-decisiontree__back,
+	.gd-decisiontree__reset {
+		width: 100%;
+	}
 }

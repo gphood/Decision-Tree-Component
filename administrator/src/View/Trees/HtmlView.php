@@ -4,6 +4,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\View\Trees;
 
 \defined('_JEXEC') or die;
 
+use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Language\Text;
@@ -22,13 +23,27 @@ class HtmlView extends BaseHtmlView
 
 	public $activeFilters;
 
+	public $showSearchTools;
+
+	public $isProEnabled;
+
+	public $createLimitReached;
+
+	public $createLimitMessageKey;
+
 	public function display($tpl = null): void
 	{
+		DecisionTreeHelper::loadAdminLanguage();
+
 		$this->items = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->filterForm = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
+		$this->isProEnabled = DecisionTreeHelper::isProEnabled();
+		$this->createLimitReached = !DecisionTreeHelper::canCreateTree();
+		$this->createLimitMessageKey = DecisionTreeHelper::getCreateLimitMessageKey();
+		$this->showSearchTools = DecisionTreeHelper::shouldShowListSearchTools();
 
 		$this->addToolbar();
 
@@ -42,13 +57,18 @@ class HtmlView extends BaseHtmlView
 	{
 		ToolbarHelper::title(Text::_('COM_DECISIONTREE_MANAGER_TREES'), 'tree');
 
-		if (ContentHelper::getActions('com_decisiontree')->get('core.create')) {
+		if (ContentHelper::getActions('com_decisiontree')->get('core.create') && DecisionTreeHelper::canCreateTree()) {
 			ToolbarHelper::addNew('tree.add');
 		}
 
 		ToolbarHelper::editList('tree.edit');
 		ToolbarHelper::publish('trees.publish', 'JTOOLBAR_PUBLISH', true);
 		ToolbarHelper::unpublish('trees.unpublish', 'JTOOLBAR_UNPUBLISH', true);
-		ToolbarHelper::trash('trees.trash');
+
+		if ((string) $this->state->get('filter.state') === '-2') {
+			ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'trees.delete', 'JTOOLBAR_EMPTY_TRASH');
+		} else {
+			ToolbarHelper::trash('trees.trash');
+		}
 	}
 }

@@ -1,6 +1,10 @@
 (() => {
 	'use strict';
 
+	const text = (key) => (
+		window.Joomla && Joomla.Text ? Joomla.Text._(key, key) : key
+	);
+
 	const findQuestion = (tree, questionId) => {
 		if (!tree || !tree.questions) {
 			return null;
@@ -48,7 +52,7 @@
 
 		const message = document.createElement('div');
 		message.className = 'gd-decisiontree__error';
-		message.textContent = 'Sorry, this option is not configured correctly.';
+		message.textContent = text('COM_DECISIONTREE_JS_OPTION_NOT_CONFIGURED');
 		state.content.appendChild(message);
 
 		renderControls(state);
@@ -129,7 +133,7 @@
 	const renderControls = (state) => {
 		state.controls.replaceChildren();
 
-		state.controls.appendChild(createButton('Back', 'gd-decisiontree__back', () => {
+		state.controls.appendChild(createButton(text('COM_DECISIONTREE_JS_BACK'), 'gd-decisiontree__back', () => {
 			const previousQuestionId = state.history.pop();
 
 			if (previousQuestionId === undefined) {
@@ -140,7 +144,7 @@
 		}));
 		state.controls.lastElementChild.disabled = state.history.length === 0;
 
-		state.controls.appendChild(createButton('Reset', 'gd-decisiontree__reset', () => {
+		state.controls.appendChild(createButton(text('COM_DECISIONTREE_JS_RESET'), 'gd-decisiontree__reset', () => {
 			state.history = [];
 			renderQuestion(state, state.tree.start, false);
 		}));
@@ -148,7 +152,8 @@
 
 	document.querySelectorAll('.gd-decisiontree').forEach((container) => {
 		const id = container.getAttribute('data-tree-id');
-		const data = document.getElementById(`decisiontree-data-${id}`);
+		const dataId = container.getAttribute('data-tree-data-id') || `decisiontree-data-${id}`;
+		const data = document.getElementById(dataId);
 
 		if (!id || !data) {
 			return;

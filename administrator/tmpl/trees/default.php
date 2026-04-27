@@ -11,11 +11,33 @@ HTMLHelper::_('behavior.multiselect');
 
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn = $this->escape($this->state->get('list.direction'));
+$hasActiveFilters = !empty($this->activeFilters);
 ?>
 <form action="<?php echo Route::_('index.php?option=com_decisiontree&view=trees'); ?>" method="post" name="adminForm" id="adminForm">
-	<?php echo LayoutHelper::render('joomla.searchtools.default', ['view' => $this]); ?>
+	<?php if (!$this->isProEnabled && $this->createLimitReached) : ?>
+		<div class="alert alert-info">
+			<span class="icon-info-circle" aria-hidden="true"></span>
+			<span class="visually-hidden"><?php echo Text::_('INFO'); ?></span>
+			<?php echo Text::_($this->createLimitMessageKey); ?>
+		</div>
+	<?php endif; ?>
 
-	<?php if (empty($this->items)) : ?>
+	<?php if ($this->showSearchTools && (!empty($this->items) || $hasActiveFilters || $this->createLimitReached)) : ?>
+		<?php echo LayoutHelper::render('joomla.searchtools.default', ['view' => $this]); ?>
+	<?php endif; ?>
+
+	<?php if (empty($this->items) && !$hasActiveFilters && !$this->createLimitReached) : ?>
+		<div class="com-decisiontree-empty-state">
+			<div class="com-decisiontree-empty-state__icon" aria-hidden="true">
+				<span class="icon-tree"></span>
+			</div>
+			<h2><?php echo Text::_('COM_DECISIONTREE_EMPTY_TITLE'); ?></h2>
+			<p><?php echo Text::_('COM_DECISIONTREE_EMPTY_DESCRIPTION'); ?></p>
+			<a class="btn btn-primary" href="<?php echo Route::_('index.php?option=com_decisiontree&task=tree.add'); ?>">
+				<?php echo Text::_('COM_DECISIONTREE_EMPTY_ADD_BUTTON'); ?>
+			</a>
+		</div>
+	<?php elseif (empty($this->items)) : ?>
 		<div class="alert alert-info">
 			<span class="icon-info-circle" aria-hidden="true"></span>
 			<span class="visually-hidden"><?php echo Text::_('INFO'); ?></span>
