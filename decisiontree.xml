@@ -58,4 +58,10 @@
 			<language tag="en-GB">en-GB/en-GB.com_decisiontree.sys.ini</language>
 		</languages>
 	</administration>
+
+	<updateservers>
+		<server type="extension" priority="1" name="Decision Tree Update Server">
+			https://raw.githubusercontent.com/gphood/Decision-Tree-Component/master/updates/com_decisiontree.xml
+		</server>
+	</updateservers>
 </extension>

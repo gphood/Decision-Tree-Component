@@ -17,9 +17,9 @@ Create interactive decision trees in the Joomla administrator and display them a
 
 1. Install the component:
    - Go to System -> Install -> Extensions
-   - Upload `com_decisiontree-1.0.0.zip`
+   - Upload `com_decisiontree_v1.0.0.zip`
 2. Install the content plugin:
-   - Upload `plg_content_decisiontree-1.0.0.zip`
+   - Upload `plg_content_decisiontree_v1.0.0.zip`
 3. Enable the plugin:
    - Go to System -> Plugins
    - Search for `Decision Tree`

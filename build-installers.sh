@@ -6,8 +6,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
 VERSION="${VERSION:-1.0.0}"
 
-COMPONENT_ZIP="$DIST_DIR/com_decisiontree-${VERSION}.zip"
-PLUGIN_ZIP="$DIST_DIR/plg_content_decisiontree-${VERSION}.zip"
+COMPONENT_ZIP="$DIST_DIR/com_decisiontree_v${VERSION}.zip"
+PLUGIN_ZIP="$DIST_DIR/plg_content_decisiontree_v${VERSION}.zip"
 
 require_command() {
 	if ! command -v "$1" >/dev/null 2>&1; then

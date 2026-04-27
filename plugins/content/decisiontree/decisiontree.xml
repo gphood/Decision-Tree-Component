@@ -20,4 +20,10 @@
 		<language tag="en-GB">language/en-GB/plg_content_decisiontree.ini</language>
 		<language tag="en-GB">language/en-GB/plg_content_decisiontree.sys.ini</language>
 	</languages>
+
+	<updateservers>
+		<server type="extension" priority="1" name="Decision Tree Content Plugin Update Server">
+			https://raw.githubusercontent.com/gphood/Decision-Tree-Component/master/updates/plg_content_decisiontree.xml
+		</server>
+	</updateservers>
 </extension>
