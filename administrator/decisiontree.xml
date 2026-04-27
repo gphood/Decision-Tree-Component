@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" method="upgrade">
-	<name>COM_DECISIONTREE</name>
+	<name>Decision Tree</name>
 	<author>GrantDev</author>
 	<creationDate>2026-04-25</creationDate>
 	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>

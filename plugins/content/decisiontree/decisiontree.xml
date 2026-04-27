@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="content" method="upgrade">
-	<name>plg_content_decisiontree</name>
+	<name>Content - Decision Tree</name>
 	<author>GrantDev</author>
 	<creationDate>2026-04</creationDate>
 	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
