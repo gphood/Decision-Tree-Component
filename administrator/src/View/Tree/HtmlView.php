@@ -40,7 +40,11 @@ class HtmlView extends BaseHtmlView
 		ToolbarHelper::title($isNew ? Text::_('COM_DECISIONTREE_MANAGER_TREE_NEW') : Text::_('COM_DECISIONTREE_MANAGER_TREE_EDIT'), 'tree');
 		ToolbarHelper::apply('tree.apply');
 		ToolbarHelper::save('tree.save');
-		ToolbarHelper::save2new('tree.save2new');
+
+		if (DecisionTreeHelper::canCreateTree()) {
+			ToolbarHelper::save2new('tree.save2new');
+		}
+
 		ToolbarHelper::cancel('tree.cancel', $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE');
 	}
 

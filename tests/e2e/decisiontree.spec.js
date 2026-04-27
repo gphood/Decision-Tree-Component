@@ -26,18 +26,17 @@ test.describe.serial('com_decisiontree', () => {
 		await expect(page.getByRole('heading', { name: 'Decision Trees', exact: true })).toBeVisible();
 	});
 
-	test('create a new decision tree using the builder', async ({ page }) => {
+	test('create a new decision tree using the demo loader', async ({ page }) => {
 		await login(page);
 		await openDecisionTreeComponent(page);
 
 		await page.getByRole('link', { name: /^New$/i }).or(page.getByRole('button', { name: /^New$/i })).click();
 		await page.getByLabel('Title').fill(uniqueTitle);
 
-		await page.getByRole('button', { name: 'Add question' }).click();
-		await page.locator('#decisiontree-question-text').fill('E2E start question?');
-		await page.getByRole('button', { name: 'Add option' }).click();
-		await page.locator('#decisiontree-options input').first().fill('Show the E2E result');
-		await page.locator('#decisiontree-options textarea').first().fill('This is the E2E result.');
+		await page.getByRole('button', { name: 'Load Demo Decision Tree' }).click();
+		await expect(page.locator('#decisiontree-question-select')).toHaveValue('q1');
+		await expect(page.locator('#decisiontree-question-text')).toHaveValue('What will you mainly use the laptop for?');
+		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Work / Office tasks');
 
 		await page.getByRole('button', { name: 'Save', exact: true }).click();
 		await expect(page.locator('#system-message-container, .alert-success')).toContainText(/saved|success/i);
@@ -52,9 +51,8 @@ test.describe.serial('com_decisiontree', () => {
 
 		await expect(page.getByLabel('Title')).toHaveValue(uniqueTitle);
 		await expect(page.locator('#decisiontree-question-select')).toHaveValue('q1');
-		await expect(page.locator('#decisiontree-question-text')).toHaveValue('E2E start question?');
-		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Show the E2E result');
-		await expect(page.locator('#decisiontree-options textarea').first()).toHaveValue('This is the E2E result.');
+		await expect(page.locator('#decisiontree-question-text')).toHaveValue('What will you mainly use the laptop for?');
+		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Work / Office tasks');
 
 		treeId = await page.locator('input[name="jform[id]"], #jform_id').first().inputValue();
 		expect(treeId, 'Saved tree ID').toMatch(/^\d+$/);
@@ -64,15 +62,18 @@ test.describe.serial('com_decisiontree', () => {
 		expect(treeId, 'Saved tree ID from admin tests').toBeTruthy();
 
 		await page.goto(`${frontendBaseUrl}/index.php?option=com_decisiontree&view=tree&id=${treeId}`);
-		await expect(page.getByText('E2E start question?')).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Show the E2E result' })).toBeVisible();
+		await expect(page.getByText('What will you mainly use the laptop for?')).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Work / Office tasks' })).toBeVisible();
 
-		await page.getByRole('button', { name: 'Show the E2E result' }).click();
-		await expect(page.getByText('This is the E2E result.')).toBeVisible();
+		await page.getByRole('button', { name: 'Work / Office tasks' }).click();
+		await expect(page.getByText('Do you need portability?')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Yes, I need it lightweight' }).click();
+		await expect(page.getByText('You should look for an ultrabook or lightweight laptop.')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Reset' }).click();
-		await expect(page.getByText('E2E start question?')).toBeVisible();
-		await expect(page.getByRole('button', { name: 'Show the E2E result' })).toBeVisible();
+		await expect(page.getByText('What will you mainly use the laptop for?')).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Work / Office tasks' })).toBeVisible();
 	});
 });
 

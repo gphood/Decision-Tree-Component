@@ -90,8 +90,10 @@ For clean screenshots or demos, use a full-width page layout with no sidebar mod
 
 ## Requirements
 
-- Joomla 5.x
+- Joomla 5.x or 6.x
 - PHP 8.1+
+
+The extension has been tested with Joomla 5 and Joomla 6.
 
 ## License
 
