@@ -8,6 +8,7 @@ test-results/
 .env.test.local
 dist/
 *.zip
+screenshots/
 
 # Logs
 *.log

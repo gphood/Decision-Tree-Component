@@ -40,19 +40,6 @@
 	max-width: 34rem;
 }
 
-#jform_json_data {
-	background: #f4f7fa;
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-	max-width: 100%;
-	min-height: 18rem;
-	width: 100%;
-}
-
-.control-group:has(#jform_json_data) .controls {
-	max-width: 100%;
-	width: 100%;
-}
-
 .com-decisiontree-editor-section {
 	margin-top: 1.5rem;
 }
@@ -65,14 +52,6 @@
 .com-decisiontree-editor-section h2 {
 	font-size: 1.25rem;
 	margin: 0 0 .25rem;
-}
-
-.com-decisiontree-json-tools .alert {
-	margin-bottom: 1rem;
-}
-
-.com-decisiontree-json-tools .btn-toolbar {
-	gap: .5rem;
 }
 
 .com-decisiontree-question-editor {
@@ -104,8 +83,7 @@
 	justify-content: flex-end;
 }
 
-.com-decisiontree-question-actions .btn,
-.com-decisiontree-json-tools .btn {
+.com-decisiontree-question-actions .btn {
 	white-space: normal;
 }
 
@@ -245,7 +223,6 @@
 	}
 
 	.com-decisiontree-question-actions .btn,
-	.com-decisiontree-json-tools .btn,
 	#decisiontree-add-option,
 	.com-decisiontree-option-editor__remove .btn {
 		width: 100%;
@@ -253,19 +230,5 @@
 
 	.com-decisiontree-option-editor__remove {
 		padding-top: 0;
-	}
-}
-
-@media (max-width: 768px) {
-	.control-group:has(#jform_json_data) {
-		display: block;
-	}
-
-	.control-group:has(#jform_json_data) .control-label,
-	.control-group:has(#jform_json_data) .controls {
-		float: none;
-		margin-left: 0;
-		max-width: 100%;
-		width: 100%;
 	}
 }

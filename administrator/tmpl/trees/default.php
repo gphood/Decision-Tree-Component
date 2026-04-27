@@ -14,19 +14,19 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 $hasActiveFilters = !empty($this->activeFilters);
 ?>
 <form action="<?php echo Route::_('index.php?option=com_decisiontree&view=trees'); ?>" method="post" name="adminForm" id="adminForm">
-	<?php if (!$this->isProEnabled) : ?>
+	<?php if (!$this->isProEnabled && $this->createLimitReached) : ?>
 		<div class="alert alert-info">
 			<span class="icon-info-circle" aria-hidden="true"></span>
 			<span class="visually-hidden"><?php echo Text::_('INFO'); ?></span>
-			<?php echo Text::_('COM_DECISIONTREE_FREE_LIMIT_REACHED'); ?>
+			<?php echo Text::_($this->createLimitMessageKey); ?>
 		</div>
 	<?php endif; ?>
 
-	<?php if ($this->showSearchTools && (!empty($this->items) || $hasActiveFilters)) : ?>
+	<?php if ($this->showSearchTools && (!empty($this->items) || $hasActiveFilters || $this->createLimitReached)) : ?>
 		<?php echo LayoutHelper::render('joomla.searchtools.default', ['view' => $this]); ?>
 	<?php endif; ?>
 
-	<?php if (empty($this->items) && !$hasActiveFilters) : ?>
+	<?php if (empty($this->items) && !$hasActiveFilters && !$this->createLimitReached) : ?>
 		<div class="com-decisiontree-empty-state">
 			<div class="com-decisiontree-empty-state__icon" aria-hidden="true">
 				<span class="icon-tree"></span>

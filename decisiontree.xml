@@ -28,7 +28,10 @@
 	</files>
 
 	<languages folder="site/language">
+		<language tag="en-GB">en-GB/com_decisiontree.ini</language>
+		<language tag="en-GB">en-GB/com_decisiontree.sys.ini</language>
 		<language tag="en-GB">en-GB/en-GB.com_decisiontree.ini</language>
+		<language tag="en-GB">en-GB/en-GB.com_decisiontree.sys.ini</language>
 	</languages>
 
 	<media destination="com_decisiontree" folder="media">
@@ -49,6 +52,8 @@
 			<folder>tmpl</folder>
 		</files>
 		<languages folder="administrator/language">
+			<language tag="en-GB">en-GB/com_decisiontree.ini</language>
+			<language tag="en-GB">en-GB/com_decisiontree.sys.ini</language>
 			<language tag="en-GB">en-GB/en-GB.com_decisiontree.ini</language>
 			<language tag="en-GB">en-GB/en-GB.com_decisiontree.sys.ini</language>
 		</languages>

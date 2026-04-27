@@ -27,6 +27,10 @@ class HtmlView extends BaseHtmlView
 
 	public $isProEnabled;
 
+	public $createLimitReached;
+
+	public $createLimitMessageKey;
+
 	public function display($tpl = null): void
 	{
 		DecisionTreeHelper::loadAdminLanguage();
@@ -37,6 +41,8 @@ class HtmlView extends BaseHtmlView
 		$this->filterForm = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 		$this->isProEnabled = DecisionTreeHelper::isProEnabled();
+		$this->createLimitReached = !DecisionTreeHelper::canCreateTree();
+		$this->createLimitMessageKey = DecisionTreeHelper::getCreateLimitMessageKey();
 		$this->showSearchTools = DecisionTreeHelper::shouldShowListSearchTools();
 
 		$this->addToolbar();

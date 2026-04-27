@@ -18,7 +18,7 @@ class TreeController extends FormController
 		DecisionTreeHelper::loadAdminLanguage();
 
 		if (!DecisionTreeHelper::canCreateTree()) {
-			$this->setMessage(Text::_('COM_DECISIONTREE_FREE_LIMIT_REACHED'), 'warning');
+			$this->setMessage(Text::_(DecisionTreeHelper::getCreateLimitMessageKey()), 'warning');
 			$this->setRedirect(Route::_('index.php?option=com_decisiontree&view=trees', false));
 
 			return false;

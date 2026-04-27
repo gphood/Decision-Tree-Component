@@ -65,7 +65,9 @@ class TreesModel extends ListModel
 
 		$published = $this->getState('filter.state');
 
-		if (is_numeric($published)) {
+		if ($published === '*') {
+			// Show all states, including trashed records.
+		} elseif (is_numeric($published)) {
 			$published = (int) $published;
 			$query->where($db->quoteName('a.state') . ' = :state')
 				->bind(':state', $published, ParameterType::INTEGER);

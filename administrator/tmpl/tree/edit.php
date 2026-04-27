@@ -12,7 +12,6 @@ HTMLHelper::_('behavior.keepalive');
 <form action="<?php echo Route::_('index.php?option=com_decisiontree&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="tree-form" class="form-validate">
 	<div class="main-card">
 		<?php echo $this->form->renderField('title'); ?>
-		<?php echo $this->form->renderField('alias'); ?>
 		<?php echo $this->form->renderField('description'); ?>
 		<?php echo $this->form->renderField('state'); ?>
 		<section class="com-decisiontree-editor-section">
@@ -29,6 +28,9 @@ HTMLHelper::_('behavior.keepalive');
 					</div>
 					<div class="com-decisiontree-start-display" id="decisiontree-start-display"></div>
 					<div class="com-decisiontree-question-actions">
+						<button type="button" class="btn btn-secondary" id="decisiontree-load-demo">
+							<?php echo Text::_('COM_DECISIONTREE_BUTTON_LOAD_DEMO_TREE'); ?>
+						</button>
 						<button type="button" class="btn btn-secondary" id="decisiontree-add-question">
 							<?php echo Text::_('COM_DECISIONTREE_BUTTON_ADD_QUESTION'); ?>
 						</button>
@@ -55,31 +57,7 @@ HTMLHelper::_('behavior.keepalive');
 				</div>
 			</div>
 		</section>
-		<section class="com-decisiontree-editor-section com-decisiontree-raw-json-section">
-			<h2><?php echo Text::_('COM_DECISIONTREE_RAW_JSON_HEADING'); ?></h2>
-			<p class="text-muted">
-				<?php echo Text::_('COM_DECISIONTREE_RAW_JSON_HELP'); ?>
-			</p>
-			<div class="com-decisiontree-json-tools">
-				<div class="alert alert-info">
-					<p><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_INTRO'); ?></p>
-					<ul>
-						<li><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_START'); ?></li>
-						<li><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_QUESTION'); ?></li>
-						<li><?php echo Text::_('COM_DECISIONTREE_JSON_HELP_OPTION'); ?></li>
-					</ul>
-				</div>
-				<div class="btn-toolbar mb-3" role="toolbar" aria-label="<?php echo $this->escape(Text::_('COM_DECISIONTREE_JSON_TOOLS_LABEL')); ?>">
-					<button type="button" class="btn btn-secondary" id="decisiontree-insert-sample-json">
-						<?php echo Text::_('COM_DECISIONTREE_BUTTON_INSERT_SAMPLE_JSON'); ?>
-					</button>
-					<button type="button" class="btn btn-secondary" id="decisiontree-format-json">
-						<?php echo Text::_('COM_DECISIONTREE_BUTTON_FORMAT_JSON'); ?>
-					</button>
-				</div>
-			</div>
-			<?php echo $this->form->renderField('json_data'); ?>
-		</section>
+		<?php echo $this->form->getInput('json_data'); ?>
 	</div>
 
 	<?php echo $this->form->getInput('id'); ?>

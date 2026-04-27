@@ -14,6 +14,8 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 {
 	protected $autoloadLanguage = true;
 
+	private static $instance = 0;
+
 	public static function getSubscribedEvents(): array
 	{
 		return [
@@ -33,7 +35,7 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 			return;
 		}
 
-		$regex = '/\{decisiontree(?:\s+id=([^}\s]+))?\s*\}/i';
+		$regex = '/\{decisiontree\s*([^}]*)\}/i';
 
 		if ($event->getContext() === 'com_finder.indexer') {
 			$article->text = preg_replace($regex, '', $article->text);
@@ -44,19 +46,53 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 		$article->text = preg_replace_callback(
 			$regex,
 			function (array $match): string {
-				$id = isset($match[1]) && ctype_digit($match[1]) ? (int) $match[1] : 0;
+				$attributes = $this->parseAttributes($match[1] ?? '');
+				$id = isset($attributes['id']) && ctype_digit($attributes['id']) ? (int) $attributes['id'] : 0;
 
 				if ($id < 1) {
 					return Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND');
 				}
 
-				return $this->renderTree($id);
+				return $this->renderTree(
+					$id,
+					$this->shouldShowHeading($attributes),
+					$this->normaliseHeadingLevel($attributes['heading_level'] ?? '')
+				);
 			},
 			$article->text
 		);
 	}
 
-	private function renderTree(int $id): string
+	private function parseAttributes(string $attributes): array
+	{
+		$parsed = [];
+
+		preg_match_all('/([a-z_]+)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s]+)/i', $attributes, $matches, PREG_SET_ORDER);
+
+		foreach ($matches as $match) {
+			$name = strtolower($match[1]);
+			$value = trim($match[2], "\"'");
+			$parsed[$name] = $value;
+		}
+
+		return $parsed;
+	}
+
+	private function shouldShowHeading(array $attributes): bool
+	{
+		$heading = strtolower($attributes['heading'] ?? 'true');
+
+		return !\in_array($heading, ['0', 'false', 'no', 'off'], true);
+	}
+
+	private function normaliseHeadingLevel(string $headingLevel): string
+	{
+		$headingLevel = strtolower($headingLevel);
+
+		return \in_array($headingLevel, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], true) ? $headingLevel : 'h2';
+	}
+
+	private function renderTree(int $id, bool $showHeading = true, string $headingLevel = 'h2'): string
 	{
 		$app = $this->getApplication();
 
@@ -91,6 +127,11 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 
 			$model->setState('tree.id', $id);
 			$view->setModel($model, true);
+			$view->showHeading = $showHeading;
+			$view->headingLevel = $headingLevel;
+			self::$instance++;
+			$view->domId = 'decisiontree-' . $id . '-' . self::$instance;
+			$view->dataId = 'decisiontree-data-' . $id . '-' . self::$instance;
 			$view->display();
 
 			$output = trim((string) ob_get_clean());

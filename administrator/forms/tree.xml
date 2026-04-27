@@ -15,14 +15,6 @@
 		/>
 
 		<field
-			name="alias"
-			type="text"
-			label="COM_DECISIONTREE_FIELD_ALIAS_LABEL"
-			hint="JFIELD_ALIAS_PLACEHOLDER"
-			maxlength="400"
-		/>
-
-		<field
 			name="description"
 			type="textarea"
 			label="COM_DECISIONTREE_FIELD_DESCRIPTION_LABEL"
@@ -44,9 +36,7 @@
 
 		<field
 			name="json_data"
-			type="textarea"
-			label="COM_DECISIONTREE_FIELD_JSON_DATA_LABEL"
-			rows="18"
+			type="hidden"
 			filter="raw"
 		/>
 	</fieldset>

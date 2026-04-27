@@ -5,7 +5,9 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\Database\ParameterType;
 use Joomla\Utilities\ArrayHelper;
 
 class TreeModel extends AdminModel
@@ -48,9 +50,43 @@ class TreeModel extends AdminModel
 		}
 
 		$data['alias'] = Factory::getApplication()->getLanguage()->transliterate($data['alias']);
-		$data['alias'] = \Joomla\CMS\Filter\OutputFilter::stringURLSafe($data['alias']);
+		$data['alias'] = OutputFilter::stringURLSafe($data['alias']);
+		$data['alias'] = $this->getUniqueAlias($data['alias'], (int) ($data['id'] ?? 0));
 
 		return parent::save($data);
+	}
+
+	private function getUniqueAlias(string $alias, int $id = 0): string
+	{
+		$alias = $alias !== '' ? $alias : OutputFilter::stringURLSafe((string) Factory::getDate()->toUnix());
+		$baseAlias = $alias;
+		$suffix = 2;
+
+		while ($this->aliasExists($alias, $id)) {
+			$alias = $baseAlias . '-' . $suffix;
+			$suffix++;
+		}
+
+		return $alias;
+	}
+
+	private function aliasExists(string $alias, int $id = 0): bool
+	{
+		$db = $this->getDatabase();
+		$query = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from($db->quoteName('#__decisiontree_trees'))
+			->where($db->quoteName('alias') . ' = :alias')
+			->bind(':alias', $alias);
+
+		if ($id > 0) {
+			$query->where($db->quoteName('id') . ' != :id')
+				->bind(':id', $id, ParameterType::INTEGER);
+		}
+
+		$db->setQuery($query);
+
+		return (int) $db->loadResult() > 0;
 	}
 
 	protected function prepareTable($table): void

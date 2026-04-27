@@ -12,8 +12,17 @@ class HtmlView extends BaseHtmlView
 {
 	protected $item;
 
+	public $headingLevel = 'h2';
+
+	public $showHeading = true;
+
+	public $domId = '';
+
+	public $dataId = '';
+
 	public function display($tpl = null): void
 	{
+		$this->loadLanguage();
 		$this->item = $this->get('Item');
 
 		Text::script('COM_DECISIONTREE_JS_BACK');
@@ -36,5 +45,13 @@ class HtmlView extends BaseHtmlView
 		$wa->useScript('com_decisiontree.frontend');
 
 		parent::display($tpl);
+	}
+
+	private function loadLanguage(): void
+	{
+		$language = Factory::getApplication()->getLanguage();
+
+		$language->load('com_decisiontree', JPATH_SITE, null, true, true);
+		$language->load('com_decisiontree', JPATH_SITE . '/components/com_decisiontree', null, true, true);
 	}
 }

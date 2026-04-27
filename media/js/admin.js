@@ -10,37 +10,82 @@
 		text(key),
 	);
 
-	const sampleJson = {
+	const demoTree = {
 		version: '1.0',
 		start: 'q1',
 		questions: {
 			q1: {
-				question_text: text('COM_DECISIONTREE_JS_SAMPLE_QUESTION_ONE'),
+				question_text: 'What will you mainly use the laptop for?',
+				options: [
+					{ text: 'Work / Office tasks', next: 'q2' },
+					{ text: 'Gaming', next: 'q3' },
+					{ text: 'General use', next: 'q4' },
+				],
+			},
+			q2: {
+				question_text: 'Do you need portability?',
 				options: [
 					{
-						text: text('COM_DECISIONTREE_JS_SAMPLE_OPTION_ASK_ANOTHER'),
-						next: 'q2',
-					},
-					{
-						text: text('COM_DECISIONTREE_JS_SAMPLE_OPTION_SHOW_RESULT'),
+						text: 'Yes, I need it lightweight',
 						result: [
 							{
 								type: 'text',
-								content: text('COM_DECISIONTREE_JS_SAMPLE_RESULT_ONE'),
+								content: 'You should look for an ultrabook or lightweight laptop. These are ideal for portability and everyday productivity.',
+							},
+						],
+					},
+					{
+						text: 'No, performance matters more',
+						result: [
+							{
+								type: 'text',
+								content: 'A standard business laptop with higher specs would suit you. These are great for multitasking and heavier workloads.',
 							},
 						],
 					},
 				],
 			},
-			q2: {
-				question_text: text('COM_DECISIONTREE_JS_SAMPLE_QUESTION_TWO'),
+			q3: {
+				question_text: 'What level of gaming?',
 				options: [
 					{
-						text: text('COM_DECISIONTREE_JS_SAMPLE_OPTION_FINISH'),
+						text: 'Casual gaming',
 						result: [
 							{
 								type: 'text',
-								content: text('COM_DECISIONTREE_JS_SAMPLE_RESULT_TWO'),
+								content: 'A mid-range laptop with a decent GPU should be enough for casual gaming and everyday use.',
+							},
+						],
+					},
+					{
+						text: 'High-end gaming',
+						result: [
+							{
+								type: 'text',
+								content: 'You should consider a high-performance gaming laptop with a dedicated GPU and advanced cooling.',
+							},
+						],
+					},
+				],
+			},
+			q4: {
+				question_text: 'What is your budget?',
+				options: [
+					{
+						text: 'Low budget',
+						result: [
+							{
+								type: 'text',
+								content: 'Look for an affordable entry-level laptop that covers basic tasks like browsing, email and streaming.',
+							},
+						],
+					},
+					{
+						text: 'Mid to high budget',
+						result: [
+							{
+								type: 'text',
+								content: 'You have a wide range of options. Consider a well-balanced laptop with good performance, build quality and battery life.',
 							},
 						],
 					},
@@ -57,6 +102,7 @@
 		addOptionButton: document.getElementById('decisiontree-add-option'),
 		addQuestionButton: document.getElementById('decisiontree-add-question'),
 		deleteQuestionButton: document.getElementById('decisiontree-delete-question'),
+		loadDemoButton: document.getElementById('decisiontree-load-demo'),
 		message: document.getElementById('decisiontree-editor-message'),
 		options: document.getElementById('decisiontree-options'),
 		questionSelect: document.getElementById('decisiontree-question-select'),
@@ -74,6 +120,7 @@
 
 	const getQuestionIds = () => (hasQuestionsObject() ? Object.keys(editorTree.questions) : []);
 	const getSelectedQuestion = () => (hasQuestionsObject() ? editorTree.questions[selectedQuestionId] || null : null);
+	const cloneDemoTree = () => JSON.parse(JSON.stringify(demoTree));
 
 	const setEditorMessage = (message = '') => {
 		const { message: messageElement } = getEditorElements();
@@ -452,54 +499,13 @@
 		}
 	};
 
-	const initJsonTools = () => {
-		const insertButton = document.getElementById('decisiontree-insert-sample-json');
-		const formatButton = document.getElementById('decisiontree-format-json');
-
-		if (!insertButton || !formatButton) {
-			return;
-		}
-
-		insertButton.addEventListener('click', () => {
-			const textarea = getJsonTextarea();
-
-			if (!textarea) {
-				return;
-			}
-
-			if (textarea.value.trim() !== '' && !window.confirm(text('COM_DECISIONTREE_JS_REPLACE_JSON_CONFIRM'))) {
-				return;
-			}
-
-			textarea.value = JSON.stringify(sampleJson, null, 2);
-			textarea.focus();
-			selectedQuestionId = sampleJson.start;
-			loadEditorFromTextarea();
-		});
-
-		formatButton.addEventListener('click', () => {
-			const textarea = getJsonTextarea();
-
-			if (!textarea) {
-				return;
-			}
-
-			try {
-				textarea.value = JSON.stringify(JSON.parse(textarea.value), null, 2);
-				textarea.focus();
-				loadEditorFromTextarea();
-			} catch (error) {
-				window.alert(text('COM_DECISIONTREE_JS_INVALID_JSON_FORMAT'));
-			}
-		});
-	};
-
 	const initQuestionEditor = () => {
 		const textarea = getJsonTextarea();
 		const {
 			addOptionButton,
 			addQuestionButton,
 			deleteQuestionButton,
+			loadDemoButton,
 			questionSelect,
 			questionText,
 			setStartButton,
@@ -510,6 +516,7 @@
 			|| !addOptionButton
 			|| !addQuestionButton
 			|| !deleteQuestionButton
+			|| !loadDemoButton
 			|| !questionSelect
 			|| !questionText
 			|| !setStartButton
@@ -556,6 +563,17 @@
 			}
 
 			selectedQuestionId = id;
+			syncTextarea();
+			renderQuestionEditor();
+		});
+
+		loadDemoButton.addEventListener('click', () => {
+			if (textarea.value.trim() !== '' && !window.confirm(text('COM_DECISIONTREE_JS_LOAD_DEMO_CONFIRM'))) {
+				return;
+			}
+
+			editorTree = cloneDemoTree();
+			selectedQuestionId = editorTree.start;
 			syncTextarea();
 			renderQuestionEditor();
 		});
@@ -621,7 +639,6 @@
 	};
 
 	const initAdmin = () => {
-		initJsonTools();
 		initQuestionEditor();
 	};
 

@@ -34,9 +34,18 @@ class DecisionTreeHelper
 		return self::getTreeCount() < 1;
 	}
 
+	public static function getCreateLimitMessageKey(): string
+	{
+		if (self::getTreeCount() > 0 && self::getActiveTreeCount() === 0) {
+			return 'COM_DECISIONTREE_FREE_LIMIT_REACHED_TRASHED';
+		}
+
+		return 'COM_DECISIONTREE_FREE_LIMIT_REACHED';
+	}
+
 	public static function shouldShowListSearchTools(): bool
 	{
-		return self::isProEnabled();
+		return true;
 	}
 
 	public static function getTreeCount(): int
@@ -45,6 +54,19 @@ class DecisionTreeHelper
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
 			->from($db->quoteName('#__decisiontree_trees'));
+
+		$db->setQuery($query);
+
+		return (int) $db->loadResult();
+	}
+
+	public static function getActiveTreeCount(): int
+	{
+		$db = Factory::getContainer()->get(DatabaseInterface::class);
+		$query = $db->getQuery(true)
+			->select('COUNT(*)')
+			->from($db->quoteName('#__decisiontree_trees'))
+			->where($db->quoteName('state') . ' != -2');
 
 		$db->setQuery($query);
 

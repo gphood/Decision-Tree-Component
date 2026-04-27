@@ -152,7 +152,8 @@
 
 	document.querySelectorAll('.gd-decisiontree').forEach((container) => {
 		const id = container.getAttribute('data-tree-id');
-		const data = document.getElementById(`decisiontree-data-${id}`);
+		const dataId = container.getAttribute('data-tree-data-id') || `decisiontree-data-${id}`;
+		const data = document.getElementById(dataId);
 
 		if (!id || !data) {
 			return;
