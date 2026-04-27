@@ -84,16 +84,10 @@ To create additional trees, a Pro version will be available.
 - Eligibility checks
 - FAQs with branching logic
 
-## Screenshots and Demos
-
-For clean screenshots or demos, use a full-width page layout with no sidebar modules and no login module. The laptop demo tree, or another clear example with simple questions and outcomes, works well for showing the extension at its best.
-
 ## Requirements
 
-- Joomla 5.x or 6.x
+- Joomla 5.x or 6.x (tested)
 - PHP 8.1+
-
-The extension has been tested with Joomla 5 and Joomla 6.
 
 ## License
 
@@ -102,4 +96,4 @@ A Pro version with additional capabilities will be available separately.
 
 ## Support
 
-For support, documentation, and updates, please use https://github.com/gphood/Decision-Tree-Component/issues
+For support and questions please use https://github.com/gphood/Decision-Tree-Component/issues
