@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="content" method="upgrade">
 	<name>Content - Decision Tree</name>
-	<author>GrantDev</author>
+	<author>Grant Hood</author>
 	<creationDate>2026-04</creationDate>
 	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
