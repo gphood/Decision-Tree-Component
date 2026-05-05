@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="package" version="5.0" method="upgrade">
+    <name>Decision Tree (Component + Plugin)</name>
+    <packagename>decisiontree</packagename>
+    <version>1.0.0</version>
+    <creationDate>2026-05-05</creationDate>
+    <author>Grant Hood</author>
+    <license>GNU General Public License version 2 or later</license>
+    <description>Decision Tree package installer</description>
+
+	<files>
+		<file type="component" id="com_decisiontree">com_decisiontree-1.0.0.zip</file>
+		<file type="plugin" id="decisiontree" group="content">plg_content_decisiontree-1.0.0.zip</file>
+	</files>
+</extension>
