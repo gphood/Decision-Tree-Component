@@ -12,4 +12,10 @@
 		<file type="component" id="com_decisiontree">com_decisiontree-1.1.0.zip</file>
 		<file type="plugin" id="decisiontree" group="content">plg_content_decisiontree-1.1.0.zip</file>
 	</files>
+
+	<updateservers>
+		<server type="extension" priority="1" name="Decision Tree Package Update Server">
+			https://raw.githubusercontent.com/gphood/Decision-Tree-Component/master/updates/pkg_decisiontree.xml
+		</server>
+	</updateservers>
 </extension>
