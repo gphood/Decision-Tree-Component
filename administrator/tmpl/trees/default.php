@@ -66,6 +66,9 @@ $hasActiveFilters = !empty($this->activeFilters);
 					<th scope="col" class="w-10 text-center">
 						<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
 					</th>
+					<th scope="col" class="w-20">
+						<?php echo Text::_('COM_DECISIONTREE_HEADING_EMBED_CODE'); ?>
+					</th>
 					<th scope="col" class="w-5 text-center">
 						<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 					</th>
@@ -87,6 +90,12 @@ $hasActiveFilters = !empty($this->activeFilters);
 						</th>
 						<td class="text-center">
 							<?php echo HTMLHelper::_('jgrid.published', $item->state, $i, 'trees.', true, 'cb'); ?>
+						</td>
+						<td>
+							<code>{decisiontree id=<?php echo (int) $item->id; ?>}</code>
+							<div class="small text-muted">
+								<?php echo Text::_('COM_DECISIONTREE_EMBED_LIST_HELP'); ?>
+							</div>
 						</td>
 						<td class="text-center">
 							<?php echo (int) $item->id; ?>

@@ -54,6 +54,15 @@
 	margin-top: 1.5rem;
 }
 
+.com-decisiontree-embed-help {
+	margin-top: 1rem;
+}
+
+.com-decisiontree-embed-help code {
+	display: inline-block;
+	margin-top: .35rem;
+}
+
 .com-decisiontree-editor-section + .com-decisiontree-editor-section {
 	border-top: 1px solid var(--com-decisiontree-border, var(--border-color, #dfe3e7));
 	padding-top: 1.5rem;

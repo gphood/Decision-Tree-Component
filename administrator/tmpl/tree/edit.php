@@ -21,6 +21,13 @@ HTMLHelper::_('behavior.keepalive');
 		<?php echo $this->form->renderField('title'); ?>
 		<?php echo $this->form->renderField('description'); ?>
 		<?php echo $this->form->renderField('state'); ?>
+		<?php if (!empty($this->item->id)) : ?>
+			<div class="alert alert-info com-decisiontree-embed-help">
+				<strong><?php echo Text::_('COM_DECISIONTREE_EMBED_HEADING'); ?></strong>
+				<div><?php echo Text::_('COM_DECISIONTREE_EMBED_HELP'); ?></div>
+				<code>{decisiontree id=<?php echo (int) $this->item->id; ?>}</code>
+			</div>
+		<?php endif; ?>
 		<section class="com-decisiontree-editor-section">
 			<h2><?php echo Text::_('COM_DECISIONTREE_BUILDER_HEADING'); ?></h2>
 			<p class="text-muted">
