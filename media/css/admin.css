@@ -162,6 +162,13 @@
 	width: 100%;
 }
 
+.com-decisiontree-question-editor input[type="checkbox"],
+.com-decisiontree-question-editor input[type="radio"],
+.com-decisiontree-question-editor .form-check-input[type="checkbox"],
+.com-decisiontree-question-editor .form-check-input[type="radio"] {
+	width: auto !important;
+}
+
 .com-decisiontree-option-editor__remove {
 	display: flex;
 	justify-content: flex-end;
@@ -186,6 +193,43 @@
 
 .com-decisiontree-option-editor__detail textarea {
 	min-height: 5rem;
+}
+
+.com-decisiontree-result-link-fields {
+	display: grid;
+	gap: .75rem;
+	grid-template-columns: minmax(0, 1fr);
+	margin-top: .75rem;
+}
+
+.com-decisiontree-result-link-text,
+.com-decisiontree-result-link-url {
+	min-width: 0;
+}
+
+.form-check.com-decisiontree-result-link-target {
+	align-items: center;
+	align-self: end;
+	display: flex;
+	gap: .6rem;
+	grid-column: 1 / -1;
+	margin-bottom: .2rem;
+	padding-left: 0;
+}
+
+.com-decisiontree-question-editor .com-decisiontree-result-link-target .form-check-input[type="checkbox"] {
+	flex: 0 0 1rem;
+	float: none;
+	height: 1rem;
+	margin: 0 0 0;
+	max-width: 1rem;
+	min-width: 1rem;
+	padding: 0;
+	width: 1rem !important;
+}
+
+.com-decisiontree-result-link-target .form-check-label {
+	margin: 0;
 }
 
 @media (max-width: 1199px) {
@@ -216,7 +260,8 @@
 
 @media (max-width: 767px) {
 	.com-decisiontree-question-toolbar,
-	.com-decisiontree-option-editor__body {
+	.com-decisiontree-option-editor__body,
+	.com-decisiontree-result-link-fields {
 		align-items: stretch;
 		grid-template-columns: 1fr;
 	}

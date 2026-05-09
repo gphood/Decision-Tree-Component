@@ -10,6 +10,15 @@
 		text(key),
 	);
 
+	const createDemoResult = (resultText) => ({
+		text: resultText,
+		link: {
+			url: 'https://en.wikipedia.org/wiki/Laptop',
+			text: 'Learn more about laptops',
+			target_blank: true,
+		},
+	});
+
 	const demoTree = {
 		version: '1.0',
 		start: 'q1',
@@ -27,21 +36,11 @@
 				options: [
 					{
 						text: 'Yes, I need it lightweight',
-						result: [
-							{
-								type: 'text',
-								content: 'You should look for an ultrabook or lightweight laptop. These are ideal for portability and everyday productivity.',
-							},
-						],
+						result: createDemoResult('You should look for an ultrabook or lightweight laptop. These are ideal for portability and everyday productivity.'),
 					},
 					{
 						text: 'No, performance matters more',
-						result: [
-							{
-								type: 'text',
-								content: 'A standard business laptop with higher specs would suit you. These are great for multitasking and heavier workloads.',
-							},
-						],
+						result: createDemoResult('A standard business laptop with higher specs would suit you. These are great for multitasking and heavier workloads.'),
 					},
 				],
 			},
@@ -50,21 +49,11 @@
 				options: [
 					{
 						text: 'Casual gaming',
-						result: [
-							{
-								type: 'text',
-								content: 'A mid-range laptop with a decent GPU should be enough for casual gaming and everyday use.',
-							},
-						],
+						result: createDemoResult('A mid-range laptop with a decent GPU should be enough for casual gaming and everyday use.'),
 					},
 					{
 						text: 'High-end gaming',
-						result: [
-							{
-								type: 'text',
-								content: 'You should consider a high-performance gaming laptop with a dedicated GPU and advanced cooling.',
-							},
-						],
+						result: createDemoResult('You should consider a high-performance gaming laptop with a dedicated GPU and advanced cooling.'),
 					},
 				],
 			},
@@ -73,21 +62,11 @@
 				options: [
 					{
 						text: 'Low budget',
-						result: [
-							{
-								type: 'text',
-								content: 'Look for an affordable entry-level laptop that covers basic tasks like browsing, email and streaming.',
-							},
-						],
+						result: createDemoResult('Look for an affordable entry-level laptop that covers basic tasks like browsing, email and streaming.'),
 					},
 					{
 						text: 'Mid to high budget',
-						result: [
-							{
-								type: 'text',
-								content: 'You have a wide range of options. Consider a well-balanced laptop with good performance, build quality and battery life.',
-							},
-						],
+						result: createDemoResult('You have a wide range of options. Consider a well-balanced laptop with good performance, build quality and battery life.'),
 					},
 				],
 			},
@@ -144,23 +123,66 @@
 	};
 
 	const getResultText = (option) => {
-		if (!Array.isArray(option.result)) {
-			return '';
+		if (typeof option.result === 'string' || typeof option.result === 'number') {
+			return String(option.result);
 		}
 
-		const block = option.result.find((item) => item && item.type === 'text');
+		if (option.result && typeof option.result === 'object' && !Array.isArray(option.result)) {
+			return option.result.text || option.result.content || '';
+		}
 
-		return block ? block.content || block.text || '' : '';
+		if (Array.isArray(option.result)) {
+			const block = option.result.find((item) => item && item.type === 'text');
+
+			return block ? block.content || block.text || '' : '';
+		}
+
+		return '';
 	};
 
-	const setOptionResult = (option, content) => {
+	const getResultLink = (option) => {
+		const emptyLink = {
+			url: '',
+			text: '',
+			target_blank: false,
+		};
+
+		if (option.result && typeof option.result === 'object' && !Array.isArray(option.result)) {
+			return {
+				url: option.result.link?.url || '',
+				text: option.result.link?.text || '',
+				target_blank: Boolean(option.result.link?.target_blank),
+			};
+		}
+
+		if (Array.isArray(option.result)) {
+			const block = option.result.find((item) => item && item.type === 'link');
+
+			if (block) {
+				return {
+					url: block.url || '',
+					text: block.text || '',
+					target_blank: Boolean(block.target_blank),
+				};
+			}
+		}
+
+		return emptyLink;
+	};
+
+	const setOptionResult = (option, content, link = getResultLink(option)) => {
 		delete option.next;
-		option.result = [
-			{
-				type: 'text',
-				content,
-			},
-		];
+		option.result = {
+			text: content,
+		};
+
+		if (link.url !== '') {
+			option.result.link = {
+				url: link.url,
+				text: link.text,
+				target_blank: Boolean(link.target_blank),
+			};
+		}
 	};
 
 	const setOptionNext = (option, nextId) => {
@@ -373,7 +395,78 @@
 					syncTextarea();
 				});
 
-				detailWrap.append(resultLabel, resultTextarea);
+				const resultLink = getResultLink(option);
+
+				const linkFields = document.createElement('div');
+				linkFields.className = 'com-decisiontree-result-link-fields';
+
+				const linkTextWrap = document.createElement('div');
+				linkTextWrap.className = 'com-decisiontree-result-link-text';
+				const linkTextLabel = document.createElement('label');
+				linkTextLabel.className = 'form-label';
+				linkTextLabel.setAttribute('for', `decisiontree-option-result-link-text-${index}`);
+				linkTextLabel.textContent = text('COM_DECISIONTREE_JS_RESULT_LINK_TEXT_LABEL');
+
+				const linkTextInput = document.createElement('input');
+				linkTextInput.type = 'text';
+				linkTextInput.className = 'form-control';
+				linkTextInput.id = `decisiontree-option-result-link-text-${index}`;
+				linkTextInput.value = resultLink.text;
+				linkTextInput.placeholder = text('COM_DECISIONTREE_JS_RESULT_LINK_TEXT_PLACEHOLDER');
+
+				linkTextWrap.append(linkTextLabel, linkTextInput);
+
+				const linkUrlWrap = document.createElement('div');
+				linkUrlWrap.className = 'com-decisiontree-result-link-url';
+				const linkUrlLabel = document.createElement('label');
+				linkUrlLabel.className = 'form-label';
+				linkUrlLabel.setAttribute('for', `decisiontree-option-result-link-url-${index}`);
+				linkUrlLabel.textContent = text('COM_DECISIONTREE_JS_RESULT_LINK_URL_LABEL');
+
+				const linkUrlInput = document.createElement('input');
+				linkUrlInput.type = 'text';
+				linkUrlInput.className = 'form-control';
+				linkUrlInput.id = `decisiontree-option-result-link-url-${index}`;
+				linkUrlInput.value = resultLink.url;
+				linkUrlInput.placeholder = text('COM_DECISIONTREE_JS_RESULT_LINK_URL_PLACEHOLDER');
+
+				const linkUrlHelp = document.createElement('div');
+				linkUrlHelp.className = 'form-text';
+				linkUrlHelp.textContent = text('COM_DECISIONTREE_JS_RESULT_LINK_URL_DESC');
+
+				linkUrlWrap.append(linkUrlLabel, linkUrlInput, linkUrlHelp);
+
+				const targetWrap = document.createElement('div');
+				targetWrap.className = 'form-check com-decisiontree-result-link-target';
+
+				const targetInput = document.createElement('input');
+				targetInput.type = 'checkbox';
+				targetInput.className = 'form-check-input';
+				targetInput.id = `decisiontree-option-result-link-target-${index}`;
+				targetInput.checked = resultLink.target_blank;
+
+				const targetLabel = document.createElement('label');
+				targetLabel.className = 'form-check-label';
+				targetLabel.setAttribute('for', `decisiontree-option-result-link-target-${index}`);
+				targetLabel.textContent = text('COM_DECISIONTREE_JS_RESULT_LINK_TARGET_BLANK_LABEL');
+
+				targetWrap.append(targetInput, targetLabel);
+				linkFields.append(linkTextWrap, linkUrlWrap, targetWrap);
+
+				const updateResult = () => {
+					setOptionResult(option, resultTextarea.value, {
+						url: linkUrlInput.value.trim(),
+						text: linkTextInput.value.trim(),
+						target_blank: targetInput.checked,
+					});
+					syncTextarea();
+				};
+
+				linkTextInput.addEventListener('input', updateResult);
+				linkUrlInput.addEventListener('input', updateResult);
+				targetInput.addEventListener('change', updateResult);
+
+				detailWrap.append(resultLabel, resultTextarea, linkFields);
 			}
 		};
 
@@ -623,12 +716,9 @@
 
 			question.options.push({
 				text: text('COM_DECISIONTREE_JS_NEW_OPTION'),
-				result: [
-					{
-						type: 'text',
-						content: '',
-					},
-				],
+				result: {
+					text: '',
+				},
 			});
 			syncTextarea();
 			renderQuestionEditor();

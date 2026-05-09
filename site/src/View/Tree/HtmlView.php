@@ -34,6 +34,7 @@ class HtmlView extends BaseHtmlView
 
 		Text::script('COM_DECISIONTREE_JS_BACK');
 		Text::script('COM_DECISIONTREE_JS_OPTION_NOT_CONFIGURED');
+		Text::script('COM_DECISIONTREE_JS_READ_MORE');
 		Text::script('COM_DECISIONTREE_JS_RESET');
 
 		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();

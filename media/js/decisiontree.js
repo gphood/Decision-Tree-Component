@@ -45,6 +45,66 @@
 		return button;
 	};
 
+	const getSafeLinkUrl = (url) => {
+		const value = String(url || '').trim();
+
+		if (value === '' || /\s/.test(value) || value.startsWith('//')) {
+			return '';
+		}
+
+		if (/^https?:\/\//i.test(value)) {
+			try {
+				const parsed = new URL(value);
+
+				return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.href : '';
+			} catch (error) {
+				return '';
+			}
+		}
+
+		if (/^(\/(?!\/)|\.{1,2}\/|[?#])/.test(value)) {
+			return value;
+		}
+
+		return '';
+	};
+
+	const normalizeResultBlocks = (result) => {
+		if (Array.isArray(result)) {
+			return result;
+		}
+
+		if (result && typeof result === 'object') {
+			const blocks = [];
+			const content = result.text || result.content || '';
+
+			if (content !== '') {
+				blocks.push({
+					type: 'text',
+					content,
+				});
+			}
+
+			if (result.link && typeof result.link === 'object') {
+				blocks.push({
+					type: 'link',
+					url: result.link.url || '',
+					text: result.link.text || '',
+					target_blank: Boolean(result.link.target_blank),
+				});
+			}
+
+			return blocks;
+		}
+
+		return [
+			{
+				type: 'text',
+				content: String(result ?? ''),
+			},
+		];
+	};
+
 	const renderFallback = (state, missingQuestionId) => {
 		console.warn(`Decision tree question not found: ${missingQuestionId}`);
 
@@ -64,16 +124,39 @@
 		const resultWrap = document.createElement('div');
 		resultWrap.className = 'gd-decisiontree__result';
 
-		const blocks = Array.isArray(result) ? result : [result];
+		const blocks = normalizeResultBlocks(result);
 
 		blocks.forEach((block) => {
-			if (!block || block.type !== 'text') {
+			if (!block) {
 				return;
 			}
 
-			const paragraph = document.createElement('p');
-			paragraph.textContent = block.text || block.content || '';
-			resultWrap.appendChild(paragraph);
+			if (block.type === 'text') {
+				const paragraph = document.createElement('p');
+				paragraph.textContent = block.text || block.content || '';
+				resultWrap.appendChild(paragraph);
+			}
+
+			if (block.type === 'link') {
+				const safeUrl = getSafeLinkUrl(block.url);
+
+				if (safeUrl === '') {
+					return;
+				}
+
+				const link = document.createElement('a');
+				const linkText = String(block.text || '').trim();
+				link.className = 'gd-decisiontree__result-link';
+				link.href = safeUrl;
+				link.textContent = linkText || text('COM_DECISIONTREE_JS_READ_MORE');
+
+				if (block.target_blank) {
+					link.target = '_blank';
+					link.rel = 'noopener noreferrer';
+				}
+
+				resultWrap.appendChild(link);
+			}
 		});
 
 		container.appendChild(resultWrap);

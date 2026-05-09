@@ -37,6 +37,19 @@ test.describe.serial('com_decisiontree', () => {
 		await expect(page.locator('#decisiontree-question-select')).toHaveValue('q1');
 		await expect(page.locator('#decisiontree-question-text')).toHaveValue('What will you mainly use the laptop for?');
 		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Work / Office tasks');
+		await expect.poll(async () => {
+			const json = await page.locator('#jform_json_data').inputValue();
+			const tree = JSON.parse(json);
+			const endpoints = Object.values(tree.questions)
+				.flatMap((question) => question.options || [])
+				.filter((option) => option.result);
+
+			return endpoints.length === 6 && endpoints.every((option) => (
+				option.result.link?.url === 'https://en.wikipedia.org/wiki/Laptop'
+				&& option.result.link?.text === 'Learn more about laptops'
+				&& option.result.link?.target_blank === true
+			));
+		}).toBe(true);
 
 		await page.getByRole('button', { name: 'Save', exact: true }).click();
 		await expect(page.locator('#system-message-container, .alert-success')).toContainText(/saved|success/i);
@@ -54,6 +67,24 @@ test.describe.serial('com_decisiontree', () => {
 		await expect(page.locator('#decisiontree-question-text')).toHaveValue('What will you mainly use the laptop for?');
 		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Work / Office tasks');
 
+		await page.locator('#decisiontree-question-select').selectOption('q2');
+		const newTabCheckbox = page.getByLabel('Open link in new tab').first();
+		await expect(newTabCheckbox).toBeChecked();
+		await newTabCheckbox.uncheck();
+		await expect.poll(async () => {
+			const json = await page.locator('#jform_json_data').inputValue();
+			const tree = JSON.parse(json);
+
+			return tree.questions.q2.options[0].result.link.target_blank;
+		}).toBe(false);
+		await newTabCheckbox.check();
+		await expect.poll(async () => {
+			const json = await page.locator('#jform_json_data').inputValue();
+			const tree = JSON.parse(json);
+
+			return tree.questions.q2.options[0].result.link.target_blank;
+		}).toBe(true);
+
 		treeId = await page.locator('input[name="jform[id]"], #jform_id').first().inputValue();
 		expect(treeId, 'Saved tree ID').toMatch(/^\d+$/);
 	});
@@ -70,6 +101,9 @@ test.describe.serial('com_decisiontree', () => {
 
 		await page.getByRole('button', { name: 'Yes, I need it lightweight' }).click();
 		await expect(page.getByText('You should look for an ultrabook or lightweight laptop.')).toBeVisible();
+		await expect(page.getByRole('link', { name: 'Learn more about laptops' })).toHaveAttribute('href', 'https://en.wikipedia.org/wiki/Laptop');
+		await expect(page.getByRole('link', { name: 'Learn more about laptops' })).toHaveAttribute('target', '_blank');
+		await expect(page.getByRole('link', { name: 'Learn more about laptops' })).toHaveAttribute('rel', 'noopener noreferrer');
 
 		await page.getByRole('button', { name: 'Reset' }).click();
 		await expect(page.getByText('What will you mainly use the laptop for?')).toBeVisible();

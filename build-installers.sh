@@ -4,10 +4,11 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
-VERSION="${VERSION:-1.0.0}"
+VERSION="${VERSION:-1.1.0}"
 
 COMPONENT_ZIP="$DIST_DIR/com_decisiontree-${VERSION}.zip"
 PLUGIN_ZIP="$DIST_DIR/plg_content_decisiontree-${VERSION}.zip"
+PACKAGE_ZIP="$DIST_DIR/pkg_decisiontree-${VERSION}.zip"
 
 require_command() {
 	if ! command -v "$1" >/dev/null 2>&1; then
@@ -52,12 +53,27 @@ build_plugin() {
 	)
 }
 
+build_package() {
+	rm -f "$PACKAGE_ZIP"
+
+	(
+		cd "$ROOT_DIR"
+		zip -jq "$PACKAGE_ZIP" \
+			pkg_decisiontree.xml \
+			"$COMPONENT_ZIP" \
+			"$PLUGIN_ZIP" \
+			-x '*/.DS_Store'
+	)
+}
+
 require_command zip
 mkdir -p "$DIST_DIR"
 
 build_component
 build_plugin
+build_package
 
 echo "Created:"
 echo "  $COMPONENT_ZIP"
 echo "  $PLUGIN_ZIP"
+echo "  $PACKAGE_ZIP"
