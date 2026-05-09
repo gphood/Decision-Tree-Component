@@ -10,6 +10,7 @@
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/gphood/Decision-Tree-Component/releases/download/v1.1.0/pkg_decisiontree-1.1.0.zip</downloadurl>
 		</downloads>
+		<sha256>2cbd30f93e3f9fbce280bab6ba0655ece16546bf239cde28e683e45b0a110933</sha256>
 		<targetplatform name="joomla" version="[56]\..*" />
 		<php_minimum>8.1</php_minimum>
 	</update>
