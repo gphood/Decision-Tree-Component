@@ -12,6 +12,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Helper;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\Database\DatabaseInterface;
 
 class DecisionTreeHelper
@@ -78,5 +79,24 @@ class DecisionTreeHelper
 		$db->setQuery($query);
 
 		return (int) $db->loadResult();
+	}
+
+	public static function createExportFilename(string $title): string
+	{
+		$filename = Factory::getApplication()->getLanguage()->transliterate($title);
+		$filename = OutputFilter::stringURLSafe($filename);
+		$filename = strtolower($filename);
+		$filename = preg_replace('/[\s-]+/', '_', $filename);
+		$filename = preg_replace('/[^a-z0-9_]+/', '', $filename);
+		$filename = preg_replace('/_+/', '_', $filename);
+		$filename = trim($filename, '_');
+
+		if ($filename === '') {
+			$filename = 'decision_tree_export';
+
+			return $filename . '.json';
+		}
+
+		return $filename . '_decision_tree.json';
 	}
 }

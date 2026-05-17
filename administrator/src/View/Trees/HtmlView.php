@@ -68,7 +68,16 @@ class HtmlView extends BaseHtmlView
 			ToolbarHelper::addNew('tree.add');
 		}
 
+		$canImport = DecisionTreeHelper::getTreeCount() > 0
+			? ContentHelper::getActions('com_decisiontree')->get('core.edit')
+			: ContentHelper::getActions('com_decisiontree')->get('core.create');
+
+		if ($canImport) {
+			ToolbarHelper::custom('trees.import', 'upload', '', 'COM_DECISIONTREE_TOOLBAR_IMPORT_JSON', false);
+		}
+
 		ToolbarHelper::editList('tree.edit');
+		ToolbarHelper::custom('trees.export', 'download', '', 'COM_DECISIONTREE_TOOLBAR_EXPORT_JSON', true);
 		ToolbarHelper::publish('trees.publish', 'JTOOLBAR_PUBLISH', true);
 		ToolbarHelper::unpublish('trees.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 

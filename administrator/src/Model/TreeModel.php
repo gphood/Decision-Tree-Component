@@ -13,6 +13,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Database\ParameterType;
 use Joomla\Utilities\ArrayHelper;
@@ -63,6 +64,48 @@ class TreeModel extends AdminModel
 		return parent::save($data);
 	}
 
+	public function buildExportData(int $id): ?array
+	{
+		if ($id <= 0) {
+			return null;
+		}
+
+		$item = $this->getItem($id);
+
+		if (empty($item->id)) {
+			return null;
+		}
+
+		$treeData = json_decode((string) $item->json_data);
+
+		if (json_last_error() !== JSON_ERROR_NONE || !\is_object($treeData)) {
+			$this->setError(Text::_('COM_DECISIONTREE_ERROR_INVALID_JSON'));
+
+			return null;
+		}
+
+		$componentVersion = $this->getComponentVersion();
+		$export = [
+			'export_format' => 'decisiontree',
+			'export_version' => '1.0',
+			'exported_at' => Factory::getDate()->toISO8601(),
+		];
+
+		if ($componentVersion !== '') {
+			$export['component_version'] = $componentVersion;
+		}
+
+		$export['tree'] = [
+			'title' => (string) $item->title,
+			'alias' => (string) $item->alias,
+			'state' => (int) $item->state,
+			'description' => (string) $item->description,
+		];
+		$export['tree_data'] = $treeData;
+
+		return $export;
+	}
+
 	private function getUniqueAlias(string $alias, int $id = 0): string
 	{
 		$alias = $alias !== '' ? $alias : OutputFilter::stringURLSafe((string) Factory::getDate()->toUnix());
@@ -94,6 +137,31 @@ class TreeModel extends AdminModel
 		$db->setQuery($query);
 
 		return (int) $db->loadResult() > 0;
+	}
+
+	private function getComponentVersion(): string
+	{
+		$manifestPaths = [
+			JPATH_ADMINISTRATOR . '/components/com_decisiontree/decisiontree.xml',
+			JPATH_COMPONENT_ADMINISTRATOR . '/decisiontree.xml',
+		];
+
+		foreach (array_unique($manifestPaths) as $manifestPath) {
+			if (!is_file($manifestPath)) {
+				continue;
+			}
+
+			$previousLibxmlState = libxml_use_internal_errors(true);
+			$manifest = simplexml_load_file($manifestPath);
+			libxml_clear_errors();
+			libxml_use_internal_errors($previousLibxmlState);
+
+			if ($manifest !== false && isset($manifest->version)) {
+				return (string) $manifest->version;
+			}
+		}
+
+		return '';
 	}
 
 	protected function prepareTable($table): void
