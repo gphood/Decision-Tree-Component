@@ -4,7 +4,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
-VERSION="${VERSION:-1.2.0}"
+VERSION="${VERSION:-1.2.1}"
 
 COMPONENT_ZIP="$DIST_DIR/com_decisiontree-${VERSION}.zip"
 PLUGIN_ZIP="$DIST_DIR/plg_content_decisiontree-${VERSION}.zip"
