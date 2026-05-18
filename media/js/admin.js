@@ -256,6 +256,15 @@
 
 		questionSelect.replaceChildren();
 
+		if (ids.length === 0) {
+			const option = document.createElement('option');
+			option.value = '';
+			option.textContent = text('COM_DECISIONTREE_JS_QUESTION_EMPTY_SELECT');
+			option.disabled = true;
+			option.selected = true;
+			questionSelect.appendChild(option);
+		}
+
 		ids.forEach((id) => {
 			const option = document.createElement('option');
 			option.value = id;

@@ -35,7 +35,7 @@ class TreeTable extends Table
 		$jsonData = trim((string) $this->json_data);
 
 		if ($jsonData === '') {
-			$this->setError(Text::_('COM_DECISIONTREE_ERROR_JSON_REQUIRED'));
+			$this->setError(Text::_('COM_DECISIONTREE_ERROR_NO_QUESTIONS'));
 
 			return false;
 		}
@@ -55,7 +55,13 @@ class TreeTable extends Table
 		}
 
 		if (!property_exists($tree, 'questions') || !\is_object($tree->questions)) {
-			$this->setError(Text::_('COM_DECISIONTREE_ERROR_JSON_QUESTIONS_REQUIRED'));
+			$this->setError(Text::_('COM_DECISIONTREE_ERROR_NO_QUESTIONS'));
+
+			return false;
+		}
+
+		if (\count(get_object_vars($tree->questions)) === 0) {
+			$this->setError(Text::_('COM_DECISIONTREE_ERROR_NO_QUESTIONS'));
 
 			return false;
 		}

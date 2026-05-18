@@ -45,7 +45,7 @@ HTMLHelper::_('behavior.keepalive');
 						<button type="button" class="btn btn-secondary" id="decisiontree-load-demo">
 							<?php echo Text::_('COM_DECISIONTREE_BUTTON_LOAD_DEMO_TREE'); ?>
 						</button>
-						<button type="button" class="btn btn-secondary" id="decisiontree-add-question">
+						<button type="button" class="btn btn-primary" id="decisiontree-add-question">
 							<?php echo Text::_('COM_DECISIONTREE_BUTTON_ADD_QUESTION'); ?>
 						</button>
 						<button type="button" class="btn btn-outline-danger" id="decisiontree-delete-question">

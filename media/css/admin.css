@@ -90,7 +90,7 @@
 	align-items: end;
 	display: grid;
 	gap: .75rem;
-	grid-template-columns: minmax(12rem, 18rem) minmax(12rem, auto) 1fr;
+	grid-template-columns: minmax(18rem, 26rem) minmax(12rem, auto) 1fr;
 	margin-bottom: 1rem;
 }
 
