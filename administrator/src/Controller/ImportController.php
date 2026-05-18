@@ -91,7 +91,7 @@ class ImportController extends BaseController
 		$importState = $this->input->post->getCmd('import_state', 'unpublished');
 		$generateAlias = (bool) $this->input->post->getInt('generate_alias', 0);
 		$model = $this->getModel('Import');
-		$replaceMode = DecisionTreeHelper::getTreeCount() > 0;
+		$replaceMode = DecisionTreeHelper::requiresImportReplacement();
 
 		if ($replaceMode) {
 			if (!$this->input->post->getInt('confirm_replace', 0)) {
@@ -141,9 +141,9 @@ class ImportController extends BaseController
 	private function checkImportPermission(): bool
 	{
 		$actions = ContentHelper::getActions('com_decisiontree');
-		$action = DecisionTreeHelper::getTreeCount() > 0 ? 'core.edit' : 'core.create';
+		$action = DecisionTreeHelper::requiresImportReplacement() ? 'core.edit' : 'core.create';
 
-		if (!$actions->get($action)) {
+		if (!DecisionTreeHelper::canImportTree() || !$actions->get($action)) {
 			$this->setMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 			$this->setRedirect(Route::_('index.php?option=com_decisiontree&view=trees', false));
 

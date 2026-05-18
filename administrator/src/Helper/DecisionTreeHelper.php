@@ -11,12 +11,14 @@ namespace GrantDev\Component\DecisionTree\Administrator\Helper;
 
 \defined('_JEXEC') or die;
 
+use GrantDev\Component\DecisionTree\Administrator\Service\EditionService;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
-use Joomla\Database\DatabaseInterface;
 
 class DecisionTreeHelper
 {
+	private static ?EditionService $editionService = null;
+
 	public static function loadAdminLanguage(): void
 	{
 		Factory::getApplication()->getLanguage()->load(
@@ -30,25 +32,32 @@ class DecisionTreeHelper
 
 	public static function isProEnabled(): bool
 	{
-		return false;
+		return self::getEditionService()->isPro();
+	}
+
+	public static function getTreeLimit(): int
+	{
+		return self::getEditionService()->getTreeLimit();
 	}
 
 	public static function canCreateTree(): bool
 	{
-		if (self::isProEnabled()) {
-			return true;
-		}
+		return self::getEditionService()->canCreateTree();
+	}
 
-		return self::getTreeCount() < 1;
+	public static function canImportTree(): bool
+	{
+		return self::getEditionService()->canImportTree();
+	}
+
+	public static function requiresImportReplacement(): bool
+	{
+		return self::getEditionService()->requiresImportReplacement();
 	}
 
 	public static function getCreateLimitMessageKey(): string
 	{
-		if (self::getTreeCount() > 0 && self::getActiveTreeCount() === 0) {
-			return 'COM_DECISIONTREE_FREE_LIMIT_REACHED_TRASHED';
-		}
-
-		return 'COM_DECISIONTREE_FREE_LIMIT_REACHED';
+		return self::getEditionService()->getCreateLimitMessageKey();
 	}
 
 	public static function shouldShowListSearchTools(): bool
@@ -58,27 +67,12 @@ class DecisionTreeHelper
 
 	public static function getTreeCount(): int
 	{
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $db->getQuery(true)
-			->select('COUNT(*)')
-			->from($db->quoteName('#__decisiontree_trees'));
-
-		$db->setQuery($query);
-
-		return (int) $db->loadResult();
+		return self::getEditionService()->getCurrentTreeCount();
 	}
 
 	public static function getActiveTreeCount(): int
 	{
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $db->getQuery(true)
-			->select('COUNT(*)')
-			->from($db->quoteName('#__decisiontree_trees'))
-			->where($db->quoteName('state') . ' != -2');
-
-		$db->setQuery($query);
-
-		return (int) $db->loadResult();
+		return self::getEditionService()->getActiveTreeCount();
 	}
 
 	public static function createExportFilename(string $title): string
@@ -98,5 +92,14 @@ class DecisionTreeHelper
 		}
 
 		return $filename . '_decision_tree.json';
+	}
+
+	private static function getEditionService(): EditionService
+	{
+		if (self::$editionService === null) {
+			self::$editionService = new EditionService();
+		}
+
+		return self::$editionService;
 	}
 }

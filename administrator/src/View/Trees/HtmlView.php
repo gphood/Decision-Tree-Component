@@ -68,11 +68,11 @@ class HtmlView extends BaseHtmlView
 			ToolbarHelper::addNew('tree.add');
 		}
 
-		$canImport = DecisionTreeHelper::getTreeCount() > 0
+		$canImport = DecisionTreeHelper::requiresImportReplacement()
 			? ContentHelper::getActions('com_decisiontree')->get('core.edit')
 			: ContentHelper::getActions('com_decisiontree')->get('core.create');
 
-		if ($canImport) {
+		if (DecisionTreeHelper::canImportTree() && $canImport) {
 			ToolbarHelper::custom('trees.import', 'upload', '', 'COM_DECISIONTREE_TOOLBAR_IMPORT_JSON', false);
 		}
 

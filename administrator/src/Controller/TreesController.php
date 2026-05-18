@@ -112,9 +112,9 @@ class TreesController extends AdminController
 		}
 
 		$actions = ContentHelper::getActions('com_decisiontree');
-		$action = DecisionTreeHelper::getTreeCount() > 0 ? 'core.edit' : 'core.create';
+		$action = DecisionTreeHelper::requiresImportReplacement() ? 'core.edit' : 'core.create';
 
-		if (!$actions->get($action)) {
+		if (!DecisionTreeHelper::canImportTree() || !$actions->get($action)) {
 			$this->setMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
 			$this->setRedirect(Route::_('index.php?option=com_decisiontree&view=trees', false));
 

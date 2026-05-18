@@ -11,6 +11,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 
 \defined('_JEXEC') or die;
 
+use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
@@ -53,6 +54,12 @@ class TreeModel extends AdminModel
 
 	public function save($data): bool
 	{
+		if (empty($data['id']) && !DecisionTreeHelper::canCreateTree()) {
+			$this->setError(Text::_(DecisionTreeHelper::getCreateLimitMessageKey()));
+
+			return false;
+		}
+
 		if (empty($data['alias'])) {
 			$data['alias'] = $data['title'] ?? '';
 		}

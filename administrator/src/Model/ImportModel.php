@@ -11,6 +11,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 
 \defined('_JEXEC') or die;
 
+use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
@@ -128,6 +129,12 @@ class ImportModel extends BaseDatabaseModel
 
 	public function importTree(array $export, string $importState, bool $generateAlias): bool
 	{
+		if (!DecisionTreeHelper::canCreateTree()) {
+			$this->setError(Text::_(DecisionTreeHelper::getCreateLimitMessageKey()));
+
+			return false;
+		}
+
 		return $this->saveImportedTree($export, $importState, $generateAlias);
 	}
 

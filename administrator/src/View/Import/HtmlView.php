@@ -45,11 +45,11 @@ class HtmlView extends BaseHtmlView
 	{
 		DecisionTreeHelper::loadAdminLanguage();
 		$layout = $this->getLayout();
-		$this->replaceMode = DecisionTreeHelper::getTreeCount() > 0;
+		$this->replaceMode = DecisionTreeHelper::requiresImportReplacement();
 		$actions = ContentHelper::getActions('com_decisiontree');
 		$action = $this->replaceMode ? 'core.edit' : 'core.create';
 
-		if (!$actions->get($action)) {
+		if (!DecisionTreeHelper::canImportTree() || !$actions->get($action)) {
 			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 
