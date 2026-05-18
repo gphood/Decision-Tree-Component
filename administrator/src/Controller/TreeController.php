@@ -12,7 +12,6 @@ namespace GrantDev\Component\DecisionTree\Administrator\Controller;
 \defined('_JEXEC') or die;
 
 use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Router\Route;
 
@@ -25,7 +24,7 @@ class TreeController extends FormController
 		DecisionTreeHelper::loadAdminLanguage();
 
 		if (!DecisionTreeHelper::canCreateTree()) {
-			$this->setMessage(Text::_(DecisionTreeHelper::getCreateLimitMessageKey()), 'warning');
+			$this->setMessage(DecisionTreeHelper::getCreateLimitMessage(), 'warning');
 			$this->setRedirect(Route::_('index.php?option=com_decisiontree&view=trees', false));
 
 			return false;

@@ -14,6 +14,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Helper;
 use GrantDev\Component\DecisionTree\Administrator\Service\EditionService;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Language\Text;
 
 class DecisionTreeHelper
 {
@@ -45,6 +46,11 @@ class DecisionTreeHelper
 		return self::getEditionService()->canCreateTree();
 	}
 
+	public static function isTreeLimitExceeded(): bool
+	{
+		return self::getEditionService()->isTreeLimitExceeded();
+	}
+
 	public static function canImportTree(): bool
 	{
 		return self::getEditionService()->canImportTree();
@@ -60,12 +66,33 @@ class DecisionTreeHelper
 		return self::getEditionService()->getCreateLimitMessageKey();
 	}
 
+	public static function getCreateLimitMessage(): string
+	{
+		$key = self::getCreateLimitMessageKey();
+
+		if (self::getTreeLimit() === 1) {
+			return Text::_($key);
+		}
+
+		return Text::sprintf($key, self::getTreeLimit());
+	}
+
+	public static function getTreeLimitExceededMessage(): string
+	{
+		return Text::_('COM_DECISIONTREE_TREE_LIMIT_EXCEEDED');
+	}
+
 	public static function shouldShowListSearchTools(): bool
 	{
 		return true;
 	}
 
 	public static function getTreeCount(): int
+	{
+		return self::getEditionService()->getCurrentTreeCount();
+	}
+
+	public static function getCurrentTreeCount(): int
 	{
 		return self::getEditionService()->getCurrentTreeCount();
 	}

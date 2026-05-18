@@ -127,18 +127,18 @@ class ImportModel extends BaseDatabaseModel
 		return \count($trees) === 1 ? (int) $trees[0]->id : 0;
 	}
 
-	public function importTree(array $export, string $importState, bool $generateAlias): bool
+	public function importTree(array $export, string $importState): bool
 	{
 		if (!DecisionTreeHelper::canCreateTree()) {
-			$this->setError(Text::_(DecisionTreeHelper::getCreateLimitMessageKey()));
+			$this->setError(DecisionTreeHelper::getCreateLimitMessage());
 
 			return false;
 		}
 
-		return $this->saveImportedTree($export, $importState, $generateAlias);
+		return $this->saveImportedTree($export, $importState);
 	}
 
-	public function replaceTree(array $export, string $importState, bool $generateAlias, int $id): bool
+	public function replaceTree(array $export, string $importState, int $id): bool
 	{
 		if ($id <= 0 || !$this->treeExists($id)) {
 			$this->setError(Text::_('COM_DECISIONTREE_IMPORT_ERROR_REPLACE_TREE'));
@@ -146,28 +146,18 @@ class ImportModel extends BaseDatabaseModel
 			return false;
 		}
 
-		return $this->saveImportedTree($export, $importState, $generateAlias, $id);
+		return $this->saveImportedTree($export, $importState, $id);
 	}
 
-	private function saveImportedTree(array $export, string $importState, bool $generateAlias, int $id = 0): bool
+	private function saveImportedTree(array $export, string $importState, int $id = 0): bool
 	{
 		$title = trim((string) ($export['tree']['title'] ?? ''));
-		$alias = $this->getAliasPreview($export);
+		$alias = $this->resolveAlias($export, $id);
 
 		if ($alias === '') {
 			$this->setError(Text::_('COM_DECISIONTREE_IMPORT_ERROR_TREE_TITLE'));
 
 			return false;
-		}
-
-		if ($this->aliasExists($alias, $id)) {
-			if (!$generateAlias) {
-				$this->setError(Text::sprintf('COM_DECISIONTREE_IMPORT_ERROR_ALIAS_EXISTS', $alias));
-
-				return false;
-			}
-
-			$alias = $this->getUniqueAlias($alias, $id);
 		}
 
 		$state = $this->resolveImportState($export, $importState);
@@ -207,6 +197,20 @@ class ImportModel extends BaseDatabaseModel
 		}
 
 		return true;
+	}
+
+	private function resolveAlias(array $export, int $id = 0): string
+	{
+		$title = (string) ($export['tree']['title'] ?? '');
+		$importedAlias = $this->normaliseAlias((string) ($export['tree']['alias'] ?? ''), '');
+
+		if ($importedAlias !== '' && !$this->aliasExists($importedAlias, $id)) {
+			return $importedAlias;
+		}
+
+		$titleAlias = $this->normaliseAlias($title, '');
+
+		return $titleAlias === '' ? '' : $this->getUniqueAlias($titleAlias, $id);
 	}
 
 	private function resolveImportState(array $export, string $importState): ?int

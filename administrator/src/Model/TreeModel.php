@@ -55,7 +55,7 @@ class TreeModel extends AdminModel
 	public function save($data): bool
 	{
 		if (empty($data['id']) && !DecisionTreeHelper::canCreateTree()) {
-			$this->setError(Text::_(DecisionTreeHelper::getCreateLimitMessageKey()));
+			$this->setError(DecisionTreeHelper::getCreateLimitMessage());
 
 			return false;
 		}

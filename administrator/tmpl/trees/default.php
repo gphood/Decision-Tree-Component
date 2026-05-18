@@ -21,11 +21,17 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 $hasActiveFilters = !empty($this->activeFilters);
 ?>
 <form action="<?php echo Route::_('index.php?option=com_decisiontree&view=trees'); ?>" method="post" name="adminForm" id="adminForm">
-	<?php if (!$this->isProEnabled && $this->createLimitReached) : ?>
+	<?php if (!$this->isProEnabled && $this->treeLimitExceeded) : ?>
+		<div class="alert alert-warning">
+			<span class="icon-warning" aria-hidden="true"></span>
+			<span class="visually-hidden"><?php echo Text::_('WARNING'); ?></span>
+			<?php echo $this->escape($this->treeLimitExceededMessage); ?>
+		</div>
+	<?php elseif (!$this->isProEnabled && $this->createLimitReached) : ?>
 		<div class="alert alert-info">
 			<span class="icon-info-circle" aria-hidden="true"></span>
 			<span class="visually-hidden"><?php echo Text::_('INFO'); ?></span>
-			<?php echo Text::_($this->createLimitMessageKey); ?>
+			<?php echo $this->escape($this->createLimitMessage); ?>
 		</div>
 	<?php endif; ?>
 

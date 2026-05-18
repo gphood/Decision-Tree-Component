@@ -35,6 +35,15 @@ class EditionService
 		return $this->getCurrentTreeCount() < $this->getTreeLimit();
 	}
 
+	public function isTreeLimitExceeded(): bool
+	{
+		if ($this->isPro()) {
+			return false;
+		}
+
+		return $this->getCurrentTreeCount() > $this->getTreeLimit();
+	}
+
 	public function canImportTree(): bool
 	{
 		return $this->canCreateTree() || $this->getCurrentTreeCount() > 0;
@@ -72,10 +81,16 @@ class EditionService
 
 	public function getCreateLimitMessageKey(): string
 	{
+		$limit = $this->getTreeLimit();
+
 		if (!$this->canCreateTree() && $this->getActiveTreeCount() === 0) {
-			return 'COM_DECISIONTREE_FREE_LIMIT_REACHED_TRASHED';
+			return $limit === 1
+				? 'COM_DECISIONTREE_FREE_LIMIT_REACHED_TRASHED'
+				: 'COM_DECISIONTREE_FREE_LIMIT_REACHED_TRASHED_MULTIPLE';
 		}
 
-		return 'COM_DECISIONTREE_FREE_LIMIT_REACHED';
+		return $limit === 1
+			? 'COM_DECISIONTREE_FREE_LIMIT_REACHED'
+			: 'COM_DECISIONTREE_FREE_LIMIT_REACHED_MULTIPLE';
 	}
 }

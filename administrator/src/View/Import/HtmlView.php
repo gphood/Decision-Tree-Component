@@ -17,6 +17,7 @@ use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 
 class HtmlView extends BaseHtmlView
@@ -35,21 +36,32 @@ class HtmlView extends BaseHtmlView
 
 	public $replaceMode;
 
+	public $canCreateImport;
+
+	public $createDisabledByTreeLimit;
+
+	public $canReplaceImport;
+
+	public $defaultImportMode;
+
 	public $existingTrees;
 
 	public $defaultReplacementTreeId;
-
-	public $showGenerateAliasOption;
 
 	public function display($tpl = null): void
 	{
 		DecisionTreeHelper::loadAdminLanguage();
 		$layout = $this->getLayout();
-		$this->replaceMode = DecisionTreeHelper::requiresImportReplacement();
 		$actions = ContentHelper::getActions('com_decisiontree');
-		$action = $this->replaceMode ? 'core.edit' : 'core.create';
+		$model = $this->getModel();
+		$this->existingTrees = $model->getExistingTrees();
+		$this->canCreateImport = DecisionTreeHelper::canCreateTree() && $actions->get('core.create');
+		$this->createDisabledByTreeLimit = !DecisionTreeHelper::canCreateTree() && $actions->get('core.create');
+		$this->canReplaceImport = \count($this->existingTrees) > 0 && $actions->get('core.edit');
+		$this->replaceMode = !$this->canCreateImport && $this->canReplaceImport;
+		$this->defaultImportMode = $this->canCreateImport ? 'create' : 'replace';
 
-		if (!DecisionTreeHelper::canImportTree() || !$actions->get($action)) {
+		if (!DecisionTreeHelper::canImportTree() || (!$this->canCreateImport && !$this->canReplaceImport)) {
 			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
 		}
 
@@ -63,10 +75,7 @@ class HtmlView extends BaseHtmlView
 		}
 
 		if ($layout === 'preview') {
-			$model = $this->getModel();
-			$this->existingTrees = $model->getExistingTrees();
 			$this->defaultReplacementTreeId = $model->getDefaultReplacementTreeId();
-			$this->showGenerateAliasOption = \count($this->existingTrees) > 1;
 			$exportedState = $this->export['tree']['state'] ?? null;
 			$exportedStateNumber = is_numeric($exportedState) ? (int) $exportedState : null;
 			$this->aliasPreview = $model->getAliasPreview($this->export);
@@ -86,6 +95,8 @@ class HtmlView extends BaseHtmlView
 	protected function addToolbar(): void
 	{
 		ToolbarHelper::title(Text::_('COM_DECISIONTREE_IMPORT_TITLE'), 'upload');
-		ToolbarHelper::cancel('import.cancel', 'JTOOLBAR_CANCEL');
+		Toolbar::getInstance()
+			->link('JTOOLBAR_CANCEL', Route::_('index.php?option=com_decisiontree&task=import.cancel', false))
+			->icon('fas fa-times');
 	}
 }
