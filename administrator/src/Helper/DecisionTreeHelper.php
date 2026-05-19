@@ -41,6 +41,13 @@ class DecisionTreeHelper
 		return self::getEditionService()->getTreeLimit();
 	}
 
+	public static function getEditionLabel(): string
+	{
+		return self::isProEnabled()
+			? Text::_('COM_DECISIONTREE_EDITION_PRO')
+			: Text::_('COM_DECISIONTREE_EDITION_FREE');
+	}
+
 	public static function canCreateTree(): bool
 	{
 		return self::getEditionService()->canCreateTree();

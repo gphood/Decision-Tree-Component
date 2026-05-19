@@ -12,35 +12,31 @@ namespace GrantDev\Component\DecisionTree\Administrator\Service;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\DatabaseInterface;
 
 class EditionService
 {
+	private const FREE_TREE_LIMIT = 1;
+	private const PRO_TREE_LIMIT = 999999;
+
 	public function isPro(): bool
 	{
-		return false;
+		return PluginHelper::isEnabled('system', 'decisiontreepro');
 	}
 
 	public function getTreeLimit(): int
 	{
-		return 1;
+		return $this->isPro() ? self::PRO_TREE_LIMIT : self::FREE_TREE_LIMIT;
 	}
 
 	public function canCreateTree(): bool
 	{
-		if ($this->isPro()) {
-			return true;
-		}
-
 		return $this->getCurrentTreeCount() < $this->getTreeLimit();
 	}
 
 	public function isTreeLimitExceeded(): bool
 	{
-		if ($this->isPro()) {
-			return false;
-		}
-
 		return $this->getCurrentTreeCount() > $this->getTreeLimit();
 	}
 

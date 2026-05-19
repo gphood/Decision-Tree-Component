@@ -34,15 +34,6 @@ return new class () implements InstallerScriptInterface {
 
 	public function preflight(string $type, InstallerAdapter $adapter): bool
 	{
-		if ($type === 'uninstall' && !$this->isBasePackageUninstalling() && $this->isPackageInstalled('pkg_decisiontree')) {
-			Factory::getApplication()->enqueueMessage(
-				'Uninstall the Decision Tree package instead of uninstalling the Decision Tree component directly.',
-				'error'
-			);
-
-			return false;
-		}
-
 		return true;
 	}
 
@@ -65,24 +56,5 @@ return new class () implements InstallerScriptInterface {
 			);
 
 		$db->setQuery($query)->execute();
-	}
-
-	private function isBasePackageUninstalling(): bool
-	{
-		return !empty($GLOBALS['decisiontree_base_package_uninstalling']);
-	}
-
-	private function isPackageInstalled(string $element): bool
-	{
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $db->getQuery(true)
-			->select('COUNT(*)')
-			->from($db->quoteName('#__extensions'))
-			->where($db->quoteName('type') . ' = ' . $db->quote('package'))
-			->where($db->quoteName('element') . ' = ' . $db->quote($element));
-
-		$db->setQuery($query);
-
-		return (int) $db->loadResult() > 0;
 	}
 };

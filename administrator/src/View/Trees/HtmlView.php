@@ -34,6 +34,8 @@ class HtmlView extends BaseHtmlView
 
 	public $isProEnabled;
 
+	public $editionLabel;
+
 	public $createLimitReached;
 
 	public $createLimitMessage;
@@ -52,6 +54,7 @@ class HtmlView extends BaseHtmlView
 		$this->filterForm = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 		$this->isProEnabled = DecisionTreeHelper::isProEnabled();
+		$this->editionLabel = DecisionTreeHelper::getEditionLabel();
 		$this->createLimitReached = !DecisionTreeHelper::canCreateTree();
 		$this->createLimitMessage = DecisionTreeHelper::getCreateLimitMessage();
 		$this->treeLimitExceeded = DecisionTreeHelper::isTreeLimitExceeded();

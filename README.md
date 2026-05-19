@@ -15,6 +15,13 @@ Create interactive decision trees in the Joomla administrator and display them a
 
 ## Installation
 
+Install the current free package:
+
+1. Go to System -> Install -> Extensions
+2. Upload `pkg_decisiontree-1.2.1.zip`
+
+Manual component/plugin installation is also supported:
+
 1. Install the component:
    - Go to System -> Install -> Extensions
    - Upload `com_decisiontree-1.2.1.zip`
@@ -75,7 +82,25 @@ Replace `1` with your tree ID.
 
 The free version allows one decision tree.
 
-To create additional trees, a Pro version will be available.
+Existing additional trees are not deleted when moving from Pro back to Free, but Free installs cannot create additional trees while the one-tree limit is reached.
+
+## Build Packages
+
+This public repository contains the free/core Decision Tree extension only. Pro-only implementation, installers and packaging live in the separate private Pro repository and must not be built or shipped from this repository.
+
+```sh
+./build-installers.sh
+```
+
+The public build creates:
+
+- `dist/com_decisiontree-1.2.1.zip`
+- `dist/plg_content_decisiontree-1.2.1.zip`
+- `dist/pkg_decisiontree-1.2.1.zip`
+
+The build script intentionally does not create any Pro package. If Pro is installed on a site, uninstall the Pro add-on before uninstalling the free/base package.
+
+Do not uninstall the component or plugins directly from Extensions Manager while their package is installed. Their installer scripts will block that path and ask you to uninstall the package instead.
 
 ## Example Use Cases
 
@@ -92,7 +117,7 @@ To create additional trees, a Pro version will be available.
 ## License
 
 This extension is released as a free version.
-A Pro version with additional capabilities will be available separately.
+Pro features are maintained separately in a private repository.
 
 ## Support
 

@@ -1,7 +1,7 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  com_decisiontree
+ * @package     Joomla.Package
+ * @subpackage  pkg_decisiontree
  *
  * @copyright   (C) 2026 GrantDev. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -27,21 +27,25 @@ return new class () implements InstallerScriptInterface {
 
 	public function uninstall(InstallerAdapter $adapter): bool
 	{
-		$this->removeAssets();
-
 		return true;
 	}
 
 	public function preflight(string $type, InstallerAdapter $adapter): bool
 	{
-		if ($type === 'uninstall' && !$this->isBasePackageUninstalling() && $this->isPackageInstalled('pkg_decisiontree')) {
+		if ($type !== 'uninstall') {
+			return true;
+		}
+
+		if ($this->isProPackageInstalled()) {
 			Factory::getApplication()->enqueueMessage(
-				'Uninstall the Decision Tree package instead of uninstalling the Decision Tree component directly.',
+				'Uninstall the Decision Tree Pro add-on before uninstalling the base Decision Tree package.',
 				'error'
 			);
 
 			return false;
 		}
+
+		$GLOBALS['decisiontree_base_package_uninstalling'] = true;
 
 		return true;
 	}
@@ -51,35 +55,14 @@ return new class () implements InstallerScriptInterface {
 		return true;
 	}
 
-	private function removeAssets(): void
-	{
-		$db = Factory::getContainer()->get(DatabaseInterface::class);
-		$query = $db->getQuery(true)
-			->delete($db->quoteName('#__assets'))
-			->where(
-				[
-					$db->quoteName('name') . ' = ' . $db->quote('com_decisiontree'),
-					$db->quoteName('name') . ' LIKE ' . $db->quote('com_decisiontree.%'),
-				],
-				'OR'
-			);
-
-		$db->setQuery($query)->execute();
-	}
-
-	private function isBasePackageUninstalling(): bool
-	{
-		return !empty($GLOBALS['decisiontree_base_package_uninstalling']);
-	}
-
-	private function isPackageInstalled(string $element): bool
+	private function isProPackageInstalled(): bool
 	{
 		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
 			->from($db->quoteName('#__extensions'))
 			->where($db->quoteName('type') . ' = ' . $db->quote('package'))
-			->where($db->quoteName('element') . ' = ' . $db->quote($element));
+			->where($db->quoteName('element') . ' = ' . $db->quote('pkg_decisiontreepro'));
 
 		$db->setQuery($query);
 

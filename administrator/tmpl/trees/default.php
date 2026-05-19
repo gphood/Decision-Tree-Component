@@ -21,6 +21,10 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 $hasActiveFilters = !empty($this->activeFilters);
 ?>
 <form action="<?php echo Route::_('index.php?option=com_decisiontree&view=trees'); ?>" method="post" name="adminForm" id="adminForm">
+	<div class="small text-muted mb-2">
+		<?php echo $this->escape($this->editionLabel); ?>
+	</div>
+
 	<?php if (!$this->isProEnabled && $this->treeLimitExceeded) : ?>
 		<div class="alert alert-warning">
 			<span class="icon-warning" aria-hidden="true"></span>
