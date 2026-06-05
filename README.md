@@ -84,6 +84,8 @@ The free version allows one decision tree.
 
 Existing additional trees are not deleted when moving from Pro back to Free, but Free installs cannot create additional trees while the one-tree limit is reached.
 
+If you need multiple decision trees, richer outcome content and additional productivity features, please see Decision Tree Pro: https://granthood.co.uk/joomla-extensions/decision-tree-pro
+
 ## Build Packages
 
 This public repository contains the free/core Decision Tree extension only. Pro-only implementation, installers and packaging live in the separate private Pro repository and must not be built or shipped from this repository.
