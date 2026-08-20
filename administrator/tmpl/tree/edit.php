@@ -35,6 +35,7 @@ HTMLHelper::_('behavior.keepalive');
 			</p>
 			<div class="com-decisiontree-question-editor" id="decisiontree-question-editor">
 				<div class="alert alert-warning" id="decisiontree-editor-message" hidden></div>
+				<div class="alert alert-success" id="decisiontree-path-health" role="status" aria-live="polite" hidden></div>
 				<div class="com-decisiontree-question-toolbar">
 					<div>
 						<label class="form-label" for="decisiontree-question-select"><?php echo Text::_('COM_DECISIONTREE_FIELD_QUESTION_LABEL'); ?></label>

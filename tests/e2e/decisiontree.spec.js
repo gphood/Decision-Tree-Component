@@ -35,7 +35,21 @@ test.describe.serial('com_decisiontree', () => {
 
 		await page.getByRole('button', { name: 'Load Demo Decision Tree' }).click();
 		await expect(page.locator('#decisiontree-question-select')).toHaveValue('q1');
+		await expect(page.locator('#decisiontree-question-select option').first()).toContainText('What will you mainly use the laptop for?');
 		await expect(page.locator('#decisiontree-question-text')).toHaveValue('What will you mainly use the laptop for?');
+		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Work / Office tasks');
+		await expect(page.locator('#decisiontree-path-health')).toContainText('All decision paths are valid.');
+		const nextQuestionLabels = await page.locator('#decisiontree-option-next-0 option').allTextContents();
+		expect(nextQuestionLabels).not.toContain('What will you mainly use the laptop for?');
+
+		await page.locator('#decisiontree-option-toggle-0').click();
+		await expect(page.locator('.com-decisiontree-option-editor').first().locator('.com-decisiontree-option-editor__body')).toBeHidden();
+		await page.locator('#decisiontree-option-toggle-0').click();
+		await expect(page.locator('.com-decisiontree-option-editor').first().locator('.com-decisiontree-option-editor__body')).toBeVisible();
+
+		await page.locator('#decisiontree-option-move-down-0').click();
+		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Gaming');
+		await page.locator('#decisiontree-option-move-up-1').click();
 		await expect(page.locator('#decisiontree-options input').first()).toHaveValue('Work / Office tasks');
 		await expect.poll(async () => {
 			const json = await page.locator('#jform_json_data').inputValue();
@@ -52,7 +66,7 @@ test.describe.serial('com_decisiontree', () => {
 		}).toBe(true);
 
 		await page.getByRole('button', { name: 'Save', exact: true }).click();
-		await expect(page.locator('#system-message-container, .alert-success')).toContainText(/saved|success/i);
+		await expect(page.locator('#system-message-container')).toContainText(/saved|success/i);
 
 		treeId = await page.locator('input[name="jform[id]"], #jform_id').first().inputValue();
 		expect(treeId, 'Saved tree ID').toMatch(/^\d+$/);

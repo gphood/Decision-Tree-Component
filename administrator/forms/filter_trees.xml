@@ -6,13 +6,13 @@
 			type="text"
 			label="COM_DECISIONTREE_FILTER_SEARCH_LABEL"
 			description="COM_DECISIONTREE_FILTER_SEARCH_DESC"
-			hint="JSEARCH_FILTER"
+			hint="COM_DECISIONTREE_FILTER_SEARCH_PLACEHOLDER"
 		/>
 
 		<field
 			name="state"
 			type="list"
-			label="JSTATUS"
+			label="COM_DECISIONTREE_FILTER_STATE_LABEL"
 			onchange="this.form.submit();"
 			validate="options"
 			>
@@ -20,6 +20,7 @@
 			<option value="*">JALL</option>
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
+			<option value="-1">JARCHIVED</option>
 			<option value="-2">JTRASHED</option>
 		</field>
 	</fields>
@@ -38,6 +39,10 @@
 			<option value="a.title DESC">JGLOBAL_TITLE_DESC</option>
 			<option value="a.state ASC">JSTATUS_ASC</option>
 			<option value="a.state DESC">JSTATUS_DESC</option>
+			<option value="a.modified DESC">COM_DECISIONTREE_SORT_MODIFIED_DESC</option>
+			<option value="a.modified ASC">COM_DECISIONTREE_SORT_MODIFIED_ASC</option>
+			<option value="a.created DESC">COM_DECISIONTREE_SORT_CREATED_DESC</option>
+			<option value="a.created ASC">COM_DECISIONTREE_SORT_CREATED_ASC</option>
 			<option value="a.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="a.id DESC">JGRID_HEADING_ID_DESC</option>
 		</field>

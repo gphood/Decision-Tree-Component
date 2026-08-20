@@ -12,6 +12,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 \defined('_JEXEC') or die;
 
 use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
+use GrantDev\Component\DecisionTree\Administrator\Service\TreeValidator;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
@@ -61,25 +62,99 @@ class ImportModel extends BaseDatabaseModel
 			return null;
 		}
 
-		if (empty($export['tree_data']) || !\is_array($export['tree_data'])) {
+		if (!\array_key_exists('tree_data', $export)) {
 			$this->setError(Text::_('COM_DECISIONTREE_IMPORT_ERROR_TREE_DATA'));
 
 			return null;
 		}
 
-		if (empty($export['tree_data']['version']) || empty($export['tree_data']['start']) || empty($export['tree_data']['questions']) || !\is_array($export['tree_data']['questions'])) {
-			$this->setError(Text::_('COM_DECISIONTREE_IMPORT_ERROR_TREE_DATA_REQUIRED'));
+		$treeData = $this->decodeTreeData($export['tree_data']);
+
+		if ($treeData === null) {
+			$this->setError(Text::_('COM_DECISIONTREE_IMPORT_ERROR_TREE_DATA_DECODE'));
 
 			return null;
 		}
 
-		if (empty($export['tree_data']['questions'][(string) $export['tree_data']['start']])) {
-			$this->setError(Text::sprintf('COM_DECISIONTREE_ERROR_JSON_START_QUESTION_MISSING', (string) $export['tree_data']['start']));
+		if ($this->isWrappedTreeData($treeData)) {
+			$treeData = $this->decodeTreeData($treeData['tree_data']);
+		}
+
+		if ($treeData === null) {
+			$this->setError(Text::_('COM_DECISIONTREE_IMPORT_ERROR_TREE_DATA_DECODE'));
 
 			return null;
 		}
+
+		$missingFields = [];
+
+		if (empty($treeData['start'])) {
+			$missingFields[] = 'start';
+		}
+
+		if (empty($treeData['questions']) || !\is_array($treeData['questions'])) {
+			$missingFields[] = 'questions';
+		}
+
+		if ($missingFields !== []) {
+			$this->setError(Text::sprintf('COM_DECISIONTREE_IMPORT_ERROR_TREE_DATA_REQUIRED_FIELDS', implode(', ', $missingFields)));
+
+			return null;
+		}
+
+		if (empty($treeData['version'])) {
+			$treeData['version'] = (string) ($export['export_version'] ?? '1.0');
+		}
+
+		if (!\array_key_exists((string) $treeData['start'], $treeData['questions'])) {
+			$this->setError(Text::sprintf('COM_DECISIONTREE_ERROR_JSON_START_QUESTION_MISSING', (string) $treeData['start']));
+
+			return null;
+		}
+
+		$analysis = TreeValidator::analyse($treeData);
+
+		if ($analysis['errors'] !== []) {
+			$this->setError($analysis['errors'][0]);
+
+			return null;
+		}
+
+		$export['tree_data'] = $treeData;
 
 		return $export;
+	}
+
+	private function decodeTreeData($rawTreeData): ?array
+	{
+		if (\is_array($rawTreeData)) {
+			return $rawTreeData;
+		}
+
+		if (!\is_string($rawTreeData) || trim($rawTreeData) === '') {
+			return null;
+		}
+
+		$treeData = json_decode($rawTreeData, true);
+
+		if (json_last_error() !== JSON_ERROR_NONE || !\is_array($treeData)) {
+			return null;
+		}
+
+		return $treeData;
+	}
+
+	private function isWrappedTreeData(array $treeData): bool
+	{
+		if (!\array_key_exists('tree_data', $treeData)) {
+			return false;
+		}
+
+		if (!empty($treeData['start']) || !empty($treeData['questions'])) {
+			return false;
+		}
+
+		return \is_array($treeData['tree_data']) || \is_string($treeData['tree_data']);
 	}
 
 	public function getStateLabel($state): string

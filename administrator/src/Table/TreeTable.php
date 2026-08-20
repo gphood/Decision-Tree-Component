@@ -14,6 +14,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Table;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseDriver;
+use GrantDev\Component\DecisionTree\Administrator\Service\TreeValidator;
 
 class TreeTable extends Table
 {
@@ -40,34 +41,18 @@ class TreeTable extends Table
 			return false;
 		}
 
-		$tree = json_decode($jsonData);
+		$tree = json_decode($jsonData, true);
 
-		if (json_last_error() !== JSON_ERROR_NONE || !\is_object($tree)) {
+		if (json_last_error() !== JSON_ERROR_NONE || !\is_array($tree)) {
 			$this->setError(Text::_('COM_DECISIONTREE_ERROR_INVALID_JSON'));
 
 			return false;
 		}
 
-		if (!property_exists($tree, 'start') || trim((string) $tree->start) === '') {
-			$this->setError(Text::_('COM_DECISIONTREE_ERROR_JSON_START_REQUIRED'));
+		$analysis = TreeValidator::analyse($tree);
 
-			return false;
-		}
-
-		if (!property_exists($tree, 'questions') || !\is_object($tree->questions)) {
-			$this->setError(Text::_('COM_DECISIONTREE_ERROR_NO_QUESTIONS'));
-
-			return false;
-		}
-
-		if (\count(get_object_vars($tree->questions)) === 0) {
-			$this->setError(Text::_('COM_DECISIONTREE_ERROR_NO_QUESTIONS'));
-
-			return false;
-		}
-
-		if (!property_exists($tree->questions, (string) $tree->start)) {
-			$this->setError(Text::sprintf('COM_DECISIONTREE_ERROR_JSON_START_QUESTION_MISSING', (string) $tree->start));
+		if ($analysis['errors'] !== []) {
+			$this->setError($analysis['errors'][0]);
 
 			return false;
 		}

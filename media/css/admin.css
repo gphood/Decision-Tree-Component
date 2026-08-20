@@ -146,22 +146,83 @@
 }
 
 .com-decisiontree-option-editor__header {
+	align-items: center;
 	background: var(--com-decisiontree-panel-strong);
 	border-bottom: 1px solid var(--com-decisiontree-border);
+	display: flex;
+	gap: .5rem;
+	justify-content: space-between;
 	margin: -1rem -1rem 1rem;
 	padding: .75rem 1rem;
 }
 
 .com-decisiontree-option-editor__header h4 {
+	flex: 1 1 auto;
 	font-size: 1rem;
 	margin: 0;
+	min-width: 0;
+}
+
+.com-decisiontree-option-editor__heading {
+	display: grid;
+	gap: .15rem;
+}
+
+.com-decisiontree-option-editor__heading-main {
+	font-weight: 600;
+}
+
+.com-decisiontree-option-editor__heading-meta {
+	color: #596277;
+	font-size: .82rem;
+	font-weight: 400;
+	line-height: 1.3;
+}
+
+.com-decisiontree-option-editor__header-actions {
+	display: inline-flex;
+	flex: 0 0 auto;
+	gap: .35rem;
+}
+
+.com-decisiontree-option-editor__move.btn {
+	font-size: .72rem;
+	line-height: 1.2;
+	padding: .2rem .45rem;
+}
+
+.com-decisiontree-option-editor__toggle.btn {
+	font-size: .72rem;
+	line-height: 1.2;
+	padding: .2rem .45rem;
+}
+
+.com-decisiontree-option-editor.is-collapsed .com-decisiontree-option-editor__header {
+	margin-bottom: -1rem;
+}
+
+.com-decisiontree-options-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5rem;
+	margin-bottom: .75rem;
 }
 
 .com-decisiontree-option-editor__body {
-	align-items: start;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.com-decisiontree-option-editor__top-row {
+	align-items: end;
 	display: grid;
 	gap: .75rem;
-	grid-template-columns: minmax(0, 1fr) minmax(12rem, 14rem) minmax(10rem, .75fr) auto;
+	grid-template-columns: minmax(16rem, 1fr) minmax(12rem, 16rem) auto;
+}
+
+.com-decisiontree-option-editor__text {
+	max-width: min(100%, 850px);
 }
 
 .com-decisiontree-question-editor input,
@@ -181,7 +242,6 @@
 .com-decisiontree-option-editor__remove {
 	display: flex;
 	justify-content: flex-end;
-	padding-top: calc(1.5rem + .5rem);
 }
 
 #decisiontree-delete-question,
@@ -214,6 +274,10 @@
 .com-decisiontree-result-link-text,
 .com-decisiontree-result-link-url {
 	min-width: 0;
+}
+
+.com-decisiontree-result-link-url {
+	max-width: min(100%, 700px);
 }
 
 .form-check.com-decisiontree-result-link-target {
@@ -322,21 +386,6 @@
 	margin-top: .25rem;
 }
 
-@media (max-width: 1199px) {
-	.com-decisiontree-option-editor__body {
-		grid-template-columns: minmax(0, 1fr) minmax(12rem, 14rem);
-	}
-
-	.com-decisiontree-option-editor__detail,
-	.com-decisiontree-option-editor__remove {
-		grid-column: 1 / -1;
-	}
-
-	.com-decisiontree-option-editor__remove {
-		padding-top: 0;
-	}
-}
-
 @media (max-width: 991px) {
 	.com-decisiontree-import-field {
 		grid-template-columns: minmax(0, 1fr);
@@ -354,7 +403,7 @@
 
 @media (max-width: 767px) {
 	.com-decisiontree-question-toolbar,
-	.com-decisiontree-option-editor__body,
+	.com-decisiontree-option-editor__top-row,
 	.com-decisiontree-result-link-fields {
 		align-items: stretch;
 		grid-template-columns: 1fr;

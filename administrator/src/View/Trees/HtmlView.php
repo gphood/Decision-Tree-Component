@@ -45,6 +45,8 @@ class HtmlView extends BaseHtmlView
 
 	public $treeLimitExceededMessage;
 
+	public $canImport;
+
 	public function display($tpl = null): void
 	{
 		DecisionTreeHelper::loadAdminLanguage();
@@ -61,6 +63,11 @@ class HtmlView extends BaseHtmlView
 		$this->treeLimitExceeded = DecisionTreeHelper::isTreeLimitExceeded();
 		$this->treeLimitExceededMessage = DecisionTreeHelper::getTreeLimitExceededMessage();
 		$this->showSearchTools = DecisionTreeHelper::shouldShowListSearchTools();
+		$actions = ContentHelper::getActions('com_decisiontree');
+		$this->canImport = DecisionTreeHelper::canImportTree() && (
+			(DecisionTreeHelper::canCreateTree() && $actions->get('core.create'))
+			|| (DecisionTreeHelper::getCurrentTreeCount() > 0 && $actions->get('core.edit'))
+		);
 
 		$this->addToolbar();
 		Factory::getApplication()->getDispatcher()->dispatch(
@@ -82,11 +89,7 @@ class HtmlView extends BaseHtmlView
 			ToolbarHelper::addNew('tree.add');
 		}
 
-		$actions = ContentHelper::getActions('com_decisiontree');
-		$canImport = (DecisionTreeHelper::canCreateTree() && $actions->get('core.create'))
-			|| (DecisionTreeHelper::getCurrentTreeCount() > 0 && $actions->get('core.edit'));
-
-		if (DecisionTreeHelper::canImportTree() && $canImport) {
+		if ($this->canImport) {
 			ToolbarHelper::custom('trees.import', 'upload', '', 'COM_DECISIONTREE_TOOLBAR_IMPORT_JSON', false);
 		}
 

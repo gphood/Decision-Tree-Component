@@ -10,15 +10,19 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 
 HTMLHelper::_('behavior.multiselect');
 
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn = $this->escape($this->state->get('list.direction'));
 $hasActiveFilters = !empty($this->activeFilters);
+$dateFormat = Text::_('DATE_FORMAT_LC4');
+$nullDate = Factory::getDbo()->getNullDate();
 ?>
 <form action="<?php echo Route::_('index.php?option=com_decisiontree&view=trees'); ?>" method="post" name="adminForm" id="adminForm">
 	<div class="small text-muted mb-2">
@@ -49,10 +53,15 @@ $hasActiveFilters = !empty($this->activeFilters);
 				<span class="icon-tree"></span>
 			</div>
 			<h2><?php echo Text::_('COM_DECISIONTREE_EMPTY_TITLE'); ?></h2>
-			<p><?php echo Text::_('COM_DECISIONTREE_EMPTY_DESCRIPTION'); ?></p>
+			<p><?php echo Text::_($this->isProEnabled ? 'COM_DECISIONTREE_EMPTY_DESCRIPTION_PRO' : 'COM_DECISIONTREE_EMPTY_DESCRIPTION'); ?></p>
 			<a class="btn btn-primary" href="<?php echo Route::_('index.php?option=com_decisiontree&task=tree.add'); ?>">
 				<?php echo Text::_('COM_DECISIONTREE_EMPTY_ADD_BUTTON'); ?>
 			</a>
+			<?php if ($this->canImport) : ?>
+				<a class="btn btn-secondary ms-2" href="<?php echo Route::_('index.php?option=com_decisiontree&task=trees.import&' . Session::getFormToken() . '=1'); ?>">
+					<?php echo Text::_('COM_DECISIONTREE_TOOLBAR_IMPORT_JSON'); ?>
+				</a>
+			<?php endif; ?>
 		</div>
 	<?php elseif (empty($this->items)) : ?>
 		<div class="alert alert-info">
@@ -76,10 +85,27 @@ $hasActiveFilters = !empty($this->activeFilters);
 					<th scope="col" class="w-10 text-center">
 						<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
 					</th>
-					<th scope="col" class="w-20">
-						<?php echo Text::_('COM_DECISIONTREE_HEADING_EMBED_CODE'); ?>
+					<th scope="col" class="w-8 text-center">
+						<?php echo Text::_('COM_DECISIONTREE_HEADING_QUESTIONS'); ?>
 					</th>
-					<th scope="col" class="w-5 text-center">
+					<th scope="col" class="w-8 text-center">
+						<?php echo Text::_('COM_DECISIONTREE_HEADING_OUTCOMES'); ?>
+					</th>
+					<th scope="col" class="w-10 text-center">
+						<?php echo Text::_('COM_DECISIONTREE_HEADING_HEALTH'); ?>
+					</th>
+					<?php if ($this->isProEnabled) : ?>
+						<th scope="col" class="w-10 text-center">
+							<?php echo Text::_('COM_DECISIONTREE_HEADING_RICH_BLOCKS'); ?>
+						</th>
+					<?php endif; ?>
+					<th scope="col" class="w-12">
+						<?php echo HTMLHelper::_('searchtools.sort', 'COM_DECISIONTREE_HEADING_MODIFIED', 'a.modified', $listDirn, $listOrder); ?>
+					</th>
+					<th scope="col" class="w-12 d-none d-xl-table-cell">
+						<?php echo HTMLHelper::_('searchtools.sort', 'COM_DECISIONTREE_HEADING_CREATED', 'a.created', $listDirn, $listOrder); ?>
+					</th>
+					<th scope="col" class="w-5 text-center d-none d-lg-table-cell">
 						<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 					</th>
 				</tr>
@@ -97,17 +123,50 @@ $hasActiveFilters = !empty($this->activeFilters);
 							<div class="small break-word">
 								<?php echo Text::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 							</div>
+							<div class="small">
+								<code>{decisiontree id=<?php echo (int) $item->id; ?>}</code>
+							</div>
 						</th>
 						<td class="text-center">
 							<?php echo HTMLHelper::_('jgrid.published', $item->state, $i, 'trees.', true, 'cb'); ?>
 						</td>
-						<td>
-							<code>{decisiontree id=<?php echo (int) $item->id; ?>}</code>
-							<div class="small text-muted">
-								<?php echo Text::_('COM_DECISIONTREE_EMBED_LIST_HELP'); ?>
-							</div>
+						<td class="text-center">
+							<?php echo $item->tree_data_valid ? (int) $item->question_count : '<span class="text-muted">&ndash;</span>'; ?>
 						</td>
 						<td class="text-center">
+							<?php echo $item->tree_data_valid ? (int) $item->outcome_count : '<span class="text-muted">&ndash;</span>'; ?>
+						</td>
+						<td class="text-center">
+							<?php if (!$item->tree_data_valid || (int) $item->path_error_count > 0) : ?>
+								<span class="badge bg-danger"><?php echo Text::sprintf('COM_DECISIONTREE_PATH_HEALTH_INVALID', max(1, (int) $item->path_error_count)); ?></span>
+							<?php elseif ((int) $item->path_warning_count > 0) : ?>
+								<span class="badge bg-warning text-dark"><?php echo Text::sprintf('COM_DECISIONTREE_PATH_HEALTH_WARNINGS', (int) $item->path_warning_count); ?></span>
+							<?php else : ?>
+								<span class="badge bg-success"><?php echo Text::_('COM_DECISIONTREE_PATH_HEALTH_VALID'); ?></span>
+							<?php endif; ?>
+						</td>
+						<?php if ($this->isProEnabled) : ?>
+							<td class="text-center">
+								<?php if ($item->tree_data_valid && (int) $item->rich_block_outcome_count > 0) : ?>
+									<span class="badge bg-info text-light">
+										<?php echo Text::sprintf('COM_DECISIONTREE_RICH_BLOCKS_COUNT', (int) $item->rich_block_outcome_count); ?>
+									</span>
+								<?php else : ?>
+									<span class="text-muted"><?php echo Text::_('COM_DECISIONTREE_NO_RICH_BLOCKS'); ?></span>
+								<?php endif; ?>
+							</td>
+						<?php endif; ?>
+						<td>
+							<?php if (!empty($item->modified) && $item->modified !== $nullDate) : ?>
+								<?php echo HTMLHelper::_('date', $item->modified, $dateFormat); ?>
+							<?php else : ?>
+								<span class="text-muted">&ndash;</span>
+							<?php endif; ?>
+						</td>
+						<td class="d-none d-xl-table-cell">
+							<?php echo !empty($item->created) ? HTMLHelper::_('date', $item->created, $dateFormat) : '<span class="text-muted">&ndash;</span>'; ?>
+						</td>
+						<td class="text-center d-none d-lg-table-cell">
 							<?php echo (int) $item->id; ?>
 						</td>
 					</tr>

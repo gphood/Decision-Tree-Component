@@ -28,7 +28,13 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The tests log in to Joomla admin, open Components -> Decision Tree, create a tree with the demo loader, reopen it, verify the builder state, then visit the frontend and click through to a result before using Reset.
+Run the standalone path validator checks with:
+
+```sh
+php tests/tree-validator.php
+```
+
+The browser tests log in to Joomla admin, open Components -> Decision Tree, create a tree with the demo loader, verify readable question labels, path health, option collapsing and option reordering, reopen the tree, then visit the frontend and click through to a result before using Reset.
 
 The target site should not already contain a decision tree, because the free version only allows one tree.
 
