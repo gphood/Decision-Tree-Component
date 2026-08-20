@@ -32,6 +32,9 @@ The tests log in to Joomla admin, open Components -> Decision Tree, create a tre
 
 The target site should not already contain a decision tree, because the free version only allows one tree.
 
+The frontend suite also verifies backward-compatible result rendering and the
+generic structured-result extension hook used by compatible add-ons.
+
 ## Joomla 6
 
 To run the same suite against a Joomla 6 test site, create `.env.joomla6.local`:

@@ -14,6 +14,7 @@ namespace GrantDev\Component\DecisionTree\Site\View\Tree;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\Event\Event;
 
 class HtmlView extends BaseHtmlView
 {
@@ -51,6 +52,11 @@ class HtmlView extends BaseHtmlView
 
 		$wa->useStyle('com_decisiontree.frontend.styles');
 		$wa->useScript('com_decisiontree.frontend');
+
+		Factory::getApplication()->getDispatcher()->dispatch(
+			'onDecisionTreePrepareFrontend',
+			new Event('onDecisionTreePrepareFrontend', ['subject' => $this])
+		);
 
 		parent::display($tpl);
 	}

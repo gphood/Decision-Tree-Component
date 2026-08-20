@@ -16,12 +16,22 @@
   - `site`
   - `media`
   - `plugins/content/decisiontree`
-- `build-installers.sh` creates the public free package only: `dist/pkg_decisiontree-<version>.zip`.
+- `build-installers.sh` reads the release version from `decisiontree.xml`, validates the related manifests/assets, and creates the public free package only: `dist/pkg_decisiontree-<version>.zip`.
 - The public repository must not generate `pkg_decisiontreepro`, include a `decisiontreepro` plugin, or contain Pro-only MVC implementation such as duplicate-tree tasks.
 - The base/free package installer may keep harmless downgrade protection, such as blocking base package uninstall while a Pro add-on package is installed.
 - Child extension installer scripts block direct uninstall while their owning package is installed. Uninstall the package rather than the component or plugins.
 - Free edition limits are enforced centrally. Existing extra trees from a previous Pro install are left intact, but Free cannot create additional trees while over the limit.
 - Pro feature hooks in shared code should stay inert without the private Pro implementation.
+
+## Free/Pro Integration Contract
+
+- Free dispatches these inert Joomla events for add-ons:
+  - `onDecisionTreePrepareTreesToolbar`
+  - `onDecisionTreePrepareEditor`
+  - `onDecisionTreePrepareFrontend`
+- Rich result add-ons may provide `window.DecisionTreeResultExtensions.renderAdminEditor` and `renderFrontendBlocks`.
+- The frontend initialiser waits for `DOMContentLoaded` so dependent add-on scripts can register those hooks first.
+- Pro must use these hooks and Joomla's Web Asset Manager. It must not patch installed Free PHP files.
 
 ## Private Pro Repository Handoff
 

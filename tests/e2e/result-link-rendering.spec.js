@@ -3,7 +3,7 @@ const { expect, test } = require('@playwright/test');
 
 const scriptPath = path.resolve(__dirname, '../../media/js/decisiontree.js');
 
-async function renderTree(page, result) {
+async function renderTree(page, result, options = {}) {
 	const tree = {
 		start: 'q1',
 		questions: {
@@ -30,6 +30,23 @@ async function renderTree(page, result) {
 			};
 		</script>
 	`);
+
+	if (options.installResultExtension) {
+		await page.evaluate(() => {
+			window.DecisionTreeResultExtensions = {
+				renderFrontendBlocks: (container, blocks) => {
+					blocks.forEach((block) => {
+						const paragraph = document.createElement('p');
+						paragraph.className = 'test-result-extension';
+						paragraph.textContent = block.content || '';
+						container.appendChild(paragraph);
+					});
+
+					return blocks.length > 0;
+				},
+			};
+		});
+	}
 
 	await page.addScriptTag({ path: scriptPath });
 	await page.getByRole('button', { name: 'Finish' }).click();
@@ -108,5 +125,17 @@ test.describe('decision tree result links', () => {
 
 		await expect(page.getByText('Unsafe link result')).toBeVisible();
 		await expect(page.getByRole('link', { name: 'Bad link' })).toHaveCount(0);
+	});
+
+	test('allows an installed result extension to render structured blocks', async ({ page }) => {
+		await renderTree(page, {
+			text: 'Fallback result',
+			blocks: [
+				{ type: 'custom', content: 'Extended result' },
+			],
+		}, { installResultExtension: true });
+
+		await expect(page.locator('.test-result-extension')).toHaveText('Extended result');
+		await expect(page.getByText('Fallback result')).toHaveCount(0);
 	});
 });

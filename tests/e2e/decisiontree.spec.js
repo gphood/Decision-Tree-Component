@@ -127,7 +127,7 @@ async function openDecisionTreeComponent(page) {
 		.or(page.getByRole('button', { name: /^Components$/i }));
 
 	await components.click();
-	await page.getByRole('link', { name: /Decision Tree/i }).click();
+	await page.getByRole('link', { name: 'Decision Tree', exact: true }).click();
 	await page.waitForURL(/option=com_decisiontree/);
 }
 

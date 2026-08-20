@@ -17,6 +17,7 @@ use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\Event\Event;
 
 class HtmlView extends BaseHtmlView
 {
@@ -62,6 +63,10 @@ class HtmlView extends BaseHtmlView
 		$this->showSearchTools = DecisionTreeHelper::shouldShowListSearchTools();
 
 		$this->addToolbar();
+		Factory::getApplication()->getDispatcher()->dispatch(
+			'onDecisionTreePrepareTreesToolbar',
+			new Event('onDecisionTreePrepareTreesToolbar', ['subject' => $this])
+		);
 
 		Factory::getApplication()->getDocument()->getWebAssetManager()
 			->registerAndUseStyle('com_decisiontree.admin', 'media/com_decisiontree/css/admin.css');

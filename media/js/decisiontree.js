@@ -123,8 +123,27 @@
 
 		const resultWrap = document.createElement('div');
 		resultWrap.className = 'gd-decisiontree__result';
+		const extendedRenderer = window.DecisionTreeResultExtensions?.renderFrontendBlocks;
+		let renderedByExtension = false;
 
-		const blocks = normalizeResultBlocks(result);
+		if (
+			typeof extendedRenderer === 'function'
+			&& result
+			&& typeof result === 'object'
+			&& !Array.isArray(result)
+			&& Array.isArray(result.blocks)
+		) {
+			try {
+				renderedByExtension = extendedRenderer(resultWrap, result.blocks, {
+					getSafeLinkUrl,
+					text,
+				}) === true;
+			} catch (error) {
+				console.error('Decision Tree result renderer extension failed.', error);
+			}
+		}
+
+		const blocks = renderedByExtension ? [] : normalizeResultBlocks(result);
 
 		blocks.forEach((block) => {
 			if (!block) {
@@ -233,38 +252,51 @@
 		}));
 	};
 
-	document.querySelectorAll('.gd-decisiontree').forEach((container) => {
-		const id = container.getAttribute('data-tree-id');
-		const dataId = container.getAttribute('data-tree-data-id') || `decisiontree-data-${id}`;
-		const data = document.getElementById(dataId);
+	const initDecisionTrees = () => {
+		document.querySelectorAll('.gd-decisiontree').forEach((container) => {
+			if (container.dataset.decisionTreeInitialised === 'true') {
+				return;
+			}
 
-		if (!id || !data) {
-			return;
-		}
+			const id = container.getAttribute('data-tree-id');
+			const dataId = container.getAttribute('data-tree-data-id') || `decisiontree-data-${id}`;
+			const data = document.getElementById(dataId);
 
-		let tree;
+			if (!id || !data) {
+				return;
+			}
 
-		try {
-			tree = JSON.parse(data.textContent || '{}');
-		} catch (error) {
-			return;
-		}
+			let tree;
 
-		const content = document.createElement('div');
-		content.className = 'gd-decisiontree__content';
+			try {
+				tree = JSON.parse(data.textContent || '{}');
+			} catch (error) {
+				return;
+			}
 
-		const controls = document.createElement('div');
-		controls.className = 'gd-decisiontree__controls';
+			const content = document.createElement('div');
+			content.className = 'gd-decisiontree__content';
 
-		container.append(content, controls);
+			const controls = document.createElement('div');
+			controls.className = 'gd-decisiontree__controls';
 
-		renderQuestion({
-			container,
-			content,
-			controls,
-			currentQuestionId: null,
-			history: [],
-			tree,
-		}, tree.start, false);
-	});
+			container.append(content, controls);
+			container.dataset.decisionTreeInitialised = 'true';
+
+			renderQuestion({
+				container,
+				content,
+				controls,
+				currentQuestionId: null,
+				history: [],
+				tree,
+			}, tree.start, false);
+		});
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initDecisionTrees);
+	} else {
+		initDecisionTrees();
+	}
 })();

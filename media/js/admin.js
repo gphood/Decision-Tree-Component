@@ -384,6 +384,28 @@
 
 				detailWrap.append(nextLabel, nextSelect);
 			} else {
+				const extendedEditor = window.DecisionTreeResultExtensions?.renderAdminEditor;
+
+				if (typeof extendedEditor === 'function') {
+					try {
+						const handled = extendedEditor({
+							detailWrap,
+							getResultLink,
+							getResultText,
+							option,
+							setOptionResult,
+							syncTextarea,
+							text,
+						});
+
+						if (handled) {
+							return;
+						}
+					} catch (error) {
+						console.error('Decision Tree result editor extension failed.', error);
+					}
+				}
+
 				const resultLabel = document.createElement('label');
 				resultLabel.className = 'form-label';
 				resultLabel.setAttribute('for', `decisiontree-option-result-${index}`);

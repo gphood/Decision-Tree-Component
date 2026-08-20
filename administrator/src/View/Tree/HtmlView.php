@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\Event\Event;
 
 class HtmlView extends BaseHtmlView
 {
@@ -36,6 +37,11 @@ class HtmlView extends BaseHtmlView
 		Factory::getApplication()->getDocument()->getWebAssetManager()
 			->registerAndUseStyle('com_decisiontree.admin', 'media/com_decisiontree/css/admin.css')
 			->registerAndUseScript('com_decisiontree.admin', 'media/com_decisiontree/js/admin.js', [], ['defer' => true]);
+
+		Factory::getApplication()->getDispatcher()->dispatch(
+			'onDecisionTreePrepareEditor',
+			new Event('onDecisionTreePrepareEditor', ['subject' => $this])
+		);
 
 		parent::display($tpl);
 	}
