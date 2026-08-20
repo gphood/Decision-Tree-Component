@@ -6,12 +6,12 @@
 		<element>decisiontree</element>
 		<type>plugin</type>
 		<folder>content</folder>
-		<version>1.2.2</version>
+		<version>1.2.3</version>
 		<infourl title="Decision Tree">https://github.com/gphood/Decision-Tree-Component</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/gphood/Decision-Tree-Component/releases/download/v1.2.2/pkg_decisiontree-1.2.2.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/gphood/Decision-Tree-Component/releases/download/v1.2.3/pkg_decisiontree-1.2.3.zip</downloadurl>
 		</downloads>
-		<sha256>eb8d43c2190e45c5b57354ebb9b4e4da0f3707d82841ebf00d62fea2312da05d</sha256>
+		<sha256>3a959406087d64944a589d77fe5575e651126a2241e9cb4974d034c9b4447ff4</sha256>
 		<targetplatform name="joomla" version="[56]\..*" />
 		<php_minimum>8.1</php_minimum>
 	</update>
