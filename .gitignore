@@ -18,6 +18,9 @@ screenshots/
 *.tmp
 build/tmp/
 
+# Private Pro source belongs in the separate private repository
+pro/
+
 # IDE
 .idea/
 .vscode/
