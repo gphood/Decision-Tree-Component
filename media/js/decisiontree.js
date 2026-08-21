@@ -5,6 +5,11 @@
 		window.Joomla && Joomla.Text ? Joomla.Text._(key, key) : key
 	);
 
+	const sprintf = (key, ...values) => values.reduce(
+		(output, value) => output.replace(/%s|%d/, value),
+		text(key),
+	);
+
 	const findQuestion = (tree, questionId) => {
 		if (!tree || !tree.questions) {
 			return null;
@@ -35,11 +40,11 @@
 		return result;
 	};
 
-	const createButton = (text, className, onClick) => {
+	const createButton = (label, className, onClick) => {
 		const button = document.createElement('button');
 		button.type = 'button';
 		button.className = className;
-		button.textContent = text;
+		button.textContent = label;
 		button.addEventListener('click', onClick);
 
 		return button;
@@ -105,6 +110,67 @@
 		];
 	};
 
+	const createUuid = () => {
+		if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+			return window.crypto.randomUUID();
+		}
+
+		const values = new Uint8Array(16);
+
+		if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+			window.crypto.getRandomValues(values);
+		} else {
+			values.forEach((value, index) => {
+				values[index] = Math.floor(Math.random() * 256);
+			});
+		}
+
+		values[6] = (values[6] & 0x0f) | 0x40;
+		values[8] = (values[8] & 0x3f) | 0x80;
+		const hex = Array.from(values, (value) => value.toString(16).padStart(2, '0')).join('');
+
+		return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+	};
+
+	const normalizeTreeId = (value) => (/^\d+$/.test(String(value || '')) ? Number(value) : String(value || ''));
+
+	const commonEventDetail = (state, questionId = state.currentQuestionId) => {
+		const question = findQuestion(state.tree, questionId);
+
+		return {
+			schemaVersion: 1,
+			treeId: normalizeTreeId(state.treeId),
+			instanceId: state.instanceId,
+			runId: state.runId,
+			source: state.source,
+			step: state.history.length + 1,
+			questionId: questionId === null || questionId === undefined ? '' : String(questionId),
+			questionText: String(question?.question_text || ''),
+		};
+	};
+
+	const emitInteraction = (state, eventName, extra = {}, questionId = state.currentQuestionId) => {
+		state.container.dispatchEvent(new CustomEvent(`decisiontree:${eventName}`, {
+			bubbles: true,
+			detail: {
+				...commonEventDetail(state, questionId),
+				...extra,
+			},
+		}));
+	};
+
+	const getOptionId = (option, index) => {
+		const optionId = String(option?.id || '').trim();
+
+		return optionId !== '' ? optionId : `o${index + 1}`;
+	};
+
+	const getOutcomeKey = (questionId, optionId, result) => (
+		typeof result === 'string' || typeof result === 'number'
+			? `result:${String(result)}`
+			: `terminal:${String(questionId)}:${String(optionId)}`
+	);
+
 	const renderFallback = (state, missingQuestionId) => {
 		console.warn(`Decision tree question not found: ${missingQuestionId}`);
 
@@ -112,10 +178,12 @@
 
 		const message = document.createElement('div');
 		message.className = 'gd-decisiontree__error';
+		message.tabIndex = -1;
 		message.textContent = text('COM_DECISIONTREE_JS_OPTION_NOT_CONFIGURED');
 		state.content.appendChild(message);
 
 		renderControls(state);
+		message.focus();
 	};
 
 	const renderResult = (container, result) => {
@@ -123,6 +191,7 @@
 
 		const resultWrap = document.createElement('div');
 		resultWrap.className = 'gd-decisiontree__result';
+		resultWrap.tabIndex = -1;
 		const extendedRenderer = window.DecisionTreeResultExtensions?.renderFrontendBlocks;
 		let renderedByExtension = false;
 
@@ -179,13 +248,17 @@
 		});
 
 		container.appendChild(resultWrap);
+
+		return resultWrap;
 	};
 
-	const renderQuestion = (state, questionId, pushHistory = true) => {
+	const renderQuestion = (state, questionId, pushHistory = true, moveFocus = false) => {
 		const question = findQuestion(state.tree, questionId);
 
 		if (!question) {
-			return;
+			renderFallback(state, questionId);
+
+			return false;
 		}
 
 		if (pushHistory && state.currentQuestionId !== null) {
@@ -195,108 +268,201 @@
 		state.currentQuestionId = questionId;
 		state.content.replaceChildren();
 
+		if (state.tree.settings?.show_step_number === true) {
+			const step = document.createElement('div');
+			step.className = 'gd-decisiontree__step';
+			step.setAttribute('aria-live', 'polite');
+			step.textContent = sprintf('COM_DECISIONTREE_JS_STEP_NUMBER', state.history.length + 1);
+			state.content.appendChild(step);
+		}
+
 		const questionText = document.createElement('div');
 		questionText.className = 'gd-decisiontree__question';
+		questionText.setAttribute('role', 'heading');
+		questionText.setAttribute('aria-level', '3');
+		questionText.tabIndex = -1;
 		questionText.textContent = question.question_text || '';
 		state.content.appendChild(questionText);
 
 		const options = document.createElement('div');
 		options.className = 'gd-decisiontree__options';
 
-		(question.options || []).forEach((option) => {
-			const button = createButton(option.text || option.label || option.option_text || '', 'gd-decisiontree__option', () => {
-				if (option.next !== undefined && option.next !== null && option.next !== '') {
+		(question.options || []).forEach((option, optionIndex) => {
+			const optionId = getOptionId(option, optionIndex);
+			const optionText = String(option.text || option.label || option.option_text || '');
+			const button = createButton(optionText, 'gd-decisiontree__option', () => {
+				const hasNext = option.next !== undefined && option.next !== null && option.next !== '';
+				const hasResult = option.result !== undefined && option.result !== null && option.result !== '';
+				const eventDetail = {
+					optionId,
+					optionIndex,
+					optionText,
+					nextQuestionId: hasNext ? String(option.next) : '',
+					completesTree: !hasNext && hasResult,
+				};
+
+				emitInteraction(state, 'answer', eventDetail, questionId);
+
+				if (hasNext) {
 					if (!findQuestion(state.tree, option.next)) {
 						renderFallback(state, option.next);
 
 						return;
 					}
 
-					renderQuestion(state, option.next);
+					renderQuestion(state, option.next, true, true);
 
 					return;
 				}
 
-				if (option.result !== undefined && option.result !== null && option.result !== '') {
+				if (hasResult) {
+					const completedStep = state.history.length + 1;
 					state.history.push(state.currentQuestionId);
 					state.currentQuestionId = null;
-					renderResult(state.content, resolveResult(state.tree, option.result));
+					const resultElement = renderResult(state.content, resolveResult(state.tree, option.result));
 					renderControls(state);
+					resultElement.focus();
+					emitInteraction(state, 'complete', {
+						optionId,
+						optionIndex,
+						optionText,
+						outcomeKey: getOutcomeKey(questionId, optionId, option.result),
+						step: completedStep,
+					}, questionId);
 				}
 			});
 
+			button.dataset.optionId = optionId;
 			options.appendChild(button);
 		});
 
 		state.content.appendChild(options);
 		renderControls(state);
+
+		if (moveFocus) {
+			questionText.focus();
+		}
+
+		return true;
 	};
 
 	const renderControls = (state) => {
 		state.controls.replaceChildren();
 
-		state.controls.appendChild(createButton(text('COM_DECISIONTREE_JS_BACK'), 'gd-decisiontree__back', () => {
+		const backButton = createButton(text('COM_DECISIONTREE_JS_BACK'), 'gd-decisiontree__back', () => {
 			const previousQuestionId = state.history.pop();
 
 			if (previousQuestionId === undefined) {
 				return;
 			}
 
-			renderQuestion(state, previousQuestionId, false);
-		}));
-		state.controls.lastElementChild.disabled = state.history.length === 0;
+			renderQuestion(state, previousQuestionId, false, true);
+			emitInteraction(state, 'back', {
+				targetQuestionId: String(previousQuestionId),
+			}, previousQuestionId);
+		});
+		backButton.disabled = state.history.length === 0;
+		state.controls.appendChild(backButton);
 
 		state.controls.appendChild(createButton(text('COM_DECISIONTREE_JS_RESET'), 'gd-decisiontree__reset', () => {
+			emitInteraction(state, 'reset');
 			state.history = [];
-			renderQuestion(state, state.tree.start, false);
+			state.runId = createUuid();
+			renderQuestion(state, state.tree.start, false, true);
+			emitInteraction(state, 'start', {}, state.tree.start);
 		}));
 	};
 
-	const initDecisionTrees = () => {
-		document.querySelectorAll('.gd-decisiontree').forEach((container) => {
-			if (container.dataset.decisionTreeInitialised === 'true') {
-				return;
-			}
+	const mount = (container, tree, options = {}) => {
+		if (!(container instanceof Element) || !tree || typeof tree !== 'object') {
+			return null;
+		}
 
-			const id = container.getAttribute('data-tree-id');
-			const dataId = container.getAttribute('data-tree-data-id') || `decisiontree-data-${id}`;
-			const data = document.getElementById(dataId);
+		if (container.dataset.decisionTreeInitialised === 'true' && options.force !== true) {
+			return container.decisionTreeState || null;
+		}
 
-			if (!id || !data) {
-				return;
-			}
+		const contentHost = container.querySelector('.com-decisiontree__container') || container;
+		const content = document.createElement('div');
+		content.className = 'gd-decisiontree__content';
 
-			let tree;
+		const controls = document.createElement('div');
+		controls.className = 'gd-decisiontree__controls';
+		contentHost.replaceChildren(content, controls);
 
-			try {
-				tree = JSON.parse(data.textContent || '{}');
-			} catch (error) {
-				return;
-			}
+		const treeId = options.treeId ?? container.getAttribute('data-tree-id') ?? '';
+		const state = {
+			container,
+			content,
+			controls,
+			currentQuestionId: null,
+			history: [],
+			instanceId: options.instanceId || container.id || `decisiontree-${String(treeId || 'preview')}`,
+			runId: createUuid(),
+			source: options.source || container.getAttribute('data-decision-tree-source') || 'component',
+			tree,
+			treeId,
+		};
 
-			const content = document.createElement('div');
-			content.className = 'gd-decisiontree__content';
+		container.dataset.decisionTreeInitialised = 'true';
+		container.decisionTreeState = state;
 
-			const controls = document.createElement('div');
-			controls.className = 'gd-decisiontree__controls';
+		if (renderQuestion(state, tree.start, false)) {
+			emitInteraction(state, 'start', {}, tree.start);
+		}
 
-			container.append(content, controls);
-			container.dataset.decisionTreeInitialised = 'true';
+		return state;
+	};
 
-			renderQuestion({
-				container,
-				content,
-				controls,
-				currentQuestionId: null,
-				history: [],
-				tree,
-			}, tree.start, false);
+	const initContainer = (container, options = {}) => {
+		if (!(container instanceof Element)) {
+			return null;
+		}
+
+		if (options.tree) {
+			return mount(container, options.tree, options);
+		}
+
+		const id = container.getAttribute('data-tree-id');
+		const dataId = container.getAttribute('data-tree-data-id') || `decisiontree-data-${id}`;
+		const data = document.getElementById(dataId);
+
+		if (!id || !data) {
+			return null;
+		}
+
+		let tree;
+
+		try {
+			tree = JSON.parse(data.textContent || '{}');
+		} catch (error) {
+			return null;
+		}
+
+		return mount(container, tree, {
+			...options,
+			treeId: id,
 		});
 	};
 
+	const initDecisionTrees = () => {
+		document.querySelectorAll('.gd-decisiontree[data-tree-data-id]').forEach((container) => {
+			initContainer(container);
+		});
+	};
+
+	window.DecisionTreeFrontend = Object.assign(window.DecisionTreeFrontend || {}, {
+		initContainer,
+		initDecisionTrees,
+		mount,
+	});
+	const initDecisionTreesAfterDeferredExtensions = () => {
+		window.setTimeout(initDecisionTrees, 0);
+	};
+
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initDecisionTrees);
+		document.addEventListener('DOMContentLoaded', initDecisionTreesAfterDeferredExtensions, { once: true });
 	} else {
-		initDecisionTrees();
+		initDecisionTreesAfterDeferredExtensions();
 	}
 })();

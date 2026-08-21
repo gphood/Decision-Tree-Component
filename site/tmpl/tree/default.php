@@ -20,6 +20,11 @@ $wa->useScript('com_decisiontree.frontend');
 if (!$this->item) : ?>
 	<div class="com-decisiontree com-decisiontree--missing">
 		<?php echo Text::_('COM_DECISIONTREE_TREE_NOT_FOUND'); ?>
+		<?php if (Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_decisiontree')) : ?>
+			<p class="com-decisiontree__admin-note">
+				<?php echo Text::_('COM_DECISIONTREE_TREE_NOT_FOUND_ADMIN'); ?>
+			</p>
+		<?php endif; ?>
 	</div>
 <?php return; endif; ?>
 
@@ -31,7 +36,7 @@ $domId = $this->domId ?: 'decisiontree-' . (int) $this->item->id;
 $dataId = $this->dataId ?: 'decisiontree-data-' . (int) $this->item->id;
 ?>
 
-<div class="com-decisiontree gd-decisiontree" id="<?php echo $this->escape($domId); ?>" data-tree-id="<?php echo (int) $this->item->id; ?>" data-tree-data-id="<?php echo $this->escape($dataId); ?>">
+<div class="com-decisiontree gd-decisiontree" id="<?php echo $this->escape($domId); ?>" data-tree-id="<?php echo (int) $this->item->id; ?>" data-tree-data-id="<?php echo $this->escape($dataId); ?>" data-decision-tree-source="<?php echo $this->escape($this->sourceContext ?? 'component'); ?>">
 	<?php if ($this->showHeading ?? true) : ?>
 		<<?php echo $headingLevel; ?>><?php echo $this->escape($this->item->title); ?></<?php echo $headingLevel; ?>>
 	<?php endif; ?>

@@ -123,9 +123,26 @@ $nullDate = Factory::getDbo()->getNullDate();
 							<div class="small break-word">
 								<?php echo Text::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias)); ?>
 							</div>
-							<div class="small">
+							<div class="small com-decisiontree-embed-tag">
 								<code>{decisiontree id=<?php echo (int) $item->id; ?>}</code>
+								<button
+									type="button"
+									class="btn btn-sm btn-link com-decisiontree-embed-tag__copy"
+									data-decisiontree-copy-embed
+									data-embed-tag="{decisiontree id=<?php echo (int) $item->id; ?>}"
+								>
+									<span class="icon-copy" aria-hidden="true"></span>
+									<span data-decisiontree-copy-label aria-live="polite"><?php echo Text::_('COM_DECISIONTREE_COPY_EMBED_TAG'); ?></span>
+								</button>
 							</div>
+							<?php if (!empty($this->analyticsTreeUrls[(int) $item->id])) : ?>
+								<div class="small mt-1">
+									<a href="<?php echo $this->escape($this->analyticsTreeUrls[(int) $item->id]); ?>">
+										<span class="icon-chart" aria-hidden="true"></span>
+										<?php echo Text::_('PLG_SYSTEM_DECISIONTREEPRO_VIEW_ANALYTICS'); ?>
+									</a>
+								</div>
+							<?php endif; ?>
 						</th>
 						<td class="text-center">
 							<?php echo HTMLHelper::_('jgrid.published', $item->state, $i, 'trees.', true, 'cb'); ?>
@@ -179,7 +196,5 @@ $nullDate = Factory::getDbo()->getNullDate();
 
 	<input type="hidden" name="task" value="">
 	<input type="hidden" name="boxchecked" value="0">
-	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>">
-	<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>">
 	<?php echo HTMLHelper::_('form.token'); ?>
 </form>

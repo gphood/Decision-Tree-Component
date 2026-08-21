@@ -8,11 +8,18 @@ Create interactive decision trees in the Joomla administrator and display them a
 
 - Build multi-step decision trees with branching logic
 - Navigate questions using readable question previews
+- Preview unsaved trees before publishing
+- Duplicate individual questions and their options
 - Reorder and collapse answer options while editing
+- Copy article embed tags directly from the tree list
 - Detect broken links, loops, unreachable questions and incomplete paths
+- Optionally show the current step on the frontend
+- Keep keyboard focus aligned with each newly displayed question or result
+- Listen for versioned frontend interaction events from compatible add-ons
 - Import and export reusable Decision Tree JSON files
 - Review question, outcome and path-health summaries from the tree list
 - Display trees via menu item or inside articles
+- Show helpful missing-tree guidance to authorised administrators
 - Responsive frontend layout
 - Optional heading control when embedding
 - Lightweight and framework-free
@@ -22,15 +29,15 @@ Create interactive decision trees in the Joomla administrator and display them a
 Install the current free package:
 
 1. Go to System -> Install -> Extensions
-2. Upload `pkg_decisiontree-1.2.4.zip`
+2. Upload `pkg_decisiontree-1.3.0.zip`
 
 Manual component/plugin installation is also supported:
 
 1. Install the component:
    - Go to System -> Install -> Extensions
-   - Upload `com_decisiontree-1.2.4.zip`
+   - Upload `com_decisiontree-1.3.0.zip`
 2. Install the content plugin:
-   - Upload `plg_content_decisiontree-1.2.4.zip`
+   - Upload `plg_content_decisiontree-1.3.0.zip`
 3. Enable the plugin:
    - Go to System -> Plugins
    - Search for `Decision Tree`
@@ -42,9 +49,11 @@ Manual component/plugin installation is also supported:
 2. Click New
 3. Build your tree using the editor:
 	- Add questions
+	- Duplicate existing questions when useful
 	- Add options
 	- Reorder or collapse options as needed
 	- Link options to other questions or results
+	- Preview the current unsaved tree
 4. Review the path-health message and save your tree
 
 ## Displaying a Decision Tree
@@ -101,9 +110,9 @@ This public repository contains the free/core Decision Tree extension only. Pro-
 
 The public build creates:
 
-- `dist/com_decisiontree-1.2.4.zip`
-- `dist/plg_content_decisiontree-1.2.4.zip`
-- `dist/pkg_decisiontree-1.2.4.zip`
+- `dist/com_decisiontree-1.3.0.zip`
+- `dist/plg_content_decisiontree-1.3.0.zip`
+- `dist/pkg_decisiontree-1.3.0.zip`
 
 The build script intentionally does not create any Pro package. If Pro is installed on a site, uninstall the Pro add-on before uninstalling the free/base package.
 

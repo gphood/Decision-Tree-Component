@@ -34,12 +34,17 @@ Run the standalone path validator checks with:
 php tests/tree-validator.php
 ```
 
-The browser tests log in to Joomla admin, open Components -> Decision Tree, create a tree with the demo loader, verify readable question labels, path health, option collapsing and option reordering, reopen the tree, then visit the frontend and click through to a result before using Reset.
+The browser tests log in to Joomla admin, open Components -> Decision Tree, create a tree with the demo loader, verify readable question labels, path health, option collapsing, option reordering, question duplication, embed-tag copying and unsaved preview, then reopen the tree and exercise step numbering, keyboard focus, Back, Reset and the versioned interaction events on the frontend. They also confirm that missing-tree guidance is visible to authorised frontend administrators but not public visitors.
 
-The target site should not already contain a decision tree, because the free version only allows one tree.
+When Pro is not installed, the target site should not already contain a decision
+tree because the Free edition allows one tree. Existing trees are fine when Pro
+is enabled; the suite reopens its saved tree by ID so pagination does not affect
+the result.
 
 The frontend suite also verifies backward-compatible result rendering and the
-generic structured-result extension hook used by compatible add-ons.
+generic structured-result extension hook used by compatible add-ons. A focused
+interaction test verifies step numbering, Back and Reset history, all five
+versioned browser events and the creation of a fresh run ID after Reset.
 
 ## Joomla 6
 
@@ -57,3 +62,20 @@ Then run:
 ```sh
 npm run test:e2e:joomla6
 ```
+
+## Joomla 6 Free-only site
+
+`https://decision-tree-free-6.docker` is the dedicated Joomla 6 site for testing
+Decision Tree Free without Pro installed. It uses the administrator credentials
+from `.env.joomla6.local`.
+
+Run the full suite plus the Free-edition boundary checks with:
+
+```sh
+npm run test:e2e:free-joomla6
+```
+
+The Free-only suite reuses its existing automated-test tree so repeated runs do
+not have to delete data. It confirms the one-tree limit is active and that
+Analytics, Duplicate Tree, per-tree analytics links and Pro rich-content
+controls are not shown.

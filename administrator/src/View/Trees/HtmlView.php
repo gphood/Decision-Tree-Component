@@ -47,6 +47,8 @@ class HtmlView extends BaseHtmlView
 
 	public $canImport;
 
+	public array $analyticsTreeUrls = [];
+
 	public function display($tpl = null): void
 	{
 		DecisionTreeHelper::loadAdminLanguage();
@@ -75,8 +77,13 @@ class HtmlView extends BaseHtmlView
 			new Event('onDecisionTreePrepareTreesToolbar', ['subject' => $this])
 		);
 
-		Factory::getApplication()->getDocument()->getWebAssetManager()
-			->registerAndUseStyle('com_decisiontree.admin', 'media/com_decisiontree/css/admin.css');
+		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+		$wa->getRegistry()->addExtensionRegistryFile('com_decisiontree');
+		$wa->registerAndUseStyle('com_decisiontree.admin', 'media/com_decisiontree/css/admin.css');
+		$wa->useScript('com_decisiontree.admin.list');
+
+		Text::script('COM_DECISIONTREE_EMBED_TAG_COPIED');
+		Text::script('COM_DECISIONTREE_EMBED_TAG_COPY_FAILED');
 
 		parent::display($tpl);
 	}

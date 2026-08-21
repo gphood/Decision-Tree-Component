@@ -11,7 +11,6 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\ParameterType;
 use GrantDev\Component\DecisionTree\Administrator\Service\TreeValidator;
@@ -44,13 +43,6 @@ class TreesModel extends ListModel
 
 	protected function populateState($ordering = 'a.title', $direction = 'asc'): void
 	{
-		$app = Factory::getApplication();
-		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-		$this->setState('filter.search', $search);
-
-		$published = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'string');
-		$this->setState('filter.state', $published);
-
 		parent::populateState($ordering, $direction);
 	}
 

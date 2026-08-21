@@ -12,6 +12,7 @@ namespace GrantDev\Component\DecisionTree\Administrator\Model;
 \defined('_JEXEC') or die;
 
 use GrantDev\Component\DecisionTree\Administrator\Helper\DecisionTreeHelper;
+use GrantDev\Component\DecisionTree\Administrator\Service\TreeNormalizer;
 use GrantDev\Component\DecisionTree\Administrator\Service\TreeValidator;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
@@ -112,6 +113,7 @@ class ImportModel extends BaseDatabaseModel
 			return null;
 		}
 
+		$treeData = TreeNormalizer::normalize($treeData);
 		$analysis = TreeValidator::analyse($treeData);
 
 		if ($analysis['errors'] !== []) {

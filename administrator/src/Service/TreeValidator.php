@@ -70,10 +70,24 @@ final class TreeValidator
 				continue;
 			}
 
+			$optionIds = [];
+
 			foreach ($options as $optionIndex => $option) {
 				if (!\is_array($option)) {
 					$errors[] = Text::sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_INVALID', $questionId, $optionIndex + 1);
 					continue;
+				}
+
+				if (\array_key_exists('id', $option)) {
+					$optionId = trim((string) $option['id']);
+
+					if ($optionId === '' || !preg_match('/^[a-z0-9_]+$/', $optionId)) {
+						$errors[] = Text::sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_INVALID', $questionId, $optionIndex + 1);
+					} elseif (isset($optionIds[$optionId])) {
+						$errors[] = Text::sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_DUPLICATE', $questionId, $optionId);
+					} else {
+						$optionIds[$optionId] = true;
+					}
 				}
 
 				$nextQuestionId = trim((string) ($option['next'] ?? ''));
@@ -106,6 +120,16 @@ final class TreeValidator
 
 				$adjacency[$questionId][] = $nextQuestionId;
 			}
+		}
+
+		if (
+			isset($tree['settings'])
+			&& (!\is_array($tree['settings']) || (
+				\array_key_exists('show_step_number', $tree['settings'])
+				&& !\is_bool($tree['settings']['show_step_number'])
+			))
+		) {
+			$errors[] = Text::_('COM_DECISIONTREE_ERROR_JSON_STEP_NUMBER_INVALID');
 		}
 
 		if ($deadEnds !== []) {

@@ -152,25 +152,30 @@
 	});
 
 	const demoTree = {
-		version: '1.0',
+		version: '1.1',
 		start: 'q1',
+		settings: {
+			show_step_number: false,
+		},
 		questions: {
 			q1: {
 				question_text: 'What will you mainly use the laptop for?',
 				options: [
-					{ text: 'Work / Office tasks', next: 'q2' },
-					{ text: 'Gaming', next: 'q3' },
-					{ text: 'General use', next: 'q4' },
+					{ id: 'o1', text: 'Work / Office tasks', next: 'q2' },
+					{ id: 'o2', text: 'Gaming', next: 'q3' },
+					{ id: 'o3', text: 'General use', next: 'q4' },
 				],
 			},
 			q2: {
 				question_text: 'Do you need portability?',
 				options: [
 					{
+						id: 'o1',
 						text: 'Yes, I need it lightweight',
 						result: createDemoResult('You should look for an ultrabook or lightweight laptop. These are ideal for portability and everyday productivity.'),
 					},
 					{
+						id: 'o2',
 						text: 'No, performance matters more',
 						result: createDemoResult('A standard business laptop with higher specs would suit you. These are great for multitasking and heavier workloads.'),
 					},
@@ -180,10 +185,12 @@
 				question_text: 'What level of gaming?',
 				options: [
 					{
+						id: 'o1',
 						text: 'Casual gaming',
 						result: createDemoResult('A mid-range laptop with a decent GPU should be enough for casual gaming and everyday use.'),
 					},
 					{
+						id: 'o2',
 						text: 'High-end gaming',
 						result: createDemoResult('You should consider a high-performance gaming laptop with a dedicated GPU and advanced cooling.'),
 					},
@@ -193,10 +200,12 @@
 				question_text: 'What is your budget?',
 				options: [
 					{
+						id: 'o1',
 						text: 'Low budget',
 						result: createDemoResult('Look for an affordable entry-level laptop that covers basic tasks like browsing, email and streaming.'),
 					},
 					{
+						id: 'o2',
 						text: 'Mid to high budget',
 						result: createDemoResult('You have a wide range of options. Consider a well-balanced laptop with good performance, build quality and battery life.'),
 					},
@@ -245,14 +254,16 @@
 		addOptionButton: document.getElementById('decisiontree-add-option'),
 		addQuestionButton: document.getElementById('decisiontree-add-question'),
 		deleteQuestionButton: document.getElementById('decisiontree-delete-question'),
+		duplicateQuestionButton: document.getElementById('decisiontree-duplicate-question'),
 		loadDemoButton: document.getElementById('decisiontree-load-demo'),
 		message: document.getElementById('decisiontree-editor-message'),
 		options: document.getElementById('decisiontree-options'),
 		pathHealth: document.getElementById('decisiontree-path-health'),
+		previewButton: document.getElementById('decisiontree-preview'),
 		questionSelect: document.getElementById('decisiontree-question-select'),
 		questionText: document.getElementById('decisiontree-question-text'),
 		setStartButton: document.getElementById('decisiontree-set-start-question'),
-		startDisplay: document.getElementById('decisiontree-start-display'),
+		showStepNumber: document.getElementById('decisiontree-show-step-number'),
 	});
 	const hasQuestionsObject = () => (
 		editorTree
@@ -260,6 +271,51 @@
 		&& typeof editorTree.questions === 'object'
 		&& !Array.isArray(editorTree.questions)
 	);
+	const deepClone = (value) => JSON.parse(JSON.stringify(value));
+	const isSafeIdentifier = (value) => /^[a-z0-9_]+$/.test(String(value || ''));
+	const getNewOptionId = (question) => {
+		const ids = Array.isArray(question?.options)
+			? question.options.map((option) => String(option?.id || '')).filter(Boolean)
+			: [];
+		let index = 1;
+
+		while (ids.includes(`o${index}`)) {
+			index += 1;
+		}
+
+		return `o${index}`;
+	};
+	const normalizeEditorTree = (tree) => {
+		if (!tree || typeof tree !== 'object' || Array.isArray(tree)) {
+			return tree;
+		}
+
+		if (tree.questions && typeof tree.questions === 'object' && !Array.isArray(tree.questions)) {
+			Object.values(tree.questions).forEach((question) => {
+				if (!question || !Array.isArray(question.options)) {
+					return;
+				}
+
+				question.options.forEach((option) => {
+					if (!option || typeof option !== 'object' || Array.isArray(option)) {
+						return;
+					}
+
+					if (!Object.prototype.hasOwnProperty.call(option, 'id') || String(option.id).trim() === '') {
+						option.id = getNewOptionId(question);
+					} else {
+						option.id = String(option.id).trim();
+					}
+				});
+			});
+		}
+
+		if (!tree.version || Number.parseFloat(tree.version) < 1.1) {
+			tree.version = '1.1';
+		}
+
+		return tree;
+	};
 
 	const getQuestionIds = () => (hasQuestionsObject() ? Object.keys(editorTree.questions) : []);
 	const getSelectedQuestion = () => (hasQuestionsObject() ? editorTree.questions[selectedQuestionId] || null : null);
@@ -355,12 +411,29 @@
 		questionIds.forEach((questionId) => {
 			const question = editorTree.questions[questionId];
 			const options = Array.isArray(question?.options) ? question.options : [];
+			const optionIds = new Set();
 
 			if (options.length === 0) {
 				warnings.push(sprintf('COM_DECISIONTREE_WARNING_JSON_DEAD_ENDS', questionId));
 			}
 
 			options.forEach((option, optionIndex) => {
+				const optionId = String(option?.id || '').trim();
+
+				if (!isSafeIdentifier(optionId)) {
+					errors.push({
+						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_INVALID', questionId, optionIndex + 1),
+						questionId,
+					});
+				} else if (optionIds.has(optionId)) {
+					errors.push({
+						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_DUPLICATE', questionId, optionId),
+						questionId,
+					});
+				} else {
+					optionIds.add(optionId);
+				}
+
 				const nextQuestionId = String(option?.next || '').trim();
 				const hasNextQuestion = nextQuestionId !== '';
 				const hasOutcome = option && Object.prototype.hasOwnProperty.call(option, 'result') && resultHasContent(option.result);
@@ -461,6 +534,24 @@
 			if (unreachable.length > 0) {
 				warnings.push(sprintf('COM_DECISIONTREE_WARNING_JSON_UNREACHABLE', unreachable.join(', ')));
 			}
+		}
+
+		if (
+			editorTree.settings !== undefined
+			&& (
+				editorTree.settings === null
+				|| typeof editorTree.settings !== 'object'
+				|| Array.isArray(editorTree.settings)
+				|| (
+					Object.prototype.hasOwnProperty.call(editorTree.settings, 'show_step_number')
+					&& typeof editorTree.settings.show_step_number !== 'boolean'
+				)
+			)
+		) {
+			errors.push({
+				message: text('COM_DECISIONTREE_ERROR_JSON_STEP_NUMBER_INVALID'),
+				questionId: editorTree.start || questionIds[0] || '',
+			});
 		}
 
 		return { errors, warnings: [...new Set(warnings)] };
@@ -648,6 +739,35 @@
 		return true;
 	};
 
+	const getUniqueOptionCopyText = (question, optionText) => {
+		const baseText = String(optionText || '').trim();
+		const existingTexts = new Set((question?.options || []).map(
+			(option) => String(option?.text || '').trim(),
+		));
+		let copyText = sprintf('COM_DECISIONTREE_JS_OPTION_COPY', baseText);
+		let copyNumber = 2;
+
+		while (existingTexts.has(copyText)) {
+			copyText = sprintf('COM_DECISIONTREE_JS_OPTION_COPY_NUMBERED', baseText, copyNumber);
+			copyNumber += 1;
+		}
+
+		return copyText;
+	};
+
+	const duplicateOptionInQuestion = (question, index) => {
+		if (!question || !Array.isArray(question.options) || !question.options[index]) {
+			return false;
+		}
+
+		const copy = deepClone(question.options[index]);
+		copy.id = getNewOptionId(question);
+		copy.text = getUniqueOptionCopyText(question, copy.text);
+		question.options.splice(index + 1, 0, copy);
+
+		return true;
+	};
+
 	const getNewQuestionId = () => {
 		const ids = getQuestionIds();
 		let index = 1;
@@ -659,11 +779,126 @@
 		return `q${index}`;
 	};
 
+	const getUniqueQuestionCopyText = (questionText) => {
+		const baseText = String(questionText || '').trim();
+		const existingTexts = new Set(getQuestionIds().map(
+			(questionId) => String(editorTree.questions[questionId]?.question_text || '').trim(),
+		));
+		let copyText = sprintf('COM_DECISIONTREE_JS_QUESTION_COPY', baseText);
+		let copyNumber = 2;
+
+		while (existingTexts.has(copyText)) {
+			copyText = sprintf('COM_DECISIONTREE_JS_QUESTION_COPY_NUMBERED', baseText, copyNumber);
+			copyNumber += 1;
+		}
+
+		return copyText;
+	};
+
+	const duplicateSelectedQuestion = () => {
+		const source = getSelectedQuestion();
+
+		if (!source || !hasQuestionsObject()) {
+			return false;
+		}
+
+		const sourceId = selectedQuestionId;
+		const copyId = getNewQuestionId();
+		const copy = deepClone(source);
+		copy.question_text = getUniqueQuestionCopyText(source.question_text);
+
+		if (!Array.isArray(copy.options)) {
+			copy.options = [];
+		}
+
+		copy.options.forEach((option) => {
+			if (option && typeof option === 'object' && !Array.isArray(option)) {
+				delete option.id;
+			}
+		});
+		normalizeEditorTree({
+			version: '1.1',
+			questions: {
+				[copyId]: copy,
+			},
+		});
+
+		const questions = {};
+
+		Object.entries(editorTree.questions).forEach(([questionId, question]) => {
+			questions[questionId] = question;
+
+			if (questionId === sourceId) {
+				questions[copyId] = copy;
+			}
+		});
+
+		editorTree.questions = questions;
+		editorTree.version = '1.1';
+		selectedQuestionId = copyId;
+
+		return true;
+	};
+
+	const openPreview = () => {
+		const analysis = analyseTreePaths();
+		const { pathHealth, previewButton } = getEditorElements();
+
+		if (!hasQuestionsObject() || getQuestionIds().length === 0 || analysis.errors.length > 0) {
+			const firstIssue = analysis.errors[0];
+
+			if (firstIssue?.questionId) {
+				selectedQuestionId = firstIssue.questionId;
+				renderQuestionEditor();
+			}
+
+			setEditorMessage(firstIssue?.message || text('COM_DECISIONTREE_JS_PREVIEW_BLOCKED'));
+			pathHealth?.focus?.();
+
+			return;
+		}
+
+		const modalElement = document.getElementById('decisiontree-preview-modal');
+		const previewTree = document.getElementById('decisiontree-preview-tree');
+
+		if (!modalElement || !previewTree || !window.DecisionTreeFrontend?.mount) {
+			return;
+		}
+
+		const title = previewTree.querySelector('.com-decisiontree-preview__title');
+		const description = previewTree.querySelector('.com-decisiontree-preview__description');
+		const titleInput = document.getElementById('jform_title');
+		const descriptionInput = document.getElementById('jform_description');
+
+		if (title) {
+			title.textContent = String(titleInput?.value || '').trim();
+		}
+
+		if (description) {
+			description.textContent = String(descriptionInput?.value || '').trim();
+		}
+
+		window.DecisionTreeFrontend.mount(previewTree, deepClone(editorTree), {
+			force: true,
+			instanceId: 'decisiontree-preview-tree',
+			source: 'preview',
+			treeId: document.getElementById('jform_id')?.value || 'preview',
+		});
+
+		if (window.bootstrap?.Modal) {
+			const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+			modalElement.addEventListener('hidden.bs.modal', () => {
+				previewButton?.focus();
+			}, { once: true });
+			modal.show();
+		}
+	};
+
 	const populateQuestionSelect = () => {
-		const { questionSelect, startDisplay } = getEditorElements();
+		const { questionSelect } = getEditorElements();
 		const ids = getQuestionIds();
 
-		if (!questionSelect || !startDisplay) {
+		if (!questionSelect) {
 			return;
 		}
 
@@ -690,15 +925,6 @@
 		}
 
 		questionSelect.value = selectedQuestionId;
-		startDisplay.innerHTML = '';
-
-		const startText = document.createElement('span');
-		startText.className = 'com-decisiontree-start-question';
-		startText.textContent = editorTree?.start
-			? sprintf('COM_DECISIONTREE_JS_START_QUESTION_LABEL', editorTree.start)
-			: text('COM_DECISIONTREE_JS_START_QUESTION_NOT_SET');
-
-		startDisplay.appendChild(startText);
 	};
 
 	const renderOptionEditor = (option, index, questionIds, currentQuestionId) => {
@@ -1044,20 +1270,45 @@
 			}
 		};
 
-			actionSelect.addEventListener('change', () => {
-				renderActionDetail(true);
-				syncTextarea();
+		actionSelect.addEventListener('change', () => {
+			renderActionDetail(true);
+			syncTextarea();
+		});
+
+		renderActionDetail();
+
+		const optionActions = document.createElement('div');
+		optionActions.className = 'com-decisiontree-option-editor__actions';
+
+		const duplicateButton = document.createElement('button');
+		duplicateButton.type = 'button';
+		duplicateButton.className = 'btn btn-secondary';
+		duplicateButton.textContent = text('COM_DECISIONTREE_JS_DUPLICATE_OPTION');
+		duplicateButton.addEventListener('click', () => {
+			const question = getSelectedQuestion();
+
+			if (!duplicateOptionInQuestion(question, index)) {
+				return;
+			}
+
+			syncTextarea();
+			renderQuestionEditor({
+				focus: {
+					index: index + 1,
+				},
 			});
 
-			renderActionDetail();
+			const copiedOptionText = document.getElementById(`decisiontree-option-${index + 1}`);
 
-			const removeWrap = document.createElement('div');
-			removeWrap.className = 'com-decisiontree-option-editor__remove';
+			if (copiedOptionText) {
+				copiedOptionText.select();
+			}
+		});
 
-			const removeButton = document.createElement('button');
-			removeButton.type = 'button';
-			removeButton.className = 'btn btn-outline-danger';
-			removeButton.textContent = text('COM_DECISIONTREE_JS_REMOVE_OPTION');
+		const removeButton = document.createElement('button');
+		removeButton.type = 'button';
+		removeButton.className = 'btn btn-outline-danger com-decisiontree-option-editor__remove-button';
+		removeButton.textContent = text('COM_DECISIONTREE_JS_REMOVE_OPTION');
 		removeButton.addEventListener('click', () => {
 			const question = getSelectedQuestion();
 
@@ -1066,12 +1317,12 @@
 			}
 
 			question.options.splice(index, 1);
-				syncTextarea();
-				renderQuestionEditor();
-			});
+			syncTextarea();
+			renderQuestionEditor();
+		});
 
-		removeWrap.appendChild(removeButton);
-		topRow.append(textWrap, actionWrap, removeWrap);
+		optionActions.append(duplicateButton, removeButton);
+		topRow.append(textWrap, actionWrap, optionActions);
 		body.append(topRow, detailWrap);
 		card.append(header, body);
 
@@ -1082,13 +1333,26 @@
 		const {
 			addOptionButton,
 			deleteQuestionButton,
+			duplicateQuestionButton,
 			options,
+			previewButton,
 			questionSelect,
 			questionText,
 			setStartButton,
+			showStepNumber,
 		} = getEditorElements();
 
-		if (!addOptionButton || !deleteQuestionButton || !options || !questionSelect || !questionText || !setStartButton) {
+		if (
+			!addOptionButton
+			|| !deleteQuestionButton
+			|| !duplicateQuestionButton
+			|| !options
+			|| !previewButton
+			|| !questionSelect
+			|| !questionText
+			|| !setStartButton
+			|| !showStepNumber
+		) {
 			return;
 		}
 
@@ -1104,7 +1368,11 @@
 		questionText.disabled = true;
 		addOptionButton.disabled = true;
 		deleteQuestionButton.disabled = true;
+		duplicateQuestionButton.disabled = true;
+		previewButton.disabled = true;
 		setStartButton.disabled = true;
+		showStepNumber.disabled = !editorTree;
+		showStepNumber.checked = editorTree?.settings?.show_step_number === true;
 
 		if (!hasQuestionsObject()) {
 			populateQuestionSelect();
@@ -1142,6 +1410,8 @@
 		questionText.disabled = false;
 		addOptionButton.disabled = false;
 		deleteQuestionButton.disabled = selectedQuestionId === editorTree.start;
+		duplicateQuestionButton.disabled = false;
+		previewButton.disabled = false;
 		setStartButton.disabled = selectedQuestionId === editorTree.start;
 		questionText.value = question.question_text || '';
 
@@ -1241,7 +1511,8 @@
 		}
 
 		try {
-			editorTree = JSON.parse(textarea.value);
+			editorTree = normalizeEditorTree(JSON.parse(textarea.value));
+			textarea.value = JSON.stringify(editorTree, null, 2);
 			selectedQuestionId = hasQuestionsObject() && editorTree.questions[selectedQuestionId]
 				? selectedQuestionId
 				: editorTree.start || getQuestionIds()[0] || '';
@@ -1262,10 +1533,13 @@
 			addOptionButton,
 			addQuestionButton,
 			deleteQuestionButton,
+			duplicateQuestionButton,
 			loadDemoButton,
+			previewButton,
 			questionSelect,
 			questionText,
 			setStartButton,
+			showStepNumber,
 		} = getEditorElements();
 
 		if (
@@ -1273,10 +1547,13 @@
 			|| !addOptionButton
 			|| !addQuestionButton
 			|| !deleteQuestionButton
+			|| !duplicateQuestionButton
 			|| !loadDemoButton
+			|| !previewButton
 			|| !questionSelect
 			|| !questionText
 			|| !setStartButton
+			|| !showStepNumber
 			|| !form
 		) {
 			return;
@@ -1328,7 +1605,11 @@
 		addQuestionButton.addEventListener('click', () => {
 			if (!editorTree || typeof editorTree !== 'object' || Array.isArray(editorTree)) {
 				editorTree = {
+					version: '1.1',
 					start: 'q1',
+					settings: {
+						show_step_number: false,
+					},
 					questions: {},
 				};
 			}
@@ -1348,8 +1629,37 @@
 			}
 
 			selectedQuestionId = id;
+			normalizeEditorTree(editorTree);
 			syncTextarea();
 			renderQuestionEditor();
+		});
+
+		duplicateQuestionButton.addEventListener('click', () => {
+			if (!duplicateSelectedQuestion()) {
+				return;
+			}
+
+			syncTextarea();
+			renderQuestionEditor();
+			questionText.focus({ preventScroll: true });
+			questionText.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+			questionText.select();
+		});
+
+		previewButton.addEventListener('click', openPreview);
+
+		showStepNumber.addEventListener('change', () => {
+			if (!editorTree || typeof editorTree !== 'object' || Array.isArray(editorTree)) {
+				return;
+			}
+
+			if (!editorTree.settings || typeof editorTree.settings !== 'object' || Array.isArray(editorTree.settings)) {
+				editorTree.settings = {};
+			}
+
+			editorTree.settings.show_step_number = showStepNumber.checked;
+			editorTree.version = '1.1';
+			syncTextarea();
 		});
 
 		loadDemoButton.addEventListener('click', () => {
@@ -1410,6 +1720,7 @@
 
 			const newOptionIndex = question.options.length;
 			question.options.push({
+				id: getNewOptionId(question),
 				text: '',
 				result: {
 					text: '',
@@ -1448,10 +1759,13 @@
 	const initAdmin = () => {
 		initQuestionEditor();
 	};
+	const initAdminAfterDeferredExtensions = () => {
+		window.setTimeout(initAdmin, 0);
+	};
 
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initAdmin);
+		document.addEventListener('DOMContentLoaded', initAdminAfterDeferredExtensions, { once: true });
 	} else {
-		initAdmin();
+		initAdminAfterDeferredExtensions();
 	}
 })();

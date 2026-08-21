@@ -57,7 +57,7 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 				$id = isset($attributes['id']) && ctype_digit($attributes['id']) ? (int) $attributes['id'] : 0;
 
 				if ($id < 1) {
-					return Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND');
+					return $this->getMissingTreeMessage();
 				}
 
 				return $this->renderTree(
@@ -111,7 +111,7 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 			if (!$component instanceof MVCFactoryServiceInterface) {
 				ob_end_clean();
 
-				return Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND');
+				return $this->getMissingTreeMessage();
 			}
 
 			$factory = $component->getMVCFactory();
@@ -129,13 +129,14 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 			if (!$model || !$view || !method_exists($view, 'setModel')) {
 				ob_end_clean();
 
-				return Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND');
+				return $this->getMissingTreeMessage();
 			}
 
 			$model->setState('tree.id', $id);
 			$view->setModel($model, true);
 			$view->showHeading = $showHeading;
 			$view->headingLevel = $headingLevel;
+			$view->sourceContext = 'content';
 			self::$instance++;
 			$view->domId = 'decisiontree-' . $id . '-' . self::$instance;
 			$view->dataId = 'decisiontree-data-' . $id . '-' . self::$instance;
@@ -148,6 +149,21 @@ final class DecisionTree extends CMSPlugin implements SubscriberInterface
 			$output = '';
 		}
 
-		return $output !== '' ? $output : Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND');
+		return $output !== '' ? $output : $this->getMissingTreeMessage();
+	}
+
+	private function getMissingTreeMessage(): string
+	{
+		$output = '<div class="com-decisiontree com-decisiontree--missing">'
+			. htmlspecialchars(Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND'), ENT_QUOTES, 'UTF-8');
+		$identity = $this->getApplication()->getIdentity();
+
+		if ($identity && $identity->authorise('core.manage', 'com_decisiontree')) {
+			$output .= '<p class="com-decisiontree__admin-note">'
+				. htmlspecialchars(Text::_('PLG_CONTENT_DECISIONTREE_TREE_NOT_FOUND_ADMIN'), ENT_QUOTES, 'UTF-8')
+				. '</p>';
+		}
+
+		return $output . '</div>';
 	}
 }

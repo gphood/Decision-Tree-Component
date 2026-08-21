@@ -23,7 +23,9 @@ namespace Joomla\CMS\Language {
 
 namespace {
 	require_once __DIR__ . '/../administrator/src/Service/TreeValidator.php';
+	require_once __DIR__ . '/../administrator/src/Service/TreeNormalizer.php';
 
+	use GrantDev\Component\DecisionTree\Administrator\Service\TreeNormalizer;
 	use GrantDev\Component\DecisionTree\Administrator\Service\TreeValidator;
 
 	$failures = [];
@@ -54,6 +56,33 @@ namespace {
 	$analysis = TreeValidator::analyse($validTree);
 	$assert($analysis['errors'] === [], 'A valid tree should have no errors.');
 	$assert($analysis['warnings'] === [], 'A valid tree should have no warnings.');
+
+	$normalizedTree = TreeNormalizer::normalize($validTree);
+	$assert($normalizedTree['version'] === '1.1', 'A legacy tree should be upgraded to data version 1.1.');
+	$assert($normalizedTree['questions']['q1']['options'][0]['id'] === 'o1', 'A missing option ID should be assigned.');
+	$assert($normalizedTree['questions']['q2']['options'][0]['id'] === 'o1', 'Option IDs should be scoped to their question.');
+	$assert($normalizedTree['questions']['q1']['options'][0]['next'] === 'q2', 'Normalisation must preserve branch destinations.');
+
+	$unknownData = $validTree;
+	$unknownData['extension_data'] = ['preserve' => true];
+	$unknownData['questions']['q1']['options'][0]['custom'] = ['value' => 12];
+	$normalizedUnknownData = TreeNormalizer::normalize($unknownData);
+	$assert($normalizedUnknownData['extension_data']['preserve'] === true, 'Unknown top-level data should be preserved.');
+	$assert($normalizedUnknownData['questions']['q1']['options'][0]['custom']['value'] === 12, 'Unknown option data should be preserved.');
+
+	$duplicateOptionIds = TreeNormalizer::normalize($validTree);
+	$duplicateOptionIds['questions']['q1']['options'][] = [
+		'id' => 'o1',
+		'text' => 'Duplicate ID',
+		'result' => ['text' => 'Done'],
+	];
+	$analysis = TreeValidator::analyse($duplicateOptionIds);
+	$assert(count($analysis['errors']) === 1, 'A duplicate option ID should produce one error.');
+
+	$invalidStepSetting = TreeNormalizer::normalize($validTree);
+	$invalidStepSetting['settings'] = ['show_step_number' => 'yes'];
+	$analysis = TreeValidator::analyse($invalidStepSetting);
+	$assert(count($analysis['errors']) === 1, 'A non-boolean step-number setting should produce one error.');
 
 	$missingTarget = $validTree;
 	$missingTarget['questions']['q1']['options'][0]['next'] = 'q99';

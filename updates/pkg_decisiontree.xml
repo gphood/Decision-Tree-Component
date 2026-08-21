@@ -5,10 +5,10 @@
 		<description>Decision Tree package installer.</description>
 		<element>pkg_decisiontree</element>
 		<type>package</type>
-		<version>1.2.4</version>
+		<version>1.3.0</version>
 		<infourl title="Decision Tree">https://github.com/gphood/Decision-Tree-Component</infourl>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/gphood/Decision-Tree-Component/releases/download/v1.2.4/pkg_decisiontree-1.2.4.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/gphood/Decision-Tree-Component/releases/download/v1.3.0/pkg_decisiontree-1.3.0.zip</downloadurl>
 		</downloads>
 		<sha256>3a959406087d64944a589d77fe5575e651126a2241e9cb4974d034c9b4447ff4</sha256>
 		<targetplatform name="joomla" version="[56]\..*" />

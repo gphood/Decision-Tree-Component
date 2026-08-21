@@ -24,6 +24,8 @@ class HtmlView extends BaseHtmlView
 
 	public $showHeading = true;
 
+	public $sourceContext = 'component';
+
 	public $domId = '';
 
 	public $dataId = '';
@@ -37,6 +39,7 @@ class HtmlView extends BaseHtmlView
 		Text::script('COM_DECISIONTREE_JS_OPTION_NOT_CONFIGURED');
 		Text::script('COM_DECISIONTREE_JS_READ_MORE');
 		Text::script('COM_DECISIONTREE_JS_RESET');
+		Text::script('COM_DECISIONTREE_JS_STEP_NUMBER');
 
 		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 		$registry = $wa->getRegistry();
