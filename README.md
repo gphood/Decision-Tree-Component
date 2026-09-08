@@ -7,11 +7,14 @@ Create interactive decision trees in the Joomla administrator and display them a
 ## Features
 
 - Build multi-step decision trees with branching logic
+- Switch between the form builder and a visual canvas of the same decision tree
+- Arrange question and outcome cards, inspect connections and resolve path warnings visually
+- Add, edit, duplicate, delete and set the start question directly from the canvas
 - Navigate questions using readable question previews
 - Preview unsaved trees before publishing
 - Duplicate individual questions and their options
 - Reorder and collapse answer options while editing
-- Copy article embed tags directly from the tree list
+- Copy article embed tags directly from the tree list or editor
 - Detect broken links, loops, unreachable questions and incomplete paths
 - Optionally show the current step on the frontend
 - Keep keyboard focus aligned with each newly displayed question or result
@@ -29,15 +32,15 @@ Create interactive decision trees in the Joomla administrator and display them a
 Install the current free package:
 
 1. Go to System -> Install -> Extensions
-2. Upload `pkg_decisiontree-1.3.0.zip`
+2. Upload `pkg_decisiontree-1.4.0.zip`
 
 Manual component/plugin installation is also supported:
 
 1. Install the component:
    - Go to System -> Install -> Extensions
-   - Upload `com_decisiontree-1.3.0.zip`
+   - Upload `com_decisiontree-1.4.0.zip`
 2. Install the content plugin:
-   - Upload `plg_content_decisiontree-1.3.0.zip`
+   - Upload `plg_content_decisiontree-1.4.0.zip`
 3. Enable the plugin:
    - Go to System -> Plugins
    - Search for `Decision Tree`
@@ -55,6 +58,31 @@ Manual component/plugin installation is also supported:
 	- Link options to other questions or results
 	- Preview the current unsaved tree
 4. Review the path-health message and save your tree
+
+### Visual Canvas
+
+Select **Visual canvas** in the builder to see questions, outcomes and the paths
+between them. The canvas and form builder edit the same tree, so you can switch
+between them at any time without converting or duplicating content.
+
+From the canvas you can:
+
+- drag questions and outcomes into a useful layout;
+- pan the background and zoom, fit or automatically arrange the tree;
+- open a question in the editing modal by double-clicking it or selecting **Edit question**;
+- select **Edit outcome** to open the same modal at the exact option that produces an outcome;
+- add, duplicate and delete questions, or set a different start question;
+- inspect warnings for unreachable questions, missing connections and incomplete options.
+
+Selecting **Done** in the question modal updates the current unsaved tree. Use
+Joomla's main **Save** button to persist tree content and canvas positions. Pro
+rich-outcome blocks, including images selected from Joomla's Media Manager,
+remain available in the modal and are preserved in canvas previews, duplication
+and saving. Pro also adds **Preview from here** to question cards and **Preview
+outcome** to outcome cards.
+
+See [Visual canvas guide](docs/1.4.0-visual-canvas.md) for controls, keyboard
+operation and Free/Pro behavior.
 
 ## Displaying a Decision Tree
 
@@ -100,6 +128,17 @@ Existing additional trees are not deleted when moving from Pro back to Free, but
 
 If you need multiple decision trees, richer outcome content and additional productivity features, please see Decision Tree Pro: https://granthood.co.uk/joomla-extensions/decision-tree-pro
 
+### Updating Free and Pro
+
+Update Free first, then Pro. Free 1.4.0 has been tested with Pro 1.3.0 on Joomla 5
+and Joomla 6: existing Pro features remain available while you wait to update
+the add-on. Pro 1.4.0 requires Free 1.4.0 or later. Its new image blocks and
+per-node previews become available after updating Pro.
+
+Free releases must pass the previous-Pro compatibility gate described in
+`TESTING.md` before release. The versions do not need to match to retain existing
+Pro access.
+
 ## Build Packages
 
 This public repository contains the free/core Decision Tree extension only. Pro-only implementation, installers and packaging live in the separate private Pro repository and must not be built or shipped from this repository.
@@ -110,9 +149,9 @@ This public repository contains the free/core Decision Tree extension only. Pro-
 
 The public build creates:
 
-- `dist/com_decisiontree-1.3.0.zip`
-- `dist/plg_content_decisiontree-1.3.0.zip`
-- `dist/pkg_decisiontree-1.3.0.zip`
+- `dist/com_decisiontree-1.4.0.zip`
+- `dist/plg_content_decisiontree-1.4.0.zip`
+- `dist/pkg_decisiontree-1.4.0.zip`
 
 The build script intentionally does not create any Pro package. If Pro is installed on a site, uninstall the Pro add-on before uninstalling the free/base package.
 

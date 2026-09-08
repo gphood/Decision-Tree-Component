@@ -2,6 +2,7 @@
   "name": "com_decisiontree",
   "private": true,
 	"scripts": {
+		"test:compatibility": "playwright test --config=playwright.compatibility.config.js",
 		"test:e2e": "playwright test",
 		"test:e2e:joomla6": "set -a; . ./.env.joomla6.local; set +a; playwright test",
 		"test:e2e:free-joomla6": "set -a; . ./.env.joomla6.local; set +a; JOOMLA_ADMIN_URL=https://decision-tree-free-6.docker/administrator DECISIONTREE_FRONTEND_BASE_URL=https://decision-tree-free-6.docker DECISIONTREE_EXPECT_FREE_ONLY=1 playwright test"

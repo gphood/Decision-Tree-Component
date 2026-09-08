@@ -29,9 +29,35 @@
   - `onDecisionTreePrepareTreesToolbar`
   - `onDecisionTreePrepareEditor`
   - `onDecisionTreePrepareFrontend`
+  - `onDecisionTreePrepareAnalytics`
+  - `onDecisionTreeInteraction`
+  - `onDecisionTreeAfterDelete`
 - Rich result add-ons may provide `window.DecisionTreeResultExtensions.renderAdminEditor` and `renderFrontendBlocks`.
 - The frontend initialiser waits for `DOMContentLoaded` so dependent add-on scripts can register those hooks first.
 - Pro must use these hooks and Joomla's Web Asset Manager. It must not patch installed Free PHP files.
+
+## Release compatibility policy
+
+- A Free release must preserve the previous published Pro release throughout
+  the Free-first update sequence. For 1.4.0, the required combinations are
+  Free 1.4.0 + Pro 1.3.0 and Free 1.4.0 + Pro 1.4.0 on Joomla 5 and Joomla 6.
+- Preserve existing event names and arguments, asset names and ordering,
+  JavaScript extension callbacks and helper arguments, tree/result data and
+  analytics event schema. New hooks must be optional and inert when absent.
+- Detect a new add-on capability through its hook before using it. An enabled
+  Pro plugin establishes the edition; it does not establish that every feature
+  of the newest Pro release exists. Do not require matching version numbers or
+  withdraw existing Pro access simply because Free was updated first.
+- Keep new data additive; preserve existing rich results, links, layouts and
+  analytics when editing and saving. Pro's minimum Free version is an installer
+  prerequisite, not proof that future Free versions remain compatible.
+- Run the package-based compatibility gate in TESTING.md before advertising a
+  Free update. A failure blocks release until compatibility is restored. A
+  deliberate breaking change needs an explicit migration/release plan; releasing
+  both packages on the same day is not a substitute for compatibility.
+- At each release, advance the pinned previous/current versions in the upgrade
+  test to the published baseline and the new candidate. Keep archived package
+  checksums with the test evidence. Private Pro packages stay outside this repo.
 
 ## Private Pro Repository Handoff
 
