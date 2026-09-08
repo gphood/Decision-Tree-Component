@@ -1,0 +1,100 @@
+[
+  {
+    "file": "free-canvas-overview.webp",
+    "destination": "/images/decision-tree/1.4.0/free-canvas-overview.webp",
+    "alt": "Arrange questions and outcomes visually, with connections showing each decision path.",
+    "width": 881,
+    "height": 764
+  },
+  {
+    "file": "free-form-builder.webp",
+    "destination": "/images/decision-tree/1.4.0/free-form-builder.webp",
+    "alt": "Use the form builder to edit questions and connect answer choices to the next step.",
+    "width": 1137,
+    "height": 1042
+  },
+  {
+    "file": "free-frontend-outcome.webp",
+    "destination": "/images/decision-tree/1.4.0/free-frontend-outcome.webp",
+    "alt": "Show a relevant outcome with a clear link to the next action.",
+    "width": 964,
+    "height": 318
+  },
+  {
+    "file": "free-frontend-question.webp",
+    "destination": "/images/decision-tree/1.4.0/free-frontend-question.webp",
+    "alt": "Each answer leads to the next relevant question. Visitors can go back or start again.",
+    "width": 964,
+    "height": 382
+  },
+  {
+    "file": "free-frontend-start.webp",
+    "destination": "/images/decision-tree/1.4.0/free-frontend-start.webp",
+    "alt": "Guide visitors through a decision tree with clear choices and optional step numbers.",
+    "width": 964,
+    "height": 382
+  },
+  {
+    "file": "free-question-editor.webp",
+    "destination": "/images/decision-tree/1.4.0/free-question-editor.webp",
+    "alt": "Edit question text, answer choices and the next question without leaving the canvas.",
+    "width": 1200,
+    "height": 664
+  },
+  {
+    "file": "free-tree-manager.webp",
+    "destination": "/images/decision-tree/1.4.0/free-tree-manager.webp",
+    "alt": "See the question and outcome counts, path validation and article embed tag at a glance.",
+    "width": 1200,
+    "height": 434
+  },
+  {
+    "file": "free-whats-in-pro.webp",
+    "destination": "/images/decision-tree/1.4.0/free-whats-in-pro.webp",
+    "alt": "Expand the optional panel to see the additional features available with Decision Tree Pro.",
+    "width": 913,
+    "height": 371
+  },
+  {
+    "file": "pro-analytics.webp",
+    "destination": "/images/decision-tree/1.4.0/pro-analytics.webp",
+    "alt": "Review starts, completions, outcomes, answer selections and completed paths. Demonstration data from the local example.",
+    "width": 855,
+    "height": 1887
+  },
+  {
+    "file": "pro-branch-preview.webp",
+    "destination": "/images/decision-tree/1.4.0/pro-branch-preview.webp",
+    "alt": "Preview a branch from the selected question using the current unsaved changes.",
+    "width": 502,
+    "height": 714
+  },
+  {
+    "file": "pro-canvas-overview.webp",
+    "destination": "/images/decision-tree/1.4.0/pro-canvas-overview.webp",
+    "alt": "Build and arrange decision paths, with controls to preview any question or outcome.",
+    "width": 822,
+    "height": 895
+  },
+  {
+    "file": "pro-frontend-rich-outcome.webp",
+    "destination": "/images/decision-tree/1.4.0/pro-frontend-rich-outcome.webp",
+    "alt": "Create an illustrated outcome with rich content blocks and a clear next action.",
+    "width": 953,
+    "height": 718
+  },
+  {
+    "file": "pro-image-editor.webp",
+    "destination": "/images/decision-tree/1.4.0/pro-image-editor.webp",
+    "alt": "Choose an image and set its alternative text, optional caption and display size.",
+    "width": 941,
+    "height": 836
+  },
+  {
+    "file": "pro-rich-outcome-preview.webp",
+    "destination": "/images/decision-tree/1.4.0/pro-rich-outcome-preview.webp",
+    "alt": "Preview an outcome with a heading, image, caption, text and button.",
+    "width": 502,
+    "height": 746
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "file": "01-home",
+    "title": "Web extensions by Grant Hood",
+    "url": "/",
+    "metadesc": "Joomla extensions that guide visitors to useful answers. Explore Decision Tree Free and Pro, with a visual canvas and clear, branching journeys.",
+    "notes": "",
+    "state": 1,
+    "alias": "home"
+  },
+  {
+    "id": 2,
+    "file": "02-extensions",
+    "title": "Joomla extensions",
+    "url": "/joomla-extensions",
+    "metadesc": "Explore Decision Tree Free and Pro for Joomla 5 and 6. Build branching guidance with a visual canvas and choose the edition that fits your website.",
+    "notes": "Corrects the old /joomla-extensions/decision-tree and /decision-tree/decision-tree-demo links.",
+    "state": 1,
+    "alias": "joomla-extensions"
+  },
+  {
+    "id": 3,
+    "file": "03-free-product",
+    "title": "Decision Tree Free",
+    "url": "/joomla-extensions/decision-tree-free",
+    "metadesc": "Build one interactive decision tree in Joomla with a visual canvas, branching questions and clear outcomes. Free for Joomla 5 and Joomla 6.",
+    "notes": "",
+    "state": 1,
+    "alias": "decision-tree"
+  },
+  {
+    "id": 4,
+    "file": "04-free-demo",
+    "title": "Decision Tree Free demo",
+    "url": "/joomla-extensions/decision-tree-free/decision-tree-free-demo",
+    "metadesc": "Try a Decision Tree Free example for Joomla. Follow the choices, go back or reset, and see how a question flow leads to a relevant outcome.",
+    "notes": "Keep existing live tree 1 and its content. Screenshot is a separate illustrative example.",
+    "state": 1,
+    "alias": "decision-tree-free-demo"
+  },
+  {
+    "id": 5,
+    "file": "05-free-documentation",
+    "title": "Decision Tree Free documentation",
+    "url": "/joomla-extensions/decision-tree-free/decision-tree-free-documentation",
+    "metadesc": "Learn to install Decision Tree Free 1.4.0, build with the visual canvas, set the start question, preview, embed and import or export your Joomla tree.",
+    "notes": "Code examples separate the command name with an inline span so Joomla does not execute the documentation examples, while the displayed tag remains copyable.",
+    "state": 1,
+    "alias": "decision-tree-documentation"
+  },
+  {
+    "id": 6,
+    "file": "06-free-download",
+    "title": "Download Decision Tree Free",
+    "url": "/joomla-extensions/decision-tree-free/decision-tree-free-download",
+    "metadesc": "Download Decision Tree Free 1.4.0 for Joomla 5 and 6. Includes the component, content plugin and visual canvas for one decision tree per site.",
+    "notes": "Activate this 1.4.0 wording only when /download/decision-tree-free-latest delivers the verified final ZIP.",
+    "state": 1,
+    "alias": "decision-tree-download"
+  },
+  {
+    "id": 7,
+    "file": "07-starter-templates",
+    "title": "Decision Tree Free starter templates",
+    "url": "/joomla-extensions/decision-tree-free/decision-tree-free-templates",
+    "metadesc": "Download reusable Decision Tree JSON templates for eligibility checks, support guidance and product selection, with import instructions for Joomla.",
+    "notes": "Preserves live demo tree IDs 4, 3 and 2 and all three existing JSON download URLs.",
+    "state": 1,
+    "alias": "templates"
+  },
+  {
+    "id": 9,
+    "file": "09-pro-product",
+    "title": "Decision Tree Pro",
+    "url": "/joomla-extensions/decision-tree-pro",
+    "metadesc": "Build multiple Joomla decision trees with image outcomes, branch previews and anonymous analytics. Decision Tree Pro 1.4.0 extends the Free visual canvas.",
+    "notes": "",
+    "state": 1,
+    "alias": "decision-tree-pro"
+  },
+  {
+    "id": 10,
+    "file": "10-comparison",
+    "title": "Compare Decision Tree Free and Pro",
+    "url": "/joomla-extensions/decision-tree-pro/decision-tree-compare-free-and-pro",
+    "metadesc": "Compare Decision Tree Free and Pro 1.4.0: the shared visual canvas, tree limits, image outcomes, branch previews, whole-tree duplication and analytics.",
+    "notes": "",
+    "state": 1,
+    "alias": "decision-tree-compare-free-and-pro"
+  },
+  {
+    "id": 11,
+    "file": "11-pro-demo",
+    "title": "Decision Tree Pro demo",
+    "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-demo",
+    "metadesc": "Try a Decision Tree Pro example for Joomla and see an illustrated outcome from version 1.4.0. Explore rich content, guided choices and branch previews.",
+    "notes": "Preserves live tree 5. New image example is explicitly labelled as a screenshot, not a replacement interactive tree. No live tree IDs need changing.",
+    "state": 1,
+    "alias": "decision-tree-pro-demo"
+  },
+  {
+    "id": 12,
+    "file": "12-pro-documentation",
+    "title": "Decision Tree Pro documentation",
+    "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-documentation",
+    "metadesc": "Install Decision Tree Pro 1.4.0, add images and rich outcomes, preview branches, set your Download Key and manage anonymous analytics in Joomla.",
+    "notes": "Write the existing article 12. Change menu 216 from article 5 to article 12 and publish that existing menu route at launch. Article 12 is already published; do not create a duplicate.",
+    "state": 1,
+    "alias": "decision-tree-pro-documentation"
+  },
+  {
+    "id": 13,
+    "file": "13-buy-pro",
+    "title": "Buy Decision Tree Pro",
+    "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-buy",
+    "metadesc": "Get Decision Tree Pro for Joomla: unlimited trees, image outcomes, branch previews and anonymous analytics. Includes future Pro updates with no subscription.",
+    "notes": "Retains the exact licence, updates, delivery and refund section from the live article, and the stripe-decision-tree-pro-buy module position. No changes to price, payment configuration or terms.",
+    "state": 1,
+    "alias": "buy-decision-tree-pro"
+  },
+  {
+    "id": 14,
+    "file": "14-pro-downloads",
+    "title": "Decision Tree Pro downloads",
+    "url": "/decision-tree-pro-downloads",
+    "metadesc": "Download and install Decision Tree Pro 1.4.0 using your secure purchase link. Update Decision Tree Free first and retain your Joomla Download Key.",
+    "notes": "Prepared for completeness; preserve unpublished status for article 14 and menu 219. Replaces the old generic /downloads/decisiontreepro link with purchase-email instructions; no public private-ZIP URL.",
+    "state": 0,
+    "alias": "decision-tree-pro-downloads"
+  },
+  {
+    "id": 16,
+    "file": "16-documentation-index",
+    "title": "Documentation",
+    "url": "/documentation",
+    "metadesc": "Find the Decision Tree Free and Pro guides for Joomla: installation, visual canvas, image outcomes, previews, Download Keys and analytics.",
+    "notes": "The Pro guide button becomes live with the corrected/published menu 216. This replaces comparison/demo/purchase-only navigation for the Pro guide card.",
+    "state": 1,
+    "alias": "documentation"
+  }
+]
