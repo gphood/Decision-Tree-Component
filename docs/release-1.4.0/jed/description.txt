@@ -1,0 +1,31 @@
+Decision Tree helps visitors find the right information by guiding them through a series of questions. Each answer leads to another question or a relevant outcome, with optional text and a call-to-action button.
+
+Use it for product finders, service selection, guided support, eligibility checks and interactive FAQs.
+
+The Free edition includes one decision tree per site and the visual canvas builder.
+
+Key features
+• Build branching question flows in the Joomla administrator.
+• Switch between the form builder and visual canvas while editing the same tree.
+• Arrange question and outcome cards with drag-and-drop positioning, pan, zoom, fit and automatic arrangement.
+• Edit questions and outcomes directly from the canvas.
+• Duplicate individual questions, reorder answer options and choose the starting question.
+• Identify broken connections, loops, unreachable questions and incomplete paths.
+• Save your canvas layout and preview unsaved changes.
+• Add result text and an optional call-to-action link to each outcome.
+• Display a tree through a Joomla menu item or embed it in an article using {decisiontree id=1}.
+• Import and export reusable JSON templates.
+• Let visitors go Back or Reset, with optional step numbers and responsive layouts.
+
+New in 1.4.0
+The visual canvas brings questions, outcomes and connections together in one view, with direct editing, path warnings and saved layouts. This release also improves outcome-button hover and keyboard-focus feedback and adds a collapsible “What's in Pro” information panel in the Free tree list.
+
+Free and Pro
+Decision Tree Pro is a separate add-on. It adds unlimited trees, whole-tree duplication, rich outcomes with images, previews from individual questions and outcomes, and anonymous analytics. The visual canvas and individual-question duplication are included in Free.
+
+Installation and updates
+The Free ZIP includes both the component and content plugin. Back up your site, then install it through System → Install → Extensions, or use Joomla's update system. There is no need to uninstall the existing version.
+
+Pro users should update Free first, then Pro. Pro 1.4.0 requires Free 1.4.0 or later, and both packages must remain installed.
+
+Compatible with Joomla 5 and Joomla 6. Use a PHP version supported by your Joomla installation.

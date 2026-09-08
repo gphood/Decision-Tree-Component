@@ -1,0 +1,23 @@
+{
+  "verified_date": "2026-09-08",
+  "feed_url": "https://granthood.co.uk/index.php?option=com_downloadtracker&task=download.update&alias=decision-tree-pro-latest&format=raw",
+  "version": "1.4.0",
+  "item_id": 2,
+  "download_url": "https://granthood.co.uk/download/decision-tree-pro-latest",
+  "sha256": "75bb6efab4b6d63dbd71ff72681239c7a7b1e1311c470945daaf56f6ae3f94a0",
+  "bytes": 41584,
+  "protected_download_matches_tested_zip": true,
+  "denied_requests": [
+    {
+      "key": "missing",
+      "http_status": 404
+    },
+    {
+      "key": "invalid",
+      "http_status": 404
+    }
+  ],
+  "temporary_test_key_id": 10,
+  "test_key_revoked": true,
+  "no_emails_sent": true
+}

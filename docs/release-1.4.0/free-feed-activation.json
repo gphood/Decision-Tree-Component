@@ -1,0 +1,30 @@
+{
+  "verified_date": "2026-09-08",
+  "commit": "86dce452a9b60c1cd1b4bd8e47cef98cea75aa84",
+  "feeds": [
+    {
+      "filename": "pkg_decisiontree.xml",
+      "url": "https://raw.githubusercontent.com/gphood/Decision-Tree-Component/master/updates/pkg_decisiontree.xml",
+      "version": "1.4.0",
+      "package_url": "https://github.com/gphood/Decision-Tree-Component/releases/download/v1.4.0/pkg_decisiontree-1.4.0.zip",
+      "sha256": "83d232170ca0331482bf0ae4988a24968d12b74935d99936536cfad749c0530f"
+    },
+    {
+      "filename": "com_decisiontree.xml",
+      "url": "https://raw.githubusercontent.com/gphood/Decision-Tree-Component/master/updates/com_decisiontree.xml",
+      "version": "1.4.0",
+      "package_url": "https://github.com/gphood/Decision-Tree-Component/releases/download/v1.4.0/pkg_decisiontree-1.4.0.zip",
+      "sha256": "83d232170ca0331482bf0ae4988a24968d12b74935d99936536cfad749c0530f"
+    },
+    {
+      "filename": "plg_content_decisiontree.xml",
+      "url": "https://raw.githubusercontent.com/gphood/Decision-Tree-Component/master/updates/plg_content_decisiontree.xml",
+      "version": "1.4.0",
+      "package_url": "https://github.com/gphood/Decision-Tree-Component/releases/download/v1.4.0/pkg_decisiontree-1.4.0.zip",
+      "sha256": "83d232170ca0331482bf0ae4988a24968d12b74935d99936536cfad749c0530f"
+    }
+  ],
+  "public_package_bytes": 105503,
+  "public_package_matches_tested_zip": true,
+  "scope": "Free feed activation only; Pro download/feed unchanged."
+}

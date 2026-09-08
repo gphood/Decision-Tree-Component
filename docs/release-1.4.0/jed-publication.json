@@ -1,0 +1,50 @@
+{
+  "verified_date": "2026-09-08",
+  "url": "https://extensions.joomla.org/extension/authoring-a-content/content-construction/decision-tree/",
+  "public_version": "1.4.0",
+  "publication_status": "live",
+  "updated_description": true,
+  "compatibility": [
+    "Joomla 5",
+    "Joomla 6"
+  ],
+  "listing_type": "Free download",
+  "includes": [
+    "component",
+    "content plugin"
+  ],
+  "verified_destinations": [
+    "https://granthood.co.uk/joomla-extensions/decision-tree-free/decision-tree-free-download",
+    "https://granthood.co.uk/joomla-extensions/decision-tree-free/decision-tree-free-demo",
+    "https://granthood.co.uk/joomla-extensions/decision-tree-free/decision-tree-free-documentation",
+    "https://github.com/gphood/Decision-Tree-Component/issues"
+  ],
+  "gallery_images": [
+    {
+      "src": "/cache/fab_image/69ef57deed5ac_resizeDown1200px525px16.png",
+      "alt": "logo",
+      "class": "extension_image"
+    },
+    {
+      "src": "/cache/fab_image/6aa009ad3f8dc_resizeDown1200px525px16.png",
+      "alt": "main-image-1",
+      "class": "extension_image"
+    },
+    {
+      "src": "/cache/fab_image/6aa009b09773b_resizeDown1200px525px16.png",
+      "alt": "main-image-2",
+      "class": "extension_image"
+    },
+    {
+      "src": "/cache/fab_image/6aa009b4299f8_resizeDown1200px525px16.png",
+      "alt": "main-image-3",
+      "class": "extension_image"
+    },
+    {
+      "src": "/cache/fab_image/6aa009a8b4be9_resizeDown1200px525px16.png",
+      "alt": "main-image-4",
+      "class": "extension_image"
+    }
+  ],
+  "installer_attachment": "Grant confirmed listing update; attachment not exposed on the public page and was not independently checked."
+}

@@ -21,3 +21,13 @@
 The HTML is prepared article content, not a replacement website template. The local preview does not execute Joomla content plugins, the live demo trees, payment modules or extension updates. Validate these in the actual Joomla staging/launch check. The existing Pro documentation route is intentionally not live until its menu is corrected and published.
 
 No production articles, menus, extension code, download items, customer keys or payment settings were written during preparation. No purchase, download or customer-message flow was triggered.
+
+## Production publication and follow-up checks
+
+Grant approved publication on 8 September 2026. Applied all fourteen article bodies and metadata, uploaded and checksum-verified fourteen screenshots, corrected/published Pro guide menu 216, and retained article 14/menu 219 as unpublished. A fresh private server backup was saved before edits. Saved article HTML matched the prepared content exactly; payment modules and download settings were unchanged.
+
+All thirteen public pages passed browser checks for current metadata, loaded screenshots and alternative text, no uncaught JavaScript errors, and no horizontal overflow at 390 pixels. Documentation shortcodes rendered as text, with existing demo embeds preserved. The Stripe purchase module retained the £25 price and its Buy button was visible, enabled and fully opaque after loading; no checkout or payment was submitted.
+
+Grant then noted that screenshot controls looked like working page content. Added consistent shaded frames, borders and “Screenshot” labels to all 21 placements across nine pages. Those nine pages passed a second layout/image check and the mobile framing was visually inspected. Checked all 30 internal link/image destinations and 91 references, including guide anchors, template JSON files and the Free ZIP checksum. Joomla correctly renders the stored relative contact/template URLs as root-relative links; no link content correction was needed.
+
+Machine-readable evidence is in `live-verification.json`. Customer update-feed and Pro download activation remain separate steps.

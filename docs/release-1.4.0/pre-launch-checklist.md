@@ -1,0 +1,205 @@
+# Decision Tree Free and Pro 1.4.0 — release checklist
+
+Prepared 8 September 2026. This is a preparation and launch plan, not authorisation to publish. Completed preparation is marked below; unchecked work remains outstanding. Preparation ends with one review of the complete release bundle before live changes begin.
+
+## Agreed responsibilities and staging authorisation
+
+- **Grant:** publish the new Free version on GitHub using the prepared release description, then update the JED listing once the version is available.
+- **Codex:** prepare the packages, descriptions, documentation, screenshots and verification evidence, and support the website release work.
+- **Authorised staging:** rebuild/check the Pro ZIP and upload it to granthood.co.uk's private folder. Grant clarified that no separate product/download entry is needed; update the existing Decision Tree Pro entry only at launch.
+- **Not activated during staging:** public download links, the existing Pro latest/update item, customer purchase mappings and update feeds. Existing customer keys must continue to resolve through the established live item until the approved launch.
+- GitHub publication and JED submission steps below are assigned to Grant; Codex supplies the exact assets, copy and instructions.
+
+## Current findings
+
+- Both source trees target **1.4.0** on `codex/prepare-1.4.0` release-preparation branches. Free implementation commit: `2b79d1c`; compatibility gate and evidence: `dae96b3`; private Pro implementation: `704f714`. Pro 1.4.0 requires Free 1.4.0 or later. The live default branches and release tags remain separate from this preparation work.
+- At the initial review, the Free ZIP (10:28) and Pro ZIP (08:35) predated subsequent changes. Free has now been rebuilt with the canvas form-validation fix and passed the mixed-version upgrade gate on Joomla 5 and 6. Pro is privately staged as recorded below; the wider release matrix remains pending.
+- All three local Free update XML checksums now match the tested Free ZIP. See `docs/1.4.0-compatibility-results.md` for exact package hashes. Any subsequent rebuild requires refreshed hashes and relevant retesting.
+- Free package updates use XML served directly from the public repository's `master` branch. Publishing changes there can advertise an update immediately, even before a GitHub release is available.
+- The website Free and Pro pages and comparison page still lead with 1.3.0. The Free documentation also describes the 1.3.0 builder.
+- The documentation index links to the Free guide but offers comparison, demo and purchase links for Pro. Live Joomla inspection found an existing empty **Decision Tree Pro documentation** article (ID 12). Its Pro Documentation menu item (ID 216) is unpublished and incorrectly targets the Free guide (article ID 5). Write article 12, correct menu 216 to target it, and publish/link that route at launch; no new article is needed.
+- The live JED listing displays **1.3.0** in both its version and description, as confirmed by Grant on 8 September 2026. The earlier search-tool result showing 1.2.2 was stale; prepare the JED update from 1.3.0 to 1.4.0.
+- Recent checks covered individual changes on local installations. They do not replace final installer, upgrade and release-matrix checks.
+
+## Completed Pro staging — 8 September 2026
+
+- [x] Rebuilt `pkg_decisiontreepro-1.4.0.zip` from the current Pro working copy and checked that packaged implementation files match the source.
+- [x] Ran the local Pro suite: 7 passed; the 2 environment-dependent integration checks were skipped. This does not complete the release test matrix.
+- [x] Uploaded the ZIP to the configured private downloads directory on granthood.co.uk and verified its server checksum matches the local file.
+- [x] Permanently deleted the temporary **Decision Tree Pro 1.4.0** draft download item (ID 3) at Grant's request, after verifying it had no customer keys or download logs. Confirmed no draft record remains. No new product was created. The privately staged ZIP remains in place.
+- [x] Recorded the staged package checksum and Free-first prerequisite. The redundant draft item was never published or made latest; its public update feed was disabled.
+- [x] Verified the existing Free and Pro latest items remain published at **1.3.0** with their previous mappings. At launch, update the existing Pro latest item (ID 2) to preserve customer keys. Use the ZIP and checksum recorded here; no separate draft item remains.
+- [x] Prepared Grant's GitHub release description in `docs/1.4.0-github-release.md`; publishing remains Grant's responsibility.
+
+Staged Pro package: **41,584 bytes**. SHA-256: `75bb6efab4b6d63dbd71ff72681239c7a7b1e1311c470945daaf56f6ae3f94a0`.
+
+If further source changes are required, rebuild and re-stage the package, replace this checksum and repeat relevant checks before launch. The staged ZIP is not yet approved for public release.
+
+## 1. Agree the release record and preserve the starting point
+
+- [ ] Confirm Free and Pro version **1.4.0**, release date, and the approved feature/fix list. Verify remote tags and releases before reserving `v1.4.0`; local tag lists may be incomplete.
+- [ ] Record the current live Free and Pro versions, download targets, package files, checksums, update-feed responses and GitHub release URLs.
+- [ ] Inventory all live destinations: GitHub repositories/releases, website articles and menu links, Download Tracker items, purchase/fulfilment instructions, demos, and JED listing(s).
+- [ ] Confirm access to GitHub, website administration/file uploads and the JED owner account, without publishing anything.
+- [ ] Save copies of current website article content, images, Download Tracker configuration and JED copy. Prepare a website files/database backup and restoration procedure for launch.
+- [ ] Record who will prepare, approve and publish each part, the launch window, and who will check the release afterwards.
+
+**Ready when:** the release scope, destinations and recoverable starting state are documented.
+
+## 2. Finalise the source and release notes
+
+- [ ] Review every changed and untracked file in both repositories; include the new canvas script and guide. Separate unrelated work and exclude credentials, local environment files, test output and temporary screenshots.
+- [ ] Confirm Free contains the shared canvas, editing improvements, basic outcome hover/focus fixes and collapsible Free-only “What's in Pro” panel.
+- [ ] Confirm Pro contains the image block/Media Manager integration, question and outcome previews, content preservation fixes and analytics settings button contrast fix.
+- [ ] Check manifests, package templates, asset versions, installer prerequisites, creation dates and language files agree with the release version.
+- [ ] Write distinct Free and Pro changelogs against the last published version. Do not present existing 1.3.0 analytics or question duplication as newly introduced in 1.4.0.
+- [ ] State the edition boundary consistently: visual canvas and ordinary question actions are in Free; multiple trees, whole-tree duplication, rich blocks/images, per-node previews and analytics are Pro features.
+- [ ] Update repository README files and guides, including **Done versus Save**, changing the start question, unreachable warnings and **Free first, then Pro**.
+- [ ] Prepare reviewed release commits and draft release notes. Keep production update-feed activation separate from code preparation so a routine push cannot expose unfinished downloads.
+
+**Ready when:** both source trees and release notes describe the exact intended release.
+
+## 3. Build, test and freeze the actual installers
+
+- [ ] Build Free with `./build-installers.sh` and Pro with `./build-pro.sh` in their respective repositories.
+- [ ] Use the package ZIPs as the primary customer downloads: `pkg_decisiontree-1.4.0.zip` and `pkg_decisiontreepro-1.4.0.zip`. Decide whether to retain component/plugin ZIPs as supplementary Free release assets, with clear labels.
+- [ ] Inspect ZIP contents and nested manifests. Free must exclude Pro implementation; Pro must contain only its add-on layer and retain its Download Key/update-server metadata.
+- [ ] Install these ZIPs into the test environments. File-copy testing alone is insufficient to prove an installer includes the latest changes.
+- [ ] Run the documented matrix: Joomla 5 + Pro (`npm run test:e2e` with its test environment), Joomla 6 + Pro (`npm run test:e2e:joomla6`), and Joomla 6 Free-only (`npm run test:e2e:free-joomla6`).
+- [x] Required compatibility gate: passed `npm run test:compatibility` on isolated Joomla 5.4.8 and Joomla 6.1.3 copies using the recorded ZIPs. Verified the full **Free/Pro 1.3.0 → Free 1.4.0 + Pro 1.3.0 → Free/Pro 1.4.0** sequence without skipped stages, including rejection of the premature Pro update. Exact package checksums and results are in `docs/1.4.0-compatibility-results.md`; later package changes require retesting.
+- [x] Added and reviewed the Free/Pro compatibility policy in `NOTES.md`: preserve existing hooks, callback arguments, asset dependencies, rich-result data and analytics event schema; keep new Pro capabilities optional when the installed add-on is older. Matching release numbers or simultaneous publication must not be required to retain existing Pro features.
+- [ ] Run `php tests/tree-validator.php`, the Pro `npm test` and installed integration checks, plus the documented analytics storage/retention checks. Record required environment settings, intentional skips and results.
+- [ ] Test a clean Free installation; add Pro afterwards. Test upgrades from the currently published Free/Pro versions using existing trees, menu items, embeds, rich outcomes, analytics and update keys.
+- [ ] Verify Pro 1.4.0 refuses installation when the required Free version is absent/too old, gives helpful instructions, and succeeds after Free is updated. Check existing Pro still behaves acceptably during the Free-first update sequence.
+- [ ] Verify canvas/form switching, editing, layout persistence, question and outcome actions, start-question changes, validation, previews, image selection and save/reload preservation.
+- [ ] Verify basic and rich outcome buttons, Back/Reset and analytics settings in light/dark modes with hover and keyboard focus. Check narrow-screen layouts and the Free-only panel.
+- [ ] Verify JSON import/export, menu/article embedding, frontend step numbers, navigation and completion. Check old tree data still renders.
+- [ ] Verify edition boundaries and preservation when Pro is disabled or uninstalled on a disposable test site. Confirm the existing base extension and trees remain; document any intended analytics-data removal.
+- [ ] Check supported Joomla/PHP combinations against actual runtime requirements. An extension manifest's PHP minimum alone does not establish compatibility with every supported Joomla version.
+- [ ] Calculate final SHA-256 checksums and file sizes; record package filenames, source commit IDs, build time and test results in a release manifest.
+- [ ] Freeze the approved ZIPs. Any code change requires a new build, updated checksums and relevant rechecks. Upload the same verified bytes everywhere.
+
+**Ready when:** final packaged installations and upgrades pass, with an immutable pair of release ZIPs and matching checksums.
+
+## 4. Prepare the documentation and website copy
+
+Prepare revisions offline or on staging first. Preserve existing public URLs wherever possible. Keep 1.3.0 notes as version history rather than silently replacing all historical references.
+
+**Copy prepared 8 September:** fourteen complete article drafts are in [the website content review](release-1.4.0/website/index.html), covering the homepage, Extensions overview, Free/Pro product pages, both guides, comparison, demos, downloads, starter templates, purchase page and documentation index. The bundle includes article HTML, fourteen WebP screenshots, captions/alt text, metadata, existing page IDs and application notes. Current article/menu copies were saved locally. Purchase terms and the payment module were preserved; article 14 remains unpublished. See [application notes](release-1.4.0/website/README.md) and [verification](release-1.4.0/website/verification.md). No live content was changed. Editorial approval and the final Joomla staging check remain outstanding.
+
+| Page or destination | Prepared changes needed |
+| --- | --- |
+| [Free product page](https://granthood.co.uk/joomla-extensions/decision-tree-free) | New 1.4.0 highlights, canvas description, current screenshots, correct Free scope and download link. |
+| [Pro product page](https://granthood.co.uk/joomla-extensions/decision-tree-pro) | Shared canvas improvements, image outcomes, per-node previews, current screenshots and explicit Free 1.4.0 prerequisite. Keep existing analytics information accurate. |
+| [Free/Pro comparison](https://granthood.co.uk/joomla-extensions/decision-tree-pro/decision-tree-compare-free-and-pro) | Add canvas to both editions; show image blocks and question/outcome previews as Pro-only. Distinguish question duplication from whole-tree duplication. |
+| [Free documentation](https://granthood.co.uk/joomla-extensions/decision-tree-free/decision-tree-free-documentation) | Canvas/form workflow, controls, warnings, saving, start-question behaviour, basic outcomes and updated illustrations. |
+| Existing Pro documentation article (ID 12; currently empty) | Write the guide for image blocks, Media Manager, alternative text/decorative images, captions/sizes/limits, rich previews, installation/update order, Download Keys and analytics. Correct the unpublished Pro Documentation menu (ID 216) from Free article 5 to Pro article 12; publish it at launch. |
+| [Documentation index](https://granthood.co.uk/documentation) | Current summaries and direct links to both guides and relevant installation/update help. |
+| [Free download page](https://granthood.co.uk/joomla-extensions/decision-tree-free/decision-tree-free-download) | Current version, package name, requirements, release notes and stable download alias. |
+| [Pro purchase page](https://granthood.co.uk/joomla-extensions/decision-tree-pro/decision-tree-pro-buy) | Accurate feature list and prerequisites; check existing purchase flow and fulfilment mapping without changing pricing or terms. |
+| Free and Pro demo pages | Update installed extensions as needed and prepare representative examples. Pro demo should demonstrate an image outcome; retain existing useful links. |
+
+- [ ] Inventory the corresponding Joomla article IDs, aliases, menus, modules, image paths and metadata. Include extension-directory cards and other pages linking to downloads or displaying versions. Live inspection found legacy published download menu items 108, 109 and 125 still pointing to 1.0.0 ZIPs; review their use and redirect/update them as part of launch.
+- [x] Write a clear canvas guide: moving cards, pan/zoom/fit/auto-layout, editing questions/outcomes, keyboard operation and layout persistence.
+- [x] Explain that **Done updates the unsaved tree; Save persists it**. Explain that choosing a later start question preserves earlier questions but may make them unreachable; Back follows only the visitor's history. Distinguish this from Pro's temporary “Preview from here”.
+- [x] Document image formats and limits from the current 1.4.0 implementation, including what happens when importing/exporting trees that refer to local image files. Recheck if release code changes.
+- [x] Review analytics setup, default-off collection, reports, filtering/export, retention and deletion instructions. Keep claims aligned with what is actually collected and stored.
+- [ ] Prepare customer installation/update instructions for Download Tracker and purchase/key emails: update Free to 1.4.0 first, keep it installed, then update Pro; retain existing Download Keys.
+- [ ] Add new screenshots with captions and alternative text. Check link destinations, headings, mobile presentation and terminology; remove unsupported feature claims.
+- [ ] Preview the finished articles on staging and prepare a before/after list for approval. The existing Pro guide menu route is `/joomla-extensions/decision-tree-pro/decision-tree-pro-documentation`; verify it after correcting its article target and publishing it at launch. Add direct links from the documentation index and Pro product page.
+
+**Ready when:** every changed page and customer instruction is fully written and reviewable, with final assets selected.
+
+## 5. Prepare a consistent screenshot set
+
+Use actual captures from the final installed packages and a small, polished demo tree. Do not reuse screenshots showing automated-test names, browser errors or incomplete animations.
+
+**Prepared 8 September:** 14 real screenshots, PNG/WebP copies, captions, suggested page/JED placements and a review gallery are in `screenshots/1.4.0/`. Open `screenshots/1.4.0/index.html`; the distribution pack is `decision-tree-1.4.0-screenshots.zip`. All administrator captures use **light mode**, as requested by Grant. These were captured from the current source installed on local test sites; recheck against the frozen release installers before launch. Nothing has been uploaded or published.
+
+Screenshot review also found and fixed missing JavaScript registrations for the question-modal heading and help text in Free. Include the corrected `administrator/src/View/Tree/HtmlView.php` in the final Free rebuild. PHP syntax and the actual Free editor display were verified. Pro source/package bytes were not changed by this fix.
+
+| Capture | Primary use |
+| --- | --- |
+| Free tree list | Free overview, list summaries and embed-tag copying. |
+| Visual canvas overview | Main 1.4.0 product image; clearly show questions, paths and outcomes. |
+| Question/outcome editing modal | Documentation for editing options, destinations and basic outcomes. |
+| Start-question and path-warning example | Explain the effect of changing the entry point. |
+| Frontend question and basic outcome | Free page, JED, and display documentation. |
+| Pro rich outcome editor with Image block | Explain Media Manager selection, alternative text, captions and display sizes. |
+| Pro outcome preview | Show a finished outcome with image, text and CTA. |
+| Pro branch preview | Illustrate “Preview from here” and “Preview outcome” in the canvas. |
+| Pro analytics dashboard | Use clearly synthetic demo data and readable settings controls. |
+| Selected mobile views, if needed | Optional additional captures after checking final page layouts. Grant requested light mode for all administrator screenshots. |
+| Free “What's in Pro” collapsed/expanded | Documentation reference if useful; not the main Free marketing image. |
+
+- [ ] Use consistent demo wording, tree layout, browser zoom and capture sizes. Keep Free and Pro captures accurately labelled.
+- [ ] Remove irrelevant notifications, personal details, customer data, keys, local paths and test identifiers. Wait for layout, fonts, images and animations to settle.
+- [x] Save full-resolution PNG masters and optimised website copies. Use filenames identifying version, edition and view; retain a caption/alt-text and destination list.
+- [ ] Confirm current JED image requirements in its submission form before producing its final crops. Select a small set that demonstrates the Free listing accurately; label any Pro examples explicitly if permitted.
+- [ ] Review all images at the actual displayed size, including mobile, and confirm image usage rights for demo assets.
+
+**Ready when:** the screenshot folder, captions and page/JED assignments are approved together.
+
+## 6. Stage distribution metadata and the JED update
+
+- [ ] Prepare the public Free GitHub release for the reviewed commit and `v1.4.0` tag, with final ZIPs, changelog, compatibility notes and checksums. Keep it unpublished until launch approval.
+- [ ] Prepare the matching Pro source tag/release record in the private repository. Do not put protected Pro downloads into the public Free repository or release.
+- [ ] Prepare all three Free feeds: `updates/pkg_decisiontree.xml`, `updates/com_decisiontree.xml` and `updates/plg_content_decisiontree.xml`. Their current-version entries should resolve to the intended final package and its newly calculated checksum; preserve intentional legacy entries.
+- [ ] Prepare the website's `decision-tree-free-latest` Download Tracker target and version fields. Verify its actual live source configuration before choosing a GitHub redirect versus a hosted copy. If mirrored on the website, use the identical Free ZIP.
+- [ ] Prepare the Pro `decision-tree-pro-latest` private file, filename, version, SHA-256, package element/type, Joomla/PHP constraints and installation instructions. Preserve the stable item/alias and existing customer keys.
+- [ ] Verify staging delivery: valid authorised Pro downloads work; missing/invalid keys cannot retrieve the protected ZIP; update XML advertises metadata without exposing customer credentials.
+- [ ] Prepare the JED edit: version, release description, new screenshots, compatibility, download/demo/support/documentation links and correct Free/Pro wording. Update the existing listing; establish whether any separate Pro listing exists rather than creating a duplicate by assumption.
+- [ ] Save all JED text and images ready to submit. Check field limits and any review requirements in the current form; do not submit before the destination pages and downloads are live.
+
+**Ready when:** every upload and metadata change is specified in advance, including old and new values.
+
+## 7. Review the complete release bundle
+
+- [ ] Present the final ZIPs/checksums, source references, test report, Free/Pro release notes, website/documentation drafts, screenshots, JED draft and ordered deployment instructions together.
+- [ ] Confirm no unresolved installer failures, data-preservation failures, unavailable downloads or incorrect feature claims remain.
+- [ ] Confirm the recovery files and website backup are available and identify the person who can restore them.
+- [ ] Obtain approval for the concrete bundle and launch sequence. Preparation alone does not publish anything.
+
+## 8. Apply the approved changes in dependency order
+
+1. [ ] Take the agreed live backup and record the last live versions/targets immediately before changes.
+2. [ ] Upload/stage the final website files and images without switching public download targets. Keep Pro files in the protected location. Verify uploaded bytes against the approved hashes.
+3. [ ] Publish the Free source/tag and GitHub release assets while keeping production update XML on the previous release until those assets are accessible. Split the source and feed commits if necessary; do not push an already-modified `master` feed prematurely.
+4. [ ] Verify the published Free ZIP can be retrieved and matches the approved checksum. Switch the website's Free download target/version to that package.
+5. [ ] Apply the prepared website product pages, comparison, guides, release notes, download instructions and fulfilment instructions. Update the website's installed Free then Pro extensions and demo content where needed, using the tested packages.
+6. [ ] Publish/activate the final Free update feeds. Confirm all three relevant feed entries resolve successfully and advertise the correct version and checksum.
+7. [ ] Publish the approved Pro source/tag privately and switch its Download Tracker item to the verified private 1.4.0 ZIP, version and checksum. Treat that item change as activation of both Pro downloads and its generated update feed. Free 1.4.0 must already be available.
+8. [ ] Clear relevant website/update caches, then complete the live verification below. Pause subsequent publication if a critical check fails.
+9. [ ] Submit the prepared JED edit after links, downloads and documentation are verified live. Record whether it is published or awaiting review.
+10. [ ] Publish any separately approved announcement only after the release is working. Customer messages are optional and require their own agreed copy and recipients.
+
+## 9. Verify the public release and retain a recovery path
+
+- [ ] Open Free/Pro product pages, comparison, guides and demos as a logged-out visitor. Check screenshots, mobile layout, version wording and every download/help link.
+- [ ] Retrieve the Free download through the website and GitHub; compare checksums. Retrieve Pro through an authorised test key and compare its checksum. Mark deliberate requests with `X-DownloadTracker-Test: codex` where supported so they do not inflate download statistics.
+- [ ] From disposable sites on the previous public release, use Joomla's normal update process: detect and install Free first, then Pro. Check current keys remain valid and existing trees, embeds, images and analytics still behave correctly.
+- [ ] Verify purchase-to-download and key-delivery mapping using the agreed test facility; do not make unapproved charges or send test messages to real customers.
+- [ ] Confirm the release does not repeatedly appear as pending after installation. Check for duplicate update-site entries, broken cache behaviour or stale assets.
+- [ ] Confirm JED's public version, links and images after its changes are accepted; track any pending review separately from the website/GitHub launch.
+- [ ] Review website/PHP/download logs and support reports immediately after launch and at an agreed next-day check. Record the actual checks; no monitoring is scheduled by this document.
+- [ ] If a critical problem appears, stop advertising the affected update, restore prior download targets/content as appropriate, and preserve logs. Removing a feed entry does not revert customers who already updated; plan a corrective release or tested backup restoration rather than assuming an in-place downgrade is safe.
+- [ ] Archive final ZIPs, checksums, source commits/tags, published URLs, approved copy/images and verification results as the release record. Never silently replace the bytes of an already-published version.
+
+**Complete when:** both editions can be downloaded and upgraded successfully, the website/documentation match the shipped features, and the JED update is published or explicitly recorded as awaiting review.
+
+## Release bundle inventory
+
+- [ ] Free and Pro final package ZIPs and checksum/source manifest.
+- [ ] Final test and installation/upgrade report.
+- [ ] Separate Free and Pro release notes.
+- [x] Website/documentation drafts, destination map and pre-edit article/menu copies in `docs/release-1.4.0/website/`. A complete launch backup and final Joomla staging review are separate pending checks.
+- [x] Screenshot masters, optimised images, captions and alt text prepared in `screenshots/1.4.0/`; final selection/approval and JED form-specific crops remain at review.
+- [ ] Download Tracker changes and three Free update-feed changes.
+- [ ] JED submission text, selected images and link list.
+- [ ] Launch approval, ordered runbook and recovery instructions.
+
+## Evidence used for this plan
+
+Repository sources: Free `README.md`, `TESTING.md`, build script, manifests, update XML and canvas guide; Pro README, notes, build script and installer prerequisite checks; Download Tracker's protected-update and deliberate-test-download documentation.
+
+Public pages reviewed: [Free product](https://granthood.co.uk/joomla-extensions/decision-tree-free), [Pro product](https://granthood.co.uk/joomla-extensions/decision-tree-pro), [comparison](https://granthood.co.uk/joomla-extensions/decision-tree-pro/decision-tree-compare-free-and-pro), [Free guide](https://granthood.co.uk/joomla-extensions/decision-tree-free/decision-tree-free-documentation), [documentation index](https://granthood.co.uk/documentation), and [JED listing](https://extensions.joomla.org/extension/decision-tree/). Live administration settings and the current JED edit form still require preparation-stage inspection.

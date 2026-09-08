@@ -1,0 +1,26 @@
+[
+  {
+    "file": "01-visual-canvas.png",
+    "caption": "Arrange questions, outcomes and answer paths in the Free visual canvas.",
+    "bytes": 219007,
+    "sha256": "3d498781860ddbd2d1a541c00fae185806220a326062accfa997295b2df39d7d"
+  },
+  {
+    "file": "02-question-editor.png",
+    "caption": "Edit question text, answer choices and destinations from the canvas.",
+    "bytes": 161918,
+    "sha256": "45b854b794868418fd117463a0c4e8723775b07929c953218b24a29efe8a9f67"
+  },
+  {
+    "file": "03-visitor-question.png",
+    "caption": "Guide visitors through clear choices, with Back, Reset and optional step numbers.",
+    "bytes": 68758,
+    "sha256": "bbe1411c1d7cb2577a53832f6b81d50d9e888052d8d298c1f69cbd80045b7991"
+  },
+  {
+    "file": "04-visitor-outcome.png",
+    "caption": "Show a relevant text outcome with a clear call-to-action link.",
+    "bytes": 71521,
+    "sha256": "4f0e910cab8ac42ff1106799e66c042fbcbbc52b23da25bf868b333d205e7c25"
+  }
+]

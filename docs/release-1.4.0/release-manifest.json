@@ -1,0 +1,39 @@
+{
+  "version": "1.4.0",
+  "release_date": "2026-09-08",
+  "status": "live",
+  "free": {
+    "source_repository": "https://github.com/gphood/Decision-Tree-Component",
+    "source_tag": "v1.4.0",
+    "source_commit": "0cfb838aad50cf1b830a13cfc506f060db804745",
+    "feed_activation_commit": "86dce452a9b60c1cd1b4bd8e47cef98cea75aa84",
+    "filename": "pkg_decisiontree-1.4.0.zip",
+    "bytes": 105503,
+    "sha256": "83d232170ca0331482bf0ae4988a24968d12b74935d99936536cfad749c0530f",
+    "release_url": "https://github.com/gphood/Decision-Tree-Component/releases/tag/v1.4.0",
+    "website_download": "https://granthood.co.uk/download/decision-tree-free-latest"
+  },
+  "pro": {
+    "source_repository": "private: gphood/Decision-Tree-Pro",
+    "source_branch": "main",
+    "source_tag": "v1.4.0",
+    "source_commit": "704f714bfa2b5ddeb83cf45b84a3f3c45e28a1e9",
+    "tag_object": "efa3c7cccb72bdef5686d4b57bbc77badaf8c0fb",
+    "filename": "pkg_decisiontreepro-1.4.0.zip",
+    "bytes": 41584,
+    "sha256": "75bb6efab4b6d63dbd71ff72681239c7a7b1e1311c470945daaf56f6ae3f94a0",
+    "protected_download": "https://granthood.co.uk/download/decision-tree-pro-latest",
+    "download_item_id": 2,
+    "existing_keys_preserved": true
+  },
+  "jed_url": "https://extensions.joomla.org/extension/authoring-a-content/content-construction/decision-tree/",
+  "website_content": "13 public articles updated; article 14 updated but retained unpublished; menu 216 corrected/published; 14 screenshots, 21 framed placements.",
+  "evidence": [
+    "package-verification.json",
+    "../1.4.0-compatibility-results.md",
+    "free-feed-activation.json",
+    "pro-activation.json",
+    "website/live-verification.json",
+    "jed-publication.json"
+  ]
+}

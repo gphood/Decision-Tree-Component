@@ -1,0 +1,189 @@
+{
+  "verified_date": "2026-09-08",
+  "public_pages": {
+    "reports": [
+      {
+        "id": 1,
+        "url": "/",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 2,
+        "url": "/joomla-extensions",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 4,
+        "url": "/joomla-extensions/decision-tree-free/decision-tree-free-demo",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 3,
+        "url": "/joomla-extensions/decision-tree-free",
+        "status": "passed",
+        "images": 2,
+        "mobileWidth": 390
+      },
+      {
+        "id": 6,
+        "url": "/joomla-extensions/decision-tree-free/decision-tree-free-download",
+        "status": "passed",
+        "images": 0,
+        "mobileWidth": 390
+      },
+      {
+        "id": 5,
+        "url": "/joomla-extensions/decision-tree-free/decision-tree-free-documentation",
+        "status": "passed",
+        "images": 6,
+        "mobileWidth": 390
+      },
+      {
+        "id": 7,
+        "url": "/joomla-extensions/decision-tree-free/decision-tree-free-templates",
+        "status": "passed",
+        "images": 0,
+        "mobileWidth": 390
+      },
+      {
+        "id": 9,
+        "url": "/joomla-extensions/decision-tree-pro",
+        "status": "passed",
+        "images": 2,
+        "mobileWidth": 390
+      },
+      {
+        "id": 10,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-compare-free-and-pro",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 11,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-demo",
+        "status": "passed",
+        "images": 2,
+        "mobileWidth": 390
+      },
+      {
+        "id": 12,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-documentation",
+        "status": "passed",
+        "images": 5,
+        "mobileWidth": 390
+      },
+      {
+        "id": 16,
+        "url": "/documentation",
+        "status": "passed",
+        "images": 0,
+        "mobileWidth": 390
+      },
+      {
+        "id": 13,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-buy",
+        "status": "passed",
+        "images": 0,
+        "mobileWidth": 390
+      }
+    ],
+    "errors": []
+  },
+  "screenshot_frame_recheck": {
+    "reports": [
+      {
+        "id": 1,
+        "url": "/",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 2,
+        "url": "/joomla-extensions",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 4,
+        "url": "/joomla-extensions/decision-tree-free/decision-tree-free-demo",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 3,
+        "url": "/joomla-extensions/decision-tree-free",
+        "status": "passed",
+        "images": 2,
+        "mobileWidth": 390
+      },
+      {
+        "id": 9,
+        "url": "/joomla-extensions/decision-tree-pro",
+        "status": "passed",
+        "images": 2,
+        "mobileWidth": 390
+      },
+      {
+        "id": 5,
+        "url": "/joomla-extensions/decision-tree-free/decision-tree-free-documentation",
+        "status": "passed",
+        "images": 6,
+        "mobileWidth": 390
+      },
+      {
+        "id": 10,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-compare-free-and-pro",
+        "status": "passed",
+        "images": 1,
+        "mobileWidth": 390
+      },
+      {
+        "id": 11,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-demo",
+        "status": "passed",
+        "images": 2,
+        "mobileWidth": 390
+      },
+      {
+        "id": 12,
+        "url": "/joomla-extensions/decision-tree-pro/decision-tree-pro-documentation",
+        "status": "passed",
+        "images": 5,
+        "mobileWidth": 390
+      }
+    ],
+    "errors": []
+  },
+  "links": {
+    "checked_urls": 30,
+    "internal_link_references": 91,
+    "image_files": 14,
+    "errors": []
+  },
+  "saved_articles": 14,
+  "published_articles": 13,
+  "unpublished_article_preserved": 14,
+  "pro_documentation_menu": 216,
+  "unpublished_menu_preserved": 219,
+  "screenshot_placements": 21,
+  "stripe_buy_button": "Verified visible, enabled and fully opaque after loading. No checkout opened or payment submitted.",
+  "preserved": [
+    "article aliases, categories, access and display settings",
+    "demo trees and shortcode placements",
+    "exact commercial terms",
+    "payment module settings",
+    "download targets and update feeds"
+  ],
+  "backup": "private/release-backups/website-content-before-1.4.0-20260908-124219.json",
+  "screenshot_frame_backup": "private/release-backups/website-before-screenshot-frames-20260908-124939.json"
+}

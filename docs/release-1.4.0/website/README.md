@@ -1,6 +1,6 @@
 # Decision Tree 1.4.0 — website content bundle
 
-Prepared 8 September 2026. All fourteen article drafts are complete and ready for editorial review. No live articles, menus, payment settings, downloads or demo trees have been changed.
+Published 8 September 2026 following Grant’s approval. All fourteen article bodies were updated: thirteen are public and article 14 remains unpublished. Menu 216 now points to Pro guide article 12 and is published; menu 219 remains unpublished. All fourteen screenshots were uploaded. At Grant’s request, all 21 screenshot placements now use a shaded frame and a “Screenshot” label. Payment settings, commercial terms, demo trees and download settings were preserved. See `live-verification.json` for the completed live checks.
 
 Open **index.html** to browse the drafts. Each preview contains the proposed copy and the assigned screenshots. It uses a simple light layout; the live Joomla template and embedded components still need their staging check before launch.
 
@@ -61,10 +61,8 @@ The fourteen supplied images are real local captures, cropped for presentation. 
 
 Existing interactive website examples are retained. The new “Explore space” images are labelled illustrations; the demo pages do not imply that the existing live demo has been replaced by that example.
 
-## Remaining before publication
+## Launch status
 
-- Grant's editorial review and any requested copy changes.
-- Final Joomla staging check with the approved 1.4.0 installers and the uploaded images.
-- Release backup, download-target activation and the existing Pro guide menu correction, in the release checklist's order.
+The website content step is complete. All 13 public pages passed desktop/mobile checks, including loaded images, shortcode examples and live embeds. All 30 internal link/image destinations and 91 internal link references passed checks. The Stripe Buy button was verified after loading without opening checkout. Free update-feed activation and the Pro download/feed switch have since completed and their downloads were verified. The JED update and private Pro release tag are complete; the consolidated release record is in `../../1.4.0-release-checklist.md`.
 
 There are no unwritten article sections or unresolved copy placeholders in this bundle. JED submission text and release-package verification are separate release tasks.
