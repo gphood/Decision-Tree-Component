@@ -359,6 +359,11 @@
 			? `${baseLabel} (${text('COM_DECISIONTREE_JS_START_QUESTION_SUFFIX')})`
 			: baseLabel;
 	};
+	const getQuestionDisplayName = (id) => {
+		const question = hasQuestionsObject() ? editorTree.questions[id] : null;
+
+		return getQuestionTextPreview(question, 96) || text('COM_DECISIONTREE_CANVAS_UNTITLED_QUESTION');
+	};
 	const getSelfReferencingOptions = () => {
 		if (!hasQuestionsObject()) {
 			return [];
@@ -412,9 +417,13 @@
 			const question = editorTree.questions[questionId];
 			const options = Array.isArray(question?.options) ? question.options : [];
 			const optionIds = new Set();
+			const questionDisplayName = getQuestionDisplayName(questionId);
 
 			if (options.length === 0) {
-				warnings.push(sprintf('COM_DECISIONTREE_WARNING_JSON_DEAD_ENDS', questionId));
+				warnings.push({
+					message: sprintf('COM_DECISIONTREE_CANVAS_WARNING_NO_OPTIONS', questionDisplayName),
+					questionId,
+				});
 			}
 
 			options.forEach((option, optionIndex) => {
@@ -422,12 +431,12 @@
 
 				if (!isSafeIdentifier(optionId)) {
 					errors.push({
-						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_INVALID', questionId, optionIndex + 1),
+						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_INVALID', questionDisplayName, optionIndex + 1),
 						questionId,
 					});
 				} else if (optionIds.has(optionId)) {
 					errors.push({
-						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_DUPLICATE', questionId, optionId),
+						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_ID_DUPLICATE', questionDisplayName, optionId),
 						questionId,
 					});
 				} else {
@@ -440,14 +449,17 @@
 
 				if (hasNextQuestion && hasOutcome) {
 					errors.push({
-						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_AMBIGUOUS', questionId, optionIndex + 1),
+						message: sprintf('COM_DECISIONTREE_ERROR_JSON_OPTION_AMBIGUOUS', questionDisplayName, optionIndex + 1),
 						questionId,
 					});
 					return;
 				}
 
 				if (!hasNextQuestion && !hasOutcome) {
-					warnings.push(sprintf('COM_DECISIONTREE_WARNING_JSON_OPTION_INCOMPLETE', questionId, optionIndex + 1));
+					warnings.push({
+						message: sprintf('COM_DECISIONTREE_CANVAS_WARNING_INCOMPLETE_OPTION', optionIndex + 1, questionDisplayName),
+						questionId,
+					});
 					return;
 				}
 
@@ -457,7 +469,7 @@
 
 				if (!questionIds.includes(nextQuestionId)) {
 					errors.push({
-						message: sprintf('COM_DECISIONTREE_ERROR_JSON_NEXT_QUESTION_MISSING', nextQuestionId),
+						message: sprintf('COM_DECISIONTREE_CANVAS_NEXT_QUESTION_MISSING', questionDisplayName),
 						questionId,
 					});
 					return;
@@ -465,7 +477,7 @@
 
 				if (nextQuestionId === questionId) {
 					errors.push({
-						message: sprintf('COM_DECISIONTREE_ERROR_JSON_NEXT_QUESTION_SELF_REFERENCE', questionId),
+						message: sprintf('COM_DECISIONTREE_ERROR_JSON_NEXT_QUESTION_SELF_REFERENCE', questionDisplayName),
 						questionId,
 					});
 					return;
@@ -507,7 +519,7 @@
 
 			if (cycle.length > 0) {
 				errors.push({
-					message: sprintf('COM_DECISIONTREE_ERROR_JSON_CYCLE', cycle.join(' -> ')),
+					message: sprintf('COM_DECISIONTREE_ERROR_JSON_CYCLE', cycle.map(getQuestionDisplayName).join(' -> ')),
 					questionId: cycle[0],
 				});
 				break;
@@ -532,7 +544,10 @@
 			const unreachable = questionIds.filter((questionId) => !reachable.has(questionId));
 
 			if (unreachable.length > 0) {
-				warnings.push(sprintf('COM_DECISIONTREE_WARNING_JSON_UNREACHABLE', unreachable.join(', ')));
+				unreachable.forEach((questionId) => warnings.push({
+					message: sprintf('COM_DECISIONTREE_CANVAS_WARNING_UNREACHABLE', getQuestionDisplayName(questionId)),
+					questionId,
+				}));
 			}
 		}
 
@@ -554,7 +569,10 @@
 			});
 		}
 
-		return { errors, warnings: [...new Set(warnings)] };
+		return {
+			errors,
+			warnings: [...new Map(warnings.map((issue) => [`${issue.questionId}:${issue.message}`, issue])).values()],
+		};
 	};
 	const updatePathHealth = () => {
 		const { pathHealth } = getEditorElements();
@@ -575,7 +593,7 @@
 			pathHealth.textContent = analysis.errors.map((issue) => issue.message).join(' ');
 		} else if (analysis.warnings.length > 0) {
 			pathHealth.classList.add('alert-warning');
-			pathHealth.textContent = analysis.warnings.join(' ');
+			pathHealth.textContent = [...new Set(analysis.warnings.map((issue) => issue.message))].join(' ');
 		} else {
 			pathHealth.classList.add('alert-success');
 			pathHealth.textContent = text('COM_DECISIONTREE_JS_PATH_HEALTH_VALID');
@@ -778,6 +796,39 @@
 
 		return `q${index}`;
 	};
+	const addNewQuestion = () => {
+		if (!editorTree || typeof editorTree !== 'object' || Array.isArray(editorTree)) {
+			editorTree = {
+				version: '1.1',
+				start: 'q1',
+				settings: {
+					show_step_number: false,
+				},
+				questions: {},
+			};
+		}
+
+		if (!hasQuestionsObject()) {
+			editorTree.questions = {};
+		}
+
+		const id = getNewQuestionId();
+		editorTree.questions[id] = {
+			question_text: '',
+			options: [],
+		};
+
+		if (!editorTree.start) {
+			editorTree.start = id;
+		}
+
+		selectedQuestionId = id;
+		normalizeEditorTree(editorTree);
+		syncTextarea();
+		renderQuestionEditor();
+
+		return id;
+	};
 
 	const getUniqueQuestionCopyText = (questionText) => {
 		const baseText = String(questionText || '').trim();
@@ -839,12 +890,105 @@
 
 		return true;
 	};
+	const selectQuestion = (questionId) => {
+		if (!hasQuestionsObject() || !editorTree.questions[questionId]) {
+			return false;
+		}
 
-	const openPreview = () => {
+		selectedQuestionId = questionId;
+		renderQuestionEditor();
+
+		return true;
+	};
+	const selectOutcome = (questionId, optionId, optionIndex) => {
+		if (!hasQuestionsObject() || !editorTree.questions[questionId]) {
+			return false;
+		}
+
+		const question = editorTree.questions[questionId];
+		const options = Array.isArray(question.options) ? question.options : [];
+		let targetIndex = options.findIndex((option) => String(option?.id || '') === String(optionId || ''));
+
+		if (targetIndex < 0 && Number.isInteger(optionIndex) && options[optionIndex]) {
+			targetIndex = optionIndex;
+		}
+
+		if (targetIndex < 0) {
+			return false;
+		}
+
+		selectedQuestionId = questionId;
+		getOptionUiState(options[targetIndex]).collapsed = false;
+		renderQuestionEditor();
+
+		return true;
+	};
+	const duplicateQuestion = (questionId = selectedQuestionId) => {
+		if (!hasQuestionsObject() || !editorTree.questions[questionId]) {
+			return '';
+		}
+
+		selectedQuestionId = questionId;
+
+		if (!duplicateSelectedQuestion()) {
+			return '';
+		}
+
+		const copyId = selectedQuestionId;
+		syncTextarea();
+		renderQuestionEditor();
+
+		return copyId;
+	};
+	const deleteQuestion = (questionId = selectedQuestionId) => {
+		if (!hasQuestionsObject() || !editorTree.questions[questionId] || questionId === editorTree.start) {
+			return false;
+		}
+
+		const referenceCount = countNextReferences(questionId);
+		const warning = referenceCount > 0
+			? sprintf('COM_DECISIONTREE_JS_DELETE_QUESTION_REFERENCED_CONFIRM', questionId, referenceCount)
+			: sprintf('COM_DECISIONTREE_JS_DELETE_QUESTION_CONFIRM', questionId);
+
+		if (!window.confirm(warning)) {
+			return false;
+		}
+
+		clearNextReferences(questionId);
+		delete editorTree.questions[questionId];
+		selectedQuestionId = editorTree.start || getQuestionIds()[0] || '';
+		syncTextarea();
+		renderQuestionEditor();
+
+		return true;
+	};
+	const setStartQuestion = (questionId = selectedQuestionId) => {
+		if (!hasQuestionsObject() || !editorTree.questions[questionId] || questionId === editorTree.start) {
+			return false;
+		}
+
+		editorTree.start = questionId;
+		selectedQuestionId = questionId;
+		syncTextarea();
+		renderQuestionEditor();
+
+		return true;
+	};
+
+	const openPreview = ({ startQuestionId = '', result, trigger = null } = {}) => {
 		const analysis = analyseTreePaths();
 		const { pathHealth, previewButton } = getEditorElements();
+		const isOutcomePreview = result !== undefined;
 
-		if (!hasQuestionsObject() || getQuestionIds().length === 0 || analysis.errors.length > 0) {
+		if (
+			!isOutcomePreview
+			&& (
+				!hasQuestionsObject()
+				|| getQuestionIds().length === 0
+				|| analysis.errors.length > 0
+				|| (startQuestionId !== '' && !editorTree.questions[startQuestionId])
+			)
+		) {
 			const firstIssue = analysis.errors[0];
 
 			if (firstIssue?.questionId) {
@@ -861,34 +1005,78 @@
 		const modalElement = document.getElementById('decisiontree-preview-modal');
 		const previewTree = document.getElementById('decisiontree-preview-tree');
 
-		if (!modalElement || !previewTree || !window.DecisionTreeFrontend?.mount) {
+		if (
+			!modalElement
+			|| !previewTree
+			|| !window.DecisionTreeFrontend?.mount
+			|| (isOutcomePreview && !window.DecisionTreeFrontend?.renderResult)
+		) {
 			return;
 		}
 
+		if (previewTree.dataset.previewLinksGuarded !== 'true') {
+			previewTree.dataset.previewLinksGuarded = 'true';
+			previewTree.addEventListener('click', (event) => {
+				if (event.target.closest('a')) {
+					event.preventDefault();
+				}
+			});
+		}
+
+		const modalTitle = document.getElementById('decisiontree-preview-title');
+		const modalHelp = modalElement.querySelector('.com-decisiontree-preview-modal__help');
 		const title = previewTree.querySelector('.com-decisiontree-preview__title');
 		const description = previewTree.querySelector('.com-decisiontree-preview__description');
 		const titleInput = document.getElementById('jform_title');
 		const descriptionInput = document.getElementById('jform_description');
+		const previewTreeData = deepClone(editorTree);
+
+		if (modalTitle) {
+			modalTitle.textContent = isOutcomePreview
+				? text('PLG_SYSTEM_DECISIONTREEPRO_PREVIEW_OUTCOME_HEADING')
+				: startQuestionId !== ''
+					? text('PLG_SYSTEM_DECISIONTREEPRO_PREVIEW_QUESTION_HEADING')
+					: text('COM_DECISIONTREE_PREVIEW_HEADING');
+		}
+
+		if (modalHelp) {
+			modalHelp.textContent = isOutcomePreview
+				? text('PLG_SYSTEM_DECISIONTREEPRO_PREVIEW_OUTCOME_HELP')
+				: startQuestionId !== ''
+					? text('PLG_SYSTEM_DECISIONTREEPRO_PREVIEW_QUESTION_HELP')
+					: text('COM_DECISIONTREE_PREVIEW_HELP');
+		}
 
 		if (title) {
 			title.textContent = String(titleInput?.value || '').trim();
+			title.hidden = isOutcomePreview;
 		}
 
 		if (description) {
 			description.textContent = String(descriptionInput?.value || '').trim();
+			description.hidden = isOutcomePreview;
 		}
 
-		window.DecisionTreeFrontend.mount(previewTree, deepClone(editorTree), {
-			force: true,
-			instanceId: 'decisiontree-preview-tree',
-			source: 'preview',
-			treeId: document.getElementById('jform_id')?.value || 'preview',
-		});
+		if (isOutcomePreview) {
+			const contentHost = previewTree.querySelector('.com-decisiontree__container') || previewTree;
+			window.DecisionTreeFrontend.renderResult(contentHost, deepClone(result));
+		} else {
+			if (startQuestionId !== '') {
+				previewTreeData.start = startQuestionId;
+			}
+
+			window.DecisionTreeFrontend.mount(previewTree, previewTreeData, {
+				force: true,
+				instanceId: 'decisiontree-preview-tree',
+				source: 'preview',
+				treeId: document.getElementById('jform_id')?.value || 'preview',
+			});
+		}
 
 		if (window.bootstrap?.Modal) {
 			const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
 			modalElement.addEventListener('hidden.bs.modal', () => {
-				previewButton?.focus();
+				(trigger || previewButton)?.focus();
 			}, { once: true });
 			modal.show();
 		}
@@ -936,6 +1124,8 @@
 		const isCollapsed = Boolean(uiState.collapsed);
 		const card = document.createElement('div');
 		card.className = 'com-decisiontree-option-editor';
+		card.dataset.optionId = String(option.id || '');
+		card.dataset.optionIndex = String(index);
 		card.classList.toggle('is-collapsed', isCollapsed);
 
 		const header = document.createElement('div');
@@ -1576,7 +1766,7 @@
 			populateQuestionSelect();
 		});
 
-		form.addEventListener('paste', (event) => {
+		document.addEventListener('paste', (event) => {
 			const target = event.target;
 
 			if (!(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement)) {
@@ -1584,7 +1774,7 @@
 			}
 
 			if (
-				!target.closest('#decisiontree-question-editor')
+				!target.closest('#decisiontree-question-editor, #decisiontree-question-modal')
 				&& target.id !== 'jform_title'
 				&& target.id !== 'jform_description'
 			) {
@@ -1602,51 +1792,19 @@
 			insertTextAtCursor(target, trimPastedText(pastedText));
 		});
 
-		addQuestionButton.addEventListener('click', () => {
-			if (!editorTree || typeof editorTree !== 'object' || Array.isArray(editorTree)) {
-				editorTree = {
-					version: '1.1',
-					start: 'q1',
-					settings: {
-						show_step_number: false,
-					},
-					questions: {},
-				};
-			}
-
-			if (!hasQuestionsObject()) {
-				editorTree.questions = {};
-			}
-
-			const id = getNewQuestionId();
-			editorTree.questions[id] = {
-				question_text: '',
-				options: [],
-			};
-
-			if (!editorTree.start) {
-				editorTree.start = id;
-			}
-
-			selectedQuestionId = id;
-			normalizeEditorTree(editorTree);
-			syncTextarea();
-			renderQuestionEditor();
-		});
+		addQuestionButton.addEventListener('click', addNewQuestion);
 
 		duplicateQuestionButton.addEventListener('click', () => {
-			if (!duplicateSelectedQuestion()) {
+			if (!duplicateQuestion()) {
 				return;
 			}
 
-			syncTextarea();
-			renderQuestionEditor();
 			questionText.focus({ preventScroll: true });
 			questionText.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 			questionText.select();
 		});
 
-		previewButton.addEventListener('click', openPreview);
+		previewButton.addEventListener('click', () => openPreview());
 
 		showStepNumber.addEventListener('change', () => {
 			if (!editorTree || typeof editorTree !== 'object' || Array.isArray(editorTree)) {
@@ -1673,37 +1831,9 @@
 			renderQuestionEditor();
 		});
 
-		deleteQuestionButton.addEventListener('click', () => {
-			if (!hasQuestionsObject() || !selectedQuestionId || selectedQuestionId === editorTree.start) {
-				return;
-			}
+		deleteQuestionButton.addEventListener('click', () => deleteQuestion());
 
-			const referenceCount = countNextReferences(selectedQuestionId);
-			const warning = referenceCount > 0
-				? sprintf('COM_DECISIONTREE_JS_DELETE_QUESTION_REFERENCED_CONFIRM', selectedQuestionId, referenceCount)
-				: sprintf('COM_DECISIONTREE_JS_DELETE_QUESTION_CONFIRM', selectedQuestionId);
-
-			if (!window.confirm(warning)) {
-				return;
-			}
-
-			clearNextReferences(selectedQuestionId);
-
-			delete editorTree.questions[selectedQuestionId];
-			selectedQuestionId = editorTree.start || getQuestionIds()[0] || '';
-			syncTextarea();
-			renderQuestionEditor();
-		});
-
-		setStartButton.addEventListener('click', () => {
-			if (!hasQuestionsObject() || !selectedQuestionId) {
-				return;
-			}
-
-			editorTree.start = selectedQuestionId;
-			syncTextarea();
-			renderQuestionEditor();
-		});
+		setStartButton.addEventListener('click', () => setStartQuestion());
 
 		addOptionButton.addEventListener('click', (event) => {
 			event.preventDefault();
@@ -1758,6 +1888,23 @@
 
 	const initAdmin = () => {
 		initQuestionEditor();
+
+		if (typeof window.DecisionTreeCanvas?.init === 'function') {
+			window.DecisionTreeCanvas.init({
+				addQuestion: addNewQuestion,
+				analyseTree: analyseTreePaths,
+				deleteQuestion,
+				duplicateQuestion,
+				getSelectedQuestionId: () => selectedQuestionId,
+				getTree: () => editorTree,
+				previewOutcome: (result, trigger) => openPreview({ result, trigger }),
+				previewQuestion: (questionId, trigger) => openPreview({ startQuestionId: questionId, trigger }),
+				selectOutcome,
+				selectQuestion,
+				setStartQuestion,
+				sync: syncTextarea,
+			});
+		}
 	};
 	const initAdminAfterDeferredExtensions = () => {
 		window.setTimeout(initAdmin, 0);

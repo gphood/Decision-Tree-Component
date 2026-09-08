@@ -2,10 +2,10 @@
 <extension type="plugin" group="content" method="upgrade">
 	<name>Content - Decision Tree</name>
 	<author>Grant Hood</author>
-	<creationDate>2026-04</creationDate>
+	<creationDate>2026-09-03</creationDate>
 	<copyright>(C) 2026 GrantDev. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later</license>
-	<version>1.3.0</version>
+	<version>1.4.0</version>
 	<description>PLG_CONTENT_DECISIONTREE_XML_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<namespace path="src">GrantDev\Plugin\Content\DecisionTree</namespace>

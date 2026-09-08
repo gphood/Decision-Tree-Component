@@ -194,6 +194,27 @@ $nullDate = Factory::getDbo()->getNullDate();
 		<?php echo $this->pagination->getListFooter(); ?>
 	<?php endif; ?>
 
+	<?php if (!$this->isProEnabled) : ?>
+		<details class="com-decisiontree-pro-info">
+			<summary><?php echo Text::_('COM_DECISIONTREE_PRO_INFO_TITLE'); ?></summary>
+			<div class="com-decisiontree-pro-info__content">
+				<p><?php echo Text::_('COM_DECISIONTREE_PRO_INFO_INTRO'); ?></p>
+				<dl class="com-decisiontree-pro-info__features">
+					<?php foreach (['TREES', 'CONTENT', 'PREVIEWS', 'ANALYTICS'] as $feature) : ?>
+						<div>
+							<dt><?php echo Text::_('COM_DECISIONTREE_PRO_INFO_' . $feature . '_TITLE'); ?></dt>
+							<dd><?php echo Text::_('COM_DECISIONTREE_PRO_INFO_' . $feature . '_DESCRIPTION'); ?></dd>
+						</div>
+					<?php endforeach; ?>
+				</dl>
+				<a href="https://granthood.co.uk/joomla-extensions/decision-tree-pro" target="_blank" rel="noopener noreferrer">
+					<?php echo Text::_('COM_DECISIONTREE_PRO_INFO_LINK'); ?>
+					<span class="visually-hidden"><?php echo Text::_('COM_DECISIONTREE_PRO_INFO_NEW_TAB'); ?></span>
+				</a>
+			</div>
+		</details>
+	<?php endif; ?>
+
 	<input type="hidden" name="task" value="">
 	<input type="hidden" name="boxchecked" value="0">
 	<?php echo HTMLHelper::_('form.token'); ?>

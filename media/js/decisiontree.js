@@ -455,6 +455,7 @@
 		initContainer,
 		initDecisionTrees,
 		mount,
+		renderResult,
 	});
 	const initDecisionTreesAfterDeferredExtensions = () => {
 		window.setTimeout(initDecisionTrees, 0);

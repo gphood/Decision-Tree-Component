@@ -124,17 +124,24 @@
 	color: inherit;
 	display: inline-flex;
 	font-weight: 650;
+	gap: .4rem;
 	line-height: 1.3;
 	margin-block-start: .35rem;
 	padding: .6rem .9rem;
 	text-decoration: none;
+	transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 
 .gd-decisiontree__result-link:hover,
 .gd-decisiontree__result-link:focus {
 	background: var(--gd-decisiontree-panel-strong);
+	border-color: color-mix(in srgb, currentColor 42%, transparent);
 	color: inherit;
 	text-decoration: none;
+}
+
+.gd-decisiontree__result-link:hover {
+	box-shadow: 0 .25rem .75rem color-mix(in srgb, currentColor 10%, transparent);
 }
 
 .gd-decisiontree__result-link:focus-visible {
@@ -164,6 +171,7 @@
 	font: inherit;
 	line-height: 1.3;
 	padding: .55rem .85rem;
+	transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 
 .gd-decisiontree__reset {

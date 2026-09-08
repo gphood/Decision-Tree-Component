@@ -3,7 +3,7 @@
 	<name>Decision Tree (Component + Plugin)</name>
 	<packagename>decisiontree</packagename>
 	<version>@VERSION@</version>
-	<creationDate>2026-05-05</creationDate>
+	<creationDate>2026-09-03</creationDate>
 	<author>Grant Hood</author>
 	<license>GNU General Public License version 2 or later</license>
 	<description>Decision Tree package installer</description>

@@ -26,6 +26,8 @@ class HtmlView extends BaseHtmlView
 
 	public string $analyticsTreeUrl = '';
 
+	public string $editorExtensionMarkup = '';
+
 	public function display($tpl = null): void
 	{
 		DecisionTreeHelper::loadAdminLanguage();
@@ -36,17 +38,21 @@ class HtmlView extends BaseHtmlView
 		$this->addToolbar();
 		$this->registerScriptText();
 
-		Factory::getApplication()->getDocument()->getWebAssetManager()
+		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+		$wa->getRegistry()->addExtensionRegistryFile('com_decisiontree');
+		$wa
 			->useScript('bootstrap.modal')
+			->useScript('com_decisiontree.admin.list')
 			->registerAndUseStyle('com_decisiontree.frontend.styles', 'media/com_decisiontree/css/decisiontree.css')
 			->registerAndUseScript('com_decisiontree.frontend', 'media/com_decisiontree/js/decisiontree.js', [], ['defer' => true])
 			->registerAndUseStyle('com_decisiontree.admin', 'media/com_decisiontree/css/admin.css')
+			->registerAndUseScript('com_decisiontree.admin.canvas', 'media/com_decisiontree/js/admin-canvas.js', [], ['defer' => true])
 			->registerAndUseScript(
 				'com_decisiontree.admin',
 				'media/com_decisiontree/js/admin.js',
 				[],
 				['defer' => true],
-				['com_decisiontree.frontend']
+				['com_decisiontree.frontend', 'com_decisiontree.admin.canvas']
 			);
 
 		Factory::getApplication()->getDispatcher()->dispatch(
@@ -75,6 +81,36 @@ class HtmlView extends BaseHtmlView
 	private function registerScriptText(): void
 	{
 		foreach ([
+			'COM_DECISIONTREE_EMBED_TAG_COPIED',
+			'COM_DECISIONTREE_EMBED_TAG_COPY_FAILED',
+			'COM_DECISIONTREE_BUTTON_DELETE_QUESTION',
+			'COM_DECISIONTREE_BUTTON_DUPLICATE_QUESTION',
+			'COM_DECISIONTREE_BUTTON_SET_START_QUESTION',
+			'COM_DECISIONTREE_CANVAS_BROKEN_CONNECTION',
+			'COM_DECISIONTREE_CANVAS_EDIT_OUTCOME',
+			'COM_DECISIONTREE_CANVAS_EDIT_QUESTION',
+			'COM_DECISIONTREE_CANVAS_ERROR',
+			'COM_DECISIONTREE_CANVAS_MISSING_QUESTION',
+			'COM_DECISIONTREE_CANVAS_NEXT_QUESTION_MISSING',
+			'COM_DECISIONTREE_CANVAS_OPTION_COUNT',
+			'COM_DECISIONTREE_CANVAS_OUTCOME',
+			'COM_DECISIONTREE_CANVAS_OUTCOME_ACTIONS',
+			'COM_DECISIONTREE_CANVAS_OUTCOME_FALLBACK',
+			'COM_DECISIONTREE_CANVAS_QUESTION_MODAL_HEADING',
+			'COM_DECISIONTREE_CANVAS_QUESTION_MODAL_HELP',
+			'COM_DECISIONTREE_CANVAS_OUTCOME_MODAL_HEADING',
+			'COM_DECISIONTREE_CANVAS_OUTCOME_MODAL_HELP',
+			'COM_DECISIONTREE_CANVAS_QUESTION',
+			'COM_DECISIONTREE_CANVAS_QUESTION_ACTIONS',
+			'COM_DECISIONTREE_CANVAS_QUESTION_ARIA',
+			'COM_DECISIONTREE_CANVAS_START',
+			'COM_DECISIONTREE_CANVAS_UNTITLED_QUESTION',
+			'COM_DECISIONTREE_CANVAS_WARNING',
+			'COM_DECISIONTREE_CANVAS_WARNING_INCOMPLETE_OPTION',
+			'COM_DECISIONTREE_CANVAS_WARNING_NO_OPTIONS',
+			'COM_DECISIONTREE_CANVAS_WARNING_UNREACHABLE',
+			'COM_DECISIONTREE_PREVIEW_HEADING',
+			'COM_DECISIONTREE_PREVIEW_HELP',
 			'COM_DECISIONTREE_JS_ACTION_LABEL',
 			'COM_DECISIONTREE_JS_ACTION_GOES_TO_QUESTION',
 			'COM_DECISIONTREE_JS_ACTION_SHOWS_RESULT',
